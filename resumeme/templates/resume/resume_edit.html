@@ -1,0 +1,429 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Resume - ResumeMe{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="position-sticky pt-3">
+                <div class="d-flex justify-content-between align-items-center px-3 mb-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center text-muted">
+                        <span>Resume Sections</span>
+                    </h6>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="add-section-btn">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+                <ul class="nav flex-column" id="sections-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#personal-info">
+                            <i class="bi bi-person me-2"></i>
+                            Personal Information
+                        </a>
+                    </li>
+                    {% for section in sections %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#section-{{ section.id }}">
+                            <i class="bi bi-{{ section.section_type|default:'file-text' }} me-2"></i>
+                            {{ section.title }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                
+                <hr>
+                
+                <div class="px-3">
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center text-muted">
+                        <span>Design</span>
+                    </h6>
+                    <form method="post" id="design-form">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_primary_color" class="form-label">Primary Color</label>
+                            {{ form.primary_color }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_font_family" class="form-label">Font</label>
+                            {{ form.font_family }}
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">Save Design</button>
+                    </form>
+                </div>
+                
+                <hr>
+                
+                <div class="d-grid gap-2 px-3">
+                    <a href="{% url 'dashboard:resume_preview' uuid=resume.uuid %}" class="btn btn-success" target="_blank">
+                        <i class="bi bi-eye me-2"></i> Preview
+                    </a>
+                    <button type="button" class="btn btn-outline-primary" id="download-btn">
+                        <i class="bi bi-download me-2"></i> Download
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">{{ resume.title }}</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-sm btn-outline-secondary me-2" id="save-resume-btn">
+                        <i class="bi bi-save me-1"></i> Save
+                    </button>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-file-earmark-arrow-down me-1"></i> Export
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                            <li><a class="dropdown-item" href="#" id="export-pdf">PDF</a></li>
+                            <li><a class="dropdown-item" href="#" id="export-docx">DOCX</a></li>
+                            <li><a class="dropdown-item" href="#" id="export-txt">TXT</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resume Editor -->
+            <div class="resume-editor mb-5">
+                <!-- Personal Information Section -->
+                <div class="card mb-4" id="personal-info">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Personal Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ resume.content.personal_info.first_name }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ resume.content.personal_info.last_name }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ resume.content.personal_info.email }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" id="phone" name="phone" value="{{ resume.content.personal_info.phone }}">
+                            </div>
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="address" name="address" value="{{ resume.content.personal_info.address }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" name="city" value="{{ resume.content.personal_info.city }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" id="state" name="state" value="{{ resume.content.personal_info.state }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="zip_code" class="form-label">ZIP Code</label>
+                                <input type="text" class="form-control" id="zip_code" name="zip_code" value="{{ resume.content.personal_info.zip_code }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="linkedin" class="form-label">LinkedIn</label>
+                                <input type="url" class="form-control" id="linkedin" name="linkedin" value="{{ resume.content.personal_info.linkedin }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="website" class="form-label">Website</label>
+                                <input type="url" class="form-control" id="website" name="website" value="{{ resume.content.personal_info.website }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Sections -->
+                {% for section in sections %}
+                <div class="card mb-4" id="section-{{ section.id }}">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ section.title }}</h5>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit-section-title" data-section-id="{{ section.id }}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-section" data-section-id="{{ section.id }}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Dynamic content based on section type -->
+                        {% if section.section_type == 'summary' %}
+                        <div class="mb-3">
+                            <label for="summary-{{ section.id }}" class="form-label">Professional Summary</label>
+                            <textarea class="form-control" id="summary-{{ section.id }}" rows="4">{{ section.content.summary|default:'' }}</textarea>
+                            <div class="form-text">Write a brief summary of your professional background and key qualifications.</div>
+                        </div>
+                        {% elif section.section_type == 'experience' %}
+                        <div class="experience-items">
+                            {% for item in section.content.items|default:[] %}
+                            <div class="experience-item border-bottom pb-3 mb-3">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Job Title</label>
+                                        <input type="text" class="form-control" name="job_title" value="{{ item.job_title }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Employer</label>
+                                        <input type="text" class="form-control" name="employer" value="{{ item.employer }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Start Date</label>
+                                        <input type="month" class="form-control" name="start_date" value="{{ item.start_date }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">End Date</label>
+                                        <input type="month" class="form-control" name="end_date" value="{{ item.end_date }}">
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="current_job" {% if item.current_job %}checked{% endif %}>
+                                            <label class="form-check-label">I currently work here</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Job Description</label>
+                                        <textarea class="form-control" name="description" rows="3">{{ item.description }}</textarea>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-item">Remove</button>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted">No work experience added yet.</p>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary add-experience-item">
+                            <i class="bi bi-plus-circle me-1"></i> Add Work Experience
+                        </button>
+                        {% elif section.section_type == 'education' %}
+                        <div class="education-items">
+                            {% for item in section.content.items|default:[] %}
+                            <div class="education-item border-bottom pb-3 mb-3">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Degree</label>
+                                        <input type="text" class="form-control" name="degree" value="{{ item.degree }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Institution</label>
+                                        <input type="text" class="form-control" name="institution" value="{{ item.institution }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Start Date</label>
+                                        <input type="month" class="form-control" name="start_date" value="{{ item.start_date }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">End Date</label>
+                                        <input type="month" class="form-control" name="end_date" value="{{ item.end_date }}">
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" name="current_education" {% if item.current_education %}checked{% endif %}>
+                                            <label class="form-check-label">I'm currently studying here</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Description</label>
+                                        <textarea class="form-control" name="description" rows="2">{{ item.description }}</textarea>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger mt-2 remove-item">Remove</button>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted">No education added yet.</p>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary add-education-item">
+                            <i class="bi bi-plus-circle me-1"></i> Add Education
+                        </button>
+                        {% elif section.section_type == 'skills' %}
+                        <div class="mb-3">
+                            <label class="form-label">Skills (comma separated)</label>
+                            <input type="text" class="form-control" id="skills-input-{{ section.id }}" value="{{ section.content.skills|join:', ' }}">
+                            <div class="form-text">Enter your skills separated by commas (e.g., JavaScript, Python, Project Management)</div>
+                        </div>
+                        <div class="skills-tags mt-3" id="skills-tags-{{ section.id }}">
+                            {% for skill in section.content.skills|default:[] %}
+                            <span class="badge bg-light text-dark border me-2 mb-2 p-2">{{ skill }} <i class="bi bi-x ms-1 remove-skill" role="button"></i></span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <!-- Custom section -->
+                        <div class="mb-3">
+                            <label for="custom-{{ section.id }}" class="form-label">Content</label>
+                            <textarea class="form-control" id="custom-{{ section.id }}" rows="4">{{ section.content.text|default:'' }}</textarea>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Add Section Modal -->
+<div class="modal fade" id="addSectionModal" tabindex="-1" aria-labelledby="addSectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSectionModalLabel">Add New Section</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="section-title" class="form-label">Section Title</label>
+                    <input type="text" class="form-control" id="section-title">
+                </div>
+                <div class="mb-3">
+                    <label for="section-type" class="form-label">Section Type</label>
+                    <select class="form-select" id="section-type">
+                        <option value="summary">Professional Summary</option>
+                        <option value="experience">Work Experience</option>
+                        <option value="education">Education</option>
+                        <option value="skills">Skills</option>
+                        <option value="languages">Languages</option>
+                        <option value="certifications">Certifications</option>
+                        <option value="projects">Projects</option>
+                        <option value="custom">Custom Section</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-section-btn">Add Section</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Bootstrap components
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Add Section Modal
+        const addSectionBtn = document.getElementById('add-section-btn');
+        const addSectionModal = new bootstrap.Modal(document.getElementById('addSectionModal'));
+        
+        addSectionBtn.addEventListener('click', function() {
+            addSectionModal.show();
+        });
+        
+        // Save Section
+        const saveSectionBtn = document.getElementById('save-section-btn');
+        saveSectionBtn.addEventListener('click', function() {
+            const title = document.getElementById('section-title').value;
+            const type = document.getElementById('section-type').value;
+            
+            if (!title) {
+                alert('Please enter a section title');
+                return;
+            }
+            
+            // AJAX call to save new section
+            fetch('{% url "dashboard:add_section" resume_uuid=resume.uuid %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    section_type: type
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload page to show new section
+                    window.location.reload();
+                } else {
+                    alert('Error adding section: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while adding the section');
+            });
+            
+            addSectionModal.hide();
+        });
+        
+        // Save Resume
+        const saveResumeBtn = document.getElementById('save-resume-btn');
+        saveResumeBtn.addEventListener('click', function() {
+            // Collect all form data
+            const resumeData = {
+                personal_info: {
+                    first_name: document.getElementById('first_name').value,
+                    last_name: document.getElementById('last_name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    state: document.getElementById('state').value,
+                    zip_code: document.getElementById('zip_code').value,
+                    linkedin: document.getElementById('linkedin').value,
+                    website: document.getElementById('website').value
+                },
+                sections: []
+            };
+            
+            // Collect section data
+            {% for section in sections %}
+            const section{{ section.id }} = {
+                id: {{ section.id }},
+                type: '{{ section.section_type }}',
+                title: '{{ section.title }}',
+                content: {}
+            };
+            
+            {% if section.section_type == 'summary' %}
+            section{{ section.id }}.content.summary = document.getElementById('summary-{{ section.id }}').value;
+            {% elif section.section_type == 'skills' %}
+            const skillsInput{{ section.id }} = document.getElementById('skills-input-{{ section.id }}').value;
+            section{{ section.id }}.content.skills = skillsInput{{ section.id }}.split(',').map(skill => skill.trim()).filter(skill => skill);
+            {% elif section.section_type == 'custom' %}
+            section{{ section.id }}.content.text = document.getElementById('custom-{{ section.id }}').value;
+            {% endif %}
+            
+            resumeData.sections.push(section{{ section.id }});
+            {% endfor %}
+            
+            // AJAX call to save resume
+            fetch('{% url "dashboard:save_resume" uuid=resume.uuid %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(resumeData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Resume saved successfully!');
+                } else {
+                    alert('Error saving resume: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while saving the resume');
+            });
+        });
+    });
+</script>
+{% endblock %}

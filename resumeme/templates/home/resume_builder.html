@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Builder - Create Your Professional Resume{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Basic styling for the builder interface */
+    .builder-container {
+        display: flex;
+        min-height: calc(100vh - 60px);
+    }
+    
+    .builder-sidebar {
+        width: 300px;
+        background-color: #f8f9fa;
+        border-right: 1px solid #e2e8f0;
+        padding: 1.5rem;
+    }
+    
+    .builder-content {
+        flex: 1;
+        padding: 2rem;
+        background-color: #fff;
+    }
+    
+    .section-nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .section-nav li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .section-nav a {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        color: #4a5568;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .section-nav a:hover,
+    .section-nav a.active {
+        background-color: #e6f2ff;
+        color: #1a91f0;
+    }
+    
+    .preview-pane {
+        border: 1px solid #e2e8f0;
+        height: 800px;
+        overflow: auto;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="builder-container">
+    <div class="builder-sidebar">
+        <h2 class="text-xl font-bold mb-6">Resume Sections</h2>
+        
+        <ul class="section-nav">
+            <li><a href="#personal" class="active">Personal Details</a></li>
+            <li><a href="#professional-summary">Professional Summary</a></li>
+            <li><a href="#experience">Work Experience</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#languages">Languages</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#additional">Additional Information</a></li>
+        </ul>
+        
+        <div class="mt-8">
+            <button class="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition duration-200">
+                Download Resume
+            </button>
+        </div>
+    </div>
+    
+    <div class="builder-content">
+        <div class="mb-8 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Build Your Resume</h1>
+            
+            <div class="flex space-x-4">
+                <button class="py-2 px-4 border border-gray-300 rounded font-medium hover:bg-gray-50 transition duration-200">
+                    Preview
+                </button>
+                <button class="py-2 px-4 bg-green-600 text-white font-medium rounded hover:bg-green-700 transition duration-200">
+                    Save
+                </button>
+            </div>
+        </div>
+        
+        <div class="preview-pane">
+            <div class="p-8">
+                <p class="text-center text-gray-500">Your resume will appear here as you build it.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

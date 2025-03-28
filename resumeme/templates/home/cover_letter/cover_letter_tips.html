@@ -1,0 +1,550 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cover Letter Tips - Write an Impressive Cover Letter{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cover-letter-tips-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+    }
+
+    .tips-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background-color: #f8fafc;
+        padding: 2.5rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .nav-container {
+        position: sticky;
+        top: 20px;
+        margin-bottom: 2rem;
+    }
+
+    .nav-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .nav-tab {
+        flex: 0 0 auto;
+        padding: 0.75rem 1.25rem;
+        margin-right: 0.5rem;
+        font-weight: 600;
+        color: #4a5568;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .nav-tab:hover {
+        color: #2b6cb0;
+    }
+
+    .nav-tab.active {
+        color: #1a91f0;
+        border-bottom-color: #1a91f0;
+    }
+
+    .content-section {
+        display: none;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .content-section.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tip-card {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        padding: 1.75rem;
+        margin-bottom: 2rem;
+        background-color: white;
+        transition: all 0.2s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .tip-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-3px);
+    }
+
+    .section-header {
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 0.75rem;
+    }
+
+    .example-box {
+        background-color: #f8fafc;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border: 1px solid #e2e8f0;
+    }
+
+    .example-text {
+        font-family: "Courier New", monospace;
+        white-space: pre-line;
+    }
+
+    .before-after-card {
+        margin-bottom: 2rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        overflow: hidden;
+    }
+
+    .before-after-header {
+        background-color: #f8fafc;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .before-after-title {
+        font-weight: 600;
+        color: #2d3748;
+        margin: 0;
+    }
+
+    .before-after-body {
+        padding: 1.5rem;
+    }
+
+    .before-after-example {
+        margin-bottom: 1.5rem;
+    }
+
+    .before-example, .after-example {
+        background-color: #f8fafc;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+        border-left: 4px solid #e2e8f0;
+    }
+
+    .before-example {
+        border-left-color: #f56565;
+    }
+
+    .after-example {
+        border-left-color: #48bb78;
+    }
+
+    .industry-tab {
+        padding: 1rem;
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem 0.5rem 0 0;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .industry-tab.active {
+        background-color: #ebf8ff;
+        border-color: #bee3f8;
+        color: #2b6cb0;
+    }
+
+    .industry-content {
+        display: none;
+        padding: 1.5rem;
+        background-color: #fff;
+        border: 1px solid #e2e8f0;
+        border-top: none;
+        border-radius: 0 0 0.5rem 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .industry-content.active {
+        display: block;
+    }
+
+    .mistake-card {
+        background-color: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s;
+    }
+
+    .mistake-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 0.3rem 0.75rem;
+        background-color: #e6f2ff;
+        color: #1a91f0;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="cover-letter-tips-container">
+    <!-- Header -->
+    <div class="tips-header">
+        <h1 class="text-3xl font-bold text-gray-900 mb-3">Cover Letter Writing Tips</h1>
+        <p class="text-xl text-gray-600">Learn how to write a compelling cover letter that complements your resume and helps you land interviews</p>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <div class="nav-tabs">
+            {% for category in categories %}
+            <div class="nav-tab {% if forloop.first %}active{% endif %}" data-tab="{{ category.id }}">{{ category.name }}</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+
+    <!-- Basics Section -->
+    <div id="basics" class="content-section active">
+        <h2 class="text-2xl font-bold mb-6">Cover Letter Basics</h2>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">What is a Cover Letter?</h3>
+            <p class="mb-4">A cover letter is a one-page document that you submit as part of your job application, alongside your resume. Its purpose is to introduce yourself and briefly summarize your professional background. A well-written cover letter will provide insight into your qualifications and motivation for the job that might not otherwise be apparent from your resume.</p>
+
+            <h4 class="font-medium mb-2">A good cover letter should:</h4>
+            <ul class="list-disc pl-5 mb-4 space-y-1">
+                <li>Highlight your most relevant qualifications for the job</li>
+                <li>Explain why you're interested in the position and organization</li>
+                <li>Show how your skills and experience make you a good fit</li>
+                <li>Demonstrate your writing and communication skills</li>
+                <li>Convey your enthusiasm and personality</li>
+            </ul>
+
+            <h4 class="font-medium mb-2">When to Include a Cover Letter</h4>
+            <p class="mb-4">You should always include a cover letter unless the job posting specifically states not to. Even if it's optional, a well-crafted cover letter can help you stand out from other candidates and demonstrate your interest in the position.</p>
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">The Three Main Types of Cover Letters</h3>
+
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">1. Application Cover Letter</h4>
+                <p>The most common type, written in response to a specific job opening. It addresses the requirements in the job posting and highlights your relevant qualifications.</p>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">2. Prospecting Cover Letter</h4>
+                <p>Sent to a company you're interested in that hasn't advertised any openings. It expresses your interest in the organization and inquires about potential opportunities that match your skills.</p>
+            </div>
+
+            <div>
+                <h4 class="font-medium mb-2">3. Networking Cover Letter</h4>
+                <p>Used when someone in your network has referred you to a position or when you're requesting information, assistance, or advice regarding your career path.</p>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Cover Letter vs. Resume: Key Differences</h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left">Cover Letter</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Resume</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Narrative format with complete sentences</td>
+                            <td class="border border-gray-300 px-4 py-2">Concise bullet points and phrases</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Explains your interest in the position/company</td>
+                            <td class="border border-gray-300 px-4 py-2">Lists your qualifications and experience</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Expands on selected achievements from your resume</td>
+                            <td class="border border-gray-300 px-4 py-2">Comprehensive overview of your professional background</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Shows personality and writing ability</td>
+                            <td class="border border-gray-300 px-4 py-2">Presents facts and credentials objectively</td>
+                        </tr>
+                        <tr>
+                            <td class="border border-gray-300 px-4 py-2">Typically 250-400 words</td>
+                            <td class="border border-gray-300 px-4 py-2">Usually 1-2 pages of content</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Structure Section -->
+    <div id="structure" class="content-section">
+        <h2 class="text-2xl font-bold mb-6">Cover Letter Structure & Format</h2>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Cover Letter Layout</h3>
+            <p class="mb-4">A professional cover letter follows a standard business letter format with proper spacing and margins:</p>
+
+            <ul class="list-disc pl-5 mb-4 space-y-1">
+                <li>Use 1-inch margins on all sides</li>
+                <li>Align text to the left (no justification)</li>
+                <li>Use single spacing with an extra space between paragraphs</li>
+                <li>Choose a professional, readable font (e.g., Arial, Calibri, Times New Roman) in 10-12 point size</li>
+                <li>Keep your cover letter to one page (250-400 words)</li>
+            </ul>
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Essential Cover Letter Sections</h3>
+
+            {% for section in sections %}
+            <div class="mb-5">
+                <h4 class="font-medium mb-2">{{ section.name }}</h4>
+                <p class="mb-2">{{ section.description }}</p>
+                <div class="example-box">
+                    <p class="example-text text-sm">{{ section.example }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">File Format and Naming</h3>
+            <p class="mb-4">When submitting your cover letter electronically:</p>
+
+            <ul class="list-disc pl-5 mb-4 space-y-1">
+                <li>Save your cover letter as a PDF to preserve formatting (unless specifically asked for another format)</li>
+                <li>Name your file professionally, including your name and the word "cover letter" (e.g., "John_Smith_Cover_Letter.pdf")</li>
+                <li>If submitting via email, you can either attach your cover letter as a separate document or include it in the body of the email</li>
+            </ul>
+
+            <div class="bg-blue-50 p-4 rounded border border-blue-100 mt-4">
+                <h4 class="text-blue-800 font-medium mb-2">Pro Tip</h4>
+                <p class="text-blue-800">Match the style and formatting of your cover letter to your resume for a cohesive, professional application package. This includes using the same header, fonts, and general design elements.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Strategies Section -->
+    <div id="content" class="content-section">
+        <h2 class="text-2xl font-bold mb-6">Content Strategies</h2>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Compelling Opening Lines</h3>
+            <p class="mb-4">The first paragraph of your cover letter needs to grab the reader's attention and make them want to continue reading. Avoid generic openings like "I am writing to apply for the position..." Instead, try these approaches:</p>
+
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Express genuine enthusiasm:</h4>
+                <div class="example-box">
+                    <p class="example-text text-sm">"As a long-time admirer of XYZ Company's innovative approach to sustainable product design, I was thrilled to discover the Senior Product Developer opening on your team."</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Lead with an impressive accomplishment:</h4>
+                <div class="example-box">
+                    <p class="example-text text-sm">"After leading my current marketing team to three industry awards and a 45% increase in client retention last quarter, I am eager to bring my strategic approach to the Marketing Director role at ABC Inc."</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="font-medium mb-2">Start with a relevant connection:</h4>
+                <div class="example-box">
+                    <p class="example-text text-sm">"When Sarah Johnson mentioned that Acme Solutions was searching for a Project Manager with healthcare industry experience, I knew my background developing medical record systems and leading cross-functional teams would make me an ideal candidate."</p>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-medium mb-2">Reference recent company news:</h4>
+                <div class="example-box">
+                    <p class="example-text text-sm">"I was impressed by your company's recent announcement about expanding into the Asian market, having just completed a similar international growth initiative that increased global revenue by 27% in my current role."</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Showcasing Achievements Effectively</h3>
+            <p class="mb-4">The body of your cover letter should highlight your most relevant achievements and demonstrate how your skills match the job requirements:</p>
+
+            <h4 class="font-medium mb-2">Use the PAR Method: Problem, Action, Result</h4>
+            <ul class="list-disc pl-5 mb-4 space-y-1">
+                <li><strong>Problem:</strong> Identify a challenge or opportunity you faced</li>
+                <li><strong>Action:</strong> Describe what you did to address it</li>
+                <li><strong>Result:</strong> Explain the positive outcome with specific metrics when possible</li>
+            </ul>
+
+            <div class="example-box mb-4">
+                <p class="example-text text-sm">"When our company's e-commerce conversion rate stalled at 2.3% (Problem), I led a complete redesign of the checkout process, implementing A/B testing and user feedback sessions (Action). This initiative increased conversion rates by 35% and generated an additional $1.2M in revenue within six months (Result)."</p>
+            </div>
+
+            <h4 class="font-medium mb-2">Quantify Your Accomplishments</h4>
+            <p class="mb-2">Numbers make your achievements concrete and memorable:</p>
+            <div class="example-box">
+                <p class="example-text text-sm">Instead of: "I managed a large team and improved customer satisfaction."<br><br>Write: "I led a team of 12 customer service representatives and implemented a new feedback system that improved customer satisfaction scores from 7.8 to 9.2 within three months."</p>
+            </div>
+        </div>
+
+        <div class="before-after-card">
+            <div class="before-after-header">
+                <h3 class="before-after-title">Before & After: Cover Letter Improvements</h3>
+            </div>
+            <div class="before-after-body">
+                {% for example in improvement_examples %}
+                <div class="before-after-example">
+                    <h4 class="font-medium mb-2">{{ example.title }}</h4>
+
+                    <div class="mb-2">
+                        <p class="text-sm font-medium text-red-600">BEFORE:</p>
+                        <div class="before-example">
+                            {{ example.before }}
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <p class="text-sm font-medium text-green-600">AFTER:</p>
+                        <div class="after-example">
+                            {{ example.after }}
+                        </div>
+                    </div>
+
+                    <p class="text-sm text-gray-600">{{ example.explanation }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Customization Tips Section -->
+    <div id="customization" class="content-section">
+        <h2 class="text-2xl font-bold mb-6">Customization Tips</h2>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Researching the Company</h3>
+            <p class="mb-4">Before writing your cover letter, research the company thoroughly to tailor your message effectively:</p>
+
+            <h4 class="font-medium mb-2">Key information to research:</h4>
+            <ul class="list-disc pl-5 mb-4 space-y-1">
+                <li><strong>Company mission and values:</strong> Understand what drives the organization</li>
+                <li><strong>Recent news and achievements:</strong> Stay updated on company milestones</li>
+                <li><strong>Products or services:</strong> Know what they offer and to which markets</li>
+                <li><strong>Company culture:</strong> Understand the work environment and team dynamics</li>
+                <li><strong>Industry challenges:</strong> Be aware of issues affecting their business</li>
+            </ul>
+
+            <h4 class="font-medium mb-2">Where to find this information:</h4>
+            <ul class="list-disc pl-5 mb-4 space-y-1">
+                <li>Company website (About Us, Careers, Blog sections)</li>
+                <li>LinkedIn company page and employee profiles</li>
+                <li>Industry news sites and press releases</li>
+                <li>Annual reports (for public companies)</li>
+                <li>Company reviews on Glassdoor or similar platforms</li>
+            </ul>
+
+            <div class="example-box">
+                <p class="example-text text-sm">"I was particularly drawn to Eco Solutions' commitment to reducing plastic waste in consumer packaging, as mentioned in your CEO's recent interview with Sustainability Today. As someone who has led three zero-waste initiatives at my current company, I am excited about the opportunity to contribute to your innovative approach to environmental responsibility."</p>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Addressing the Job Requirements</h3>
+            <p class="mb-4">Analyze the job description carefully and address key requirements in your cover letter:</p>
+
+            <h4 class="font-medium mb-2">1. Identify key requirements and qualifications</h4>
+            <p class="mb-2">Make a list of the most important skills, experiences, and qualifications mentioned in the job posting.</p>
+
+            <h4 class="font-medium mb-2">2. Match your experiences to requirements</h4>
+            <p class="mb-2">For each key requirement, think of a specific example from your background that demonstrates your capability.</p>
+
+            <h4 class="font-medium mb-2">3. Address potential gaps</h4>
+            <p class="mb-2">If you're missing a specific requirement, highlight transferable skills or your ability to learn quickly.</p>
+
+            <div class="bg-gray-50 p-4 rounded border border-gray-200 mt-4">
+                <h4 class="font-medium mb-2">Example: Matching Requirements to Experience</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="border border-gray-300 px-4 py-2 text-left">Job Requirement</th>
+                                <th class="border border-gray-300 px-4 py-2 text-left">Your Experience (to include in cover letter)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">"5+ years of project management experience"</td>
+                                <td class="border border-gray-300 px-4 py-2">"During my 6-year tenure at ABC Corp, I managed 15+ projects with budgets exceeding $500K, consistently delivering on time and under budget."</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">"Experience with agile methodologies"</td>
+                                <td class="border border-gray-300 px-4 py-2">"I implemented Scrum methodologies for our development team, leading to a 30% reduction in time-to-market for new features."</td>
+                            </tr>
+                            <tr>
+                                <td class="border border-gray-300 px-4 py-2">"Strong communication skills"</td>
+                                <td class="border border-gray-300 px-4 py-2">"As the liaison between technical teams and executive stakeholders, I translated complex technical concepts into clear business terms, ensuring alignment across all levels of the organization."</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="tip-card">
+            <h3 class="text-lg font-semibold mb-3">Industry-Specific Customization</h3>
+            <p class="mb-4">Different industries have different expectations for cover letters. Choose the industry that best matches your target position:</p>
+
+            <div class="flex flex-wrap gap-2 mb-4">
+                {% for industry in industries %}
+                <div class="industry-tab {% if forloop.first %}active{% endif %}" data-industry="{{ industry.id }}">
+                    {{ industry.name }}
+                </div>
+                {% endfor %}
+            </div>
+
+            {% for industry in industries %}
+            <div id="{{ industry.id }}-content" class="industry-content {% if forloop.first %}active{% endif %}">
+                <h4 class="font-medium mb-3">Key Focus Points for {{ industry.name }} Cover Letters:</h4>
+                <ul class="list-disc pl-5 mb-4 space-y-1">
+                    {% for point in industry.focus_points %}
+                    <li>{{ point }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h4 class="font-medium mb-3">Effective Phrases to Consider:</h4>
+                <div class="flex flex-wrap gap-2 mb-4">
+                    {% for phrase in industry.key_phrases %}
+                    <span class="tag">{{ phrase }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Common Mistakes Section -->
+    <div id="mistakes" class="content-section">
+        <h2 class="text-2xl font-bold mb-6">Common Cover Letter Mistakes to Avoid</h2>
+      {% endblock %}

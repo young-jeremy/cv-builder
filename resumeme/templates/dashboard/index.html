@@ -1,0 +1,662 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Resume Builder{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Resume.io inspired dashboard styling */
+    :root {
+        --primary: #1a91f0;
+        --primary-hover: #0c7cd5;
+        --secondary: #6c757d;
+        --success: #28a745;
+        --danger: #dc3545;
+        --warning: #ffc107;
+        --info: #17a2b8;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --body-bg: #F5F7FA;
+        --card-bg: #fff;
+        --card-border: #e9ecef;
+        --text-primary: #212529;
+        --text-secondary: #6c757d;
+        --text-muted: #98a6ad;
+        --border-color: #e9ecef;
+    }
+
+    body {
+        background-color: var(--body-bg);
+        color: var(--text-primary);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-container {
+        display: flex;
+        background-color: var(--body-bg);
+        min-height: 100vh;
+    }
+
+    /* Sidebar Styling */
+    .dashboard-sidebar {
+        width: 240px;
+        background-color: var(--card-bg);
+        border-right: 1px solid var(--border-color);
+        box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
+        z-index: 10;
+    }
+
+    .dashboard-sidebar h2 {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    /* Sidebar Links */
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        padding: 0.65rem 1.5rem;
+        color: var(--text-secondary);
+        transition: all 0.2s ease-in-out;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-link svg {
+        width: 16px;  /* Smaller icon size */
+        height: 16px;
+        margin-right: 12px;
+    }
+
+    .sidebar-link.active {
+        color: var(--primary);
+        background-color: rgba(26, 145, 240, 0.05);
+        border-left-color: var(--primary);
+        font-weight: 500;
+    }
+
+    .sidebar-link:hover:not(.active) {
+        color: var(--primary);
+        background-color: rgba(26, 145, 240, 0.02);
+    }
+
+    /* Main Content Area */
+    .flex-1 {
+        flex: 1;
+        padding: 1.5rem;
+    }
+
+    /* Welcome Section */
+    .flex-1 h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .flex-1 h1 + p {
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+    }
+
+    /* Stats Cards */
+    .stats-card {
+        background-color: var(--card-bg);
+        border-radius: 0.375rem;
+        border: 1px solid var(--card-border);
+        padding: 1.25rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .stats-card h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+    }
+
+    .stats-card .text-3xl {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .stats-card span {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .stats-card span svg {
+        width: 14px;  /* Smaller icons */
+        height: 14px;
+    }
+
+    /* Action Cards */
+    .action-card {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid var(--card-border);
+        border-radius: 0.375rem;
+        transition: all 0.2s ease;
+    }
+
+    .action-card:hover {
+        border-color: var(--primary);
+        background-color: rgba(26, 145, 240, 0.02);
+    }
+
+    .action-icon {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
+
+    .action-icon svg {
+        width: 14px;  /* Smaller icons */
+        height: 14px;
+    }
+
+    .action-card h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.125rem;
+    }
+
+    .action-card p {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin: 0;
+    }
+
+    /* Recent Resumes */
+    .flex.items-center.justify-between.p-4 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+    }
+
+    .w-10.h-10 {
+        width: 32px;  /* Smaller icons */
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .w-10.h-10 svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .p-2.text-blue-600,
+    .p-2.text-green-600 {
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .p-2.text-blue-600 svg,
+    .p-2.text-green-600 svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Recent Activity */
+    .recent-activity-item {
+        display: flex;
+        align-items: start;
+        padding: 0.75rem 0;
+    }
+
+    .recent-activity-item:not(:last-child) {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .recent-activity-item .w-10.h-10 {
+        margin-right: 0.75rem;
+    }
+
+    .recent-activity-item .text-gray-700 {
+        font-size: 0.8125rem;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+    }
+
+    .recent-activity-item .text-xs {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    /* Job Search Tips */
+    .p-4.bg-yellow-50,
+    .p-4.bg-green-50,
+    .p-4.bg-blue-50 {
+        padding: 1rem;
+        border-radius: 0.375rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .p-4.bg-yellow-50 h3,
+    .p-4.bg-green-50 h3,
+    .p-4.bg-blue-50 h3 {
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.375rem;
+    }
+
+    .p-4.bg-yellow-50 p,
+    .p-4.bg-green-50 p,
+    .p-4.bg-blue-50 p {
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+
+    /* General Alignment Fixes */
+    .grid {
+        display: grid;
+        grid-gap: 1.25rem;
+    }
+
+    .grid-cols-1 {
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+        .md\\:grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .lg\\:grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .lg\\:grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .lg\\:col-span-1 {
+            grid-column: span 1;
+        }
+
+        .lg\\:col-span-2 {
+            grid-column: span 2;
+        }
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .dashboard-container {
+            flex-direction: column;
+        }
+
+        .dashboard-sidebar {
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hidden.md\\:block {
+            display: none;
+        }
+    }
+
+    /* Button Styling */
+    .bg-blue-600 {
+        background-color: var(--primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        transition: background-color 0.2s;
+    }
+
+    .bg-blue-600:hover {
+        background-color: var(--primary-hover);
+    }
+
+    /* Empty State Styling */
+    .text-center.py-8 {
+        padding: 2rem 0;
+    }
+
+    .text-center.py-8 svg {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 1rem;
+        color: #dce0e6;
+    }
+
+    .text-center.py-8 p {
+        margin-bottom: 1rem;
+        color: var(--text-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container flex min-h-screen bg-gray-50">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar w-64 bg-white shadow-md hidden md:block">
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+            <p class="text-sm text-gray-500">Welcome, {{ user.first_name|default:user.username }}</p>
+        </div>
+
+        <nav class="py-4">
+            <ul>
+                <li>
+                    <a href="{% url 'dashboard:dashboard' %}" class="sidebar-link active flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                        </svg>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'home:templates' %}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                        </svg>
+                        My Resumes
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'home:templates' %}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+                        </svg>
+                        Templates
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'home:job_applications' %}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+                        </svg>
+                        Applications
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'accounts:profile' %}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
+                        </svg>
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'home:subscription_details' %}" class="sidebar-link flex items-center px-6 py-3 text-gray-700 hover:bg-gray-100">
+                        <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clip-rule="evenodd"></path>
+                            <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"></path>
+                        </svg>
+                        Subscription
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6 md:p-10">
+        <!-- Mobile Header with Menu Toggle -->
+        <div class="md:hidden flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+            <button id="mobile-menu-button" class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+            <p class="text-gray-600">Here's what's happening with your resumes and job applications.</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stats-card bg-white p-6 rounded-lg shadow-md transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Resumes</h3>
+                    <span class="p-2 bg-blue-100 text-blue-600 rounded-full">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">{{ resumes_count|default:"0" }}</p>
+                <p class="text-sm text-gray-500 mt-2">Total resumes created</p>
+            </div>
+
+            <div class="stats-card bg-white p-6 rounded-lg shadow-md transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Applications</h3>
+                    <span class="p-2 bg-green-100 text-green-600 rounded-full">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                            <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">{{ applications_count|default:"0" }}</p>
+                <p class="text-sm text-gray-500 mt-2">Job applications</p>
+            </div>
+
+            <div class="stats-card bg-white p-6 rounded-lg shadow-md transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Downloads</h3>
+                    <span class="p-2 bg-purple-100 text-purple-600 rounded-full">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-3xl font-bold text-gray-800">{{ downloads_count|default:"0" }}</p>
+                <p class="text-sm text-gray-500 mt-2">Resume downloads</p>
+            </div>
+
+            <div class="stats-card bg-white p-6 rounded-lg shadow-md transition duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">Subscription</h3>
+                    <span class="p-2 bg-yellow-100 text-yellow-600 rounded-full">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 2a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2V4a2 2 0 00-2-2H5zm2.5 3a1.5 1.5 0 100 3 1.5 1.5 0 000-3zm6.207.293a1 1 0 00-1.414 0l-6 6a1 1 0 101.414 1.414l6-6a1 1 0 000-1.414zM12.5 10a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-xl font-bold text-gray-800">{{ user.subscription.plan|default:"Free"|title }}</p>
+                <p class="text-sm text-gray-500 mt-2">Current plan</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions and Recent Resumes -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Quick Actions -->
+            <div class="lg:col-span-1">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+
+                    <div class="space-y-4">
+                        <a href="{% url 'home:create_resume' %}" class="action-card flex items-center p-4 border rounded-lg hover:bg-blue-50 transition duration-300">
+                            <span class="action-icon p-3 bg-blue-100 text-blue-600 rounded-full mr-4 transition duration-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Create Resume</h3>
+                                <p class="text-sm text-gray-500">Start building a new resume</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'home:add_application' %}" class="action-card flex items-center p-4 border rounded-lg hover:bg-green-50 transition duration-300">
+                            <span class="action-icon p-3 bg-green-100 text-green-600 rounded-full mr-4 transition duration-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Track Application</h3>
+                                <p class="text-sm text-gray-500">Record a new job application</p>
+                            </div>
+                        </a>
+
+                        <a href="{% url 'home:templates' %}" class="action-card flex items-center p-4 border rounded-lg hover:bg-purple-50 transition duration-300">
+                            <span class="action-icon p-3 bg-purple-100 text-purple-600 rounded-full mr-4 transition duration-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Browse Templates</h3>
+                                <p class="text-sm text-gray-500">Explore resume templates</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Resumes -->
+            <div class="lg:col-span-2">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Recent Resumes</h2>
+                        <a href="{% url 'home:resume_list' %}" class="text-blue-600 hover:text-blue-800 text-sm">View all</a>
+                    </div>
+
+                    {% if recent_resumes %}
+                    <div class="space-y-4">
+                        {% for resume in recent_resumes %}
+                        <div class="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition duration-300">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-gray-200 rounded-md flex items-center justify-center mr-4">
+                                    <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-800">{{ resume.title }}</h3>
+                                    <p class="text-sm text-gray-500">Updated {{ resume.updated_at|timesince }} ago</p>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a href="{% url 'edit_resume' resume.id %}" class="p-2 text-blue-600 hover:bg-blue-50 rounded">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                                    </svg>
+                                </a>
+                                <a href="{% url 'download_resume' resume.id %}" class="p-2 text-green-600 hover:bg-green-50 rounded">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p class="text-gray-600 mb-4">You haven't created any resumes yet</p>
+                        <a href="{% url 'home:create_resume' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">Create Your First Resume</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity and Tips -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Recent Activity -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Recent Activity</h2>
+
+                {% if activity_logs %}
+                <div class="space-y-4">
+                    {% for activity in activity_logs %}
+                    <div class="recent-activity-item flex items-start py-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 mr-4">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                {% if 'resume' in activity.action %}
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                {% elif 'application' in activity.action %}
+                                <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                                {% else %}
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                {% endif %}
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-700">{{ activity.action }}</p>
+                            <p class="text-xs text-gray-500">{{ activity.timestamp|timesince }} ago</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-6">
+                    <p class="text-gray-500">No recent activity to show</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Job Search Tips -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Job Search Tips</h2>
+
+                <div class="space-y-4">
+                    <div class="p-4 bg-yellow-50 border border-yellow-100 rounded-md">
+                        <h3 class="font-semibold text-gray-800 mb-2">Tailor your resume</h3>
+                        <p class="text-gray-700 text-sm">Customize your resume for each job application by highlighting relevant skills and experience.</p>
+                    </div>
+
+                    <div class="p-4 bg-green-50 border border-green-100 rounded-md">
+                        <h3 class="font-semibold text-gray-800 mb-2">Use keywords</h3>
+                        <p class="text-gray-700 text-sm">Include industry-specific keywords to pass through Applicant Tracking Systems (ATS).</p>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 border border-blue-100 rounded-md">
+                        <h3 class="font-semibold text-gray-800 mb-2">Quantify achievements</h3>
+                        <p class="text-gray-700 text-sm">Use numbers and percentages to demonstrate your impact in previous roles.</p>
+                    </div>
+                </div>
+
+                <a href="#" class="mt-4 inline-block text-blue-600 hover:text-blue-800 text-sm">View more tips →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Navigation Script -->
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        const sidebar = document.querySelector('.dashboard-sidebar');
+        sidebar.classList.toggle('hidden');
+    });
+</script>
+{% endblock %}

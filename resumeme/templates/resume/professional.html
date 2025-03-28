@@ -1,0 +1,49 @@
+<div class="resume professional-classic">
+    <div class="header">
+        <h1>{{ first_name }} {{ last_name }}</h1>
+        <div class="contact-info">
+            <p>{{ email }} | {{ phone }} | {{ address }}, {{ city }}, {{ state }} {{ zip_code }}</p>
+            <p>{{ linkedin }} | {{ website }}</p>
+        </div>
+    </div>
+
+    <div class="section summary">
+        <h2>Professional Summary</h2>
+        <p>{{ summary }}</p>
+    </div>
+
+    <div class="section experience">
+        <h2>Work Experience</h2>
+        {% for item in experience_items %}
+        <div class="experience-item">
+            <div class="job-header">
+                <span class="job-title">{{ item.job_title }}</span> at <span class="employer">{{ item.employer }}</span>
+                <div class="date">{{ item.start_date }} - {% if item.current_job %}Present{% else %}{{ item.end_date }}{% endif %}</div>
+            </div>
+            <p class="description">{{ item.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section education">
+        <h2>Education</h2>
+        {% for item in education_items %}
+        <div class="education-item">
+            <div class="education-header">
+                <span class="degree">{{ item.degree }}</span> - <span class="institution">{{ item.institution }}</span>
+                <div class="date">{{ item.start_date }} - {% if item.current_education %}Present{% else %}{{ item.end_date }}{% endif %}</div>
+            </div>
+            <p class="description">{{ item.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section skills">
+        <h2>Skills</h2>
+        <ul class="skills-list">
+            {% for skill in skills %}
+            <li>{{ skill }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

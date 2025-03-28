@@ -1,0 +1,786 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}ResumeMe - Professional Resume Builder{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Modern, smooth landing page styling */
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --primary-light: #dbeafe;
+        --secondary: #64748b;
+        --accent: #f97316;
+        --success: #10b981;
+        --dark: #1e293b;
+        --light: #f8fafc;
+        --gray-100: #f1f5f9;
+        --gray-200: #e2e8f0;
+        --gray-300: #cbd5e1;
+        --gray-400: #94a3b8;
+        --gray-500: #64748b;
+        --border-radius: 8px;
+        --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        color: var(--dark);
+        background-color: #fff;
+    }
+
+    /* Hero section */
+    .hero-section {
+        position: relative;
+        background: linear-gradient(to right, #f8fafc, #f1f5f9);
+        padding: 80px 0;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(to right, var(--dark), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--secondary);
+        margin-bottom: 2rem;
+        max-width: 600px;
+    }
+
+    .hero-cta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        border-color: var(--primary);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: var(--primary-light);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    /* Stats cards */
+    .stats-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-text {
+        color: var(--secondary);
+        font-size: 1rem;
+    }
+
+    /* Resume counter */
+    .resume-counter {
+        background: linear-gradient(to right, var(--primary-light), #f0f9ff);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 5rem 0;
+        box-shadow: var(--shadow);
+    }
+
+    .counter-icon {
+        color: var(--primary);
+        font-size: 2.5rem;
+        margin-right: 1.5rem;
+    }
+
+    .counter-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-right: 1rem;
+    }
+
+    .counter-text {
+        font-size: 1.25rem;
+        color: var(--secondary);
+    }
+
+    /* Companies section */
+    .companies-section {
+        padding: 3rem 0;
+    }
+
+    .companies-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 1.5rem;
+        color: var(--secondary);
+    }
+
+    .company-logo {
+        height: 40px;
+        object-fit: contain;
+        filter: grayscale(100%);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .company-logo:hover {
+        filter: grayscale(0%);
+        opacity: 1;
+    }
+
+    /* Templates section */
+    .templates-section {
+        padding: 5rem 0;
+        background-color: var(--gray-100);
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-size: 2.25rem;
+        font-weight: 700;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 1.25rem;
+        color: var(--secondary);
+    }
+
+    .template-card {
+        background: white;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .template-image {
+        height: 300px;
+        object-fit: cover;
+        object-position: top;
+        width: 100%;
+    }
+
+    .template-content {
+        padding: 1.5rem;
+    }
+
+    .template-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .template-description {
+        color: var(--secondary);
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .template-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background-color: var(--accent);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Decorative elements */
+    .shape-blob {
+        position: absolute;
+        z-index: 1;
+        opacity: 0.5;
+    }
+
+    .shape-blob-1 {
+        top: -100px;
+        right: -100px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(219,234,254,1) 0%, rgba(219,234,254,0) 70%);
+        border-radius: 50%;
+    }
+
+    .shape-blob-2 {
+        bottom: -100px;
+        left: -100px;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, rgba(249,115,22,0) 70%);
+        border-radius: 50%;
+    }
+
+    .floating {
+        animation: floating 3s ease-in-out infinite;
+    }
+
+    @keyframes floating {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* Resume preview */
+    .resume-preview {
+        position: relative;
+        max-width: 100%;
+        height: auto;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+    }
+
+    .resume-preview img {
+        width: 100%;
+        height: auto;
+        border-radius: var(--border-radius);
+        transition: all 0.3s ease;
+    }
+
+    .resume-preview:hover img {
+        transform: scale(1.02);
+    }
+
+    .preview-decoration {
+        position: absolute;
+        z-index: 1;
+    }
+
+    .decoration-star {
+        top: -20px;
+        right: -20px;
+        color: var(--accent);
+        font-size: 3rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .decoration-circle {
+        bottom: -20px;
+        left: -20px;
+        color: var(--primary);
+        font-size: 2.5rem;
+        animation: pulse 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 0.7; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); opacity: 0.7; }
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        height: 100%;
+    }
+
+    .testimonial-content {
+        font-style: italic;
+        color: var(--secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 1rem;
+        object-fit: cover;
+    }
+
+    .author-name {
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+
+    .author-title {
+        font-size: 0.875rem;
+        color: var(--secondary);
+    }
+
+    /* Features section */
+    .features-section {
+        padding: 5rem 0;
+    }
+
+    .feature-card {
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .feature-description {
+        color: var(--secondary);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+        }
+
+        .counter-number {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 60px 0;
+        }
+
+        .hero-cta {
+            flex-direction: column;
+        }
+
+        .resume-preview {
+            margin-top: 3rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="shape-blob shape-blob-1"></div>
+    <div class="shape-blob shape-blob-2"></div>
+
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-bar-chart-fill me-2 text-primary"></i>
+                    <span class="text-secondary">{{ resumes_today|intcomma }} resumes created today</span>
+                </div>
+
+                <h1 class="hero-title">The professional resume builder</h1>
+                <p class="hero-subtitle">Only 2% of resumes win. Yours will be one of them. Let's build you a resume that works.</p>
+
+                <div class="hero-cta">
+                    <a href="{% url 'resume:create_resume' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>Create my resume
+                    </a>
+                    <a href="{% url 'resume:upload_resume' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-upload me-2"></i>Upload my resume
+                    </a>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="stats-card">
+                            <div class="stats-number">39%</div>
+                            <div class="stats-text">more likely to get hired</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="stats-card">
+                            <div class="stats-number">8%</div>
+                            <div class="stats-text">better pay with your next job</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="resume-preview floating">
+                    <img src="{% static 'images/resume_preview.png' %}" alt="Resume Preview" class="img-fluid" onerror="this.src='https://via.placeholder.com/600x800?text=Resume+Preview'">
+                    <div class="preview-decoration decoration-star">
+                        <i class="bi bi-stars"></i>
+                    </div>
+                    <div class="preview-decoration decoration-circle">
+                        <i class="bi bi-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Resume Counter -->
+<div class="container">
+    <div class="resume-counter">
+        <div class="counter-icon">
+            <i class="bi bi-file-earmark-text"></i>
+        </div>
+        <div class="counter-number" id="resumeCounter">0</div>
+        <div class="counter-text">resumes created today</div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why choose ResumeMe?</h2>
+        <p class="section-subtitle">Create a professional resume in minutes with our easy-to-use builder</p>
+
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-lightning-charge"></i>
+                    </div>
+                    <h3 class="feature-title">Quick & Easy</h3>
+                    <p class="feature-description">Create a professional resume in just minutes with our intuitive builder.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-palette"></i>
+                    </div>
+                    <h3 class="feature-title">Beautiful Templates</h3>
+                    <p class="feature-description">Choose from dozens of professionally designed templates.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h3 class="feature-title">ATS-Friendly</h3>
+                    <p class="feature-description">Our resumes are optimized to pass Applicant Tracking Systems.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Companies Section -->
+<section class="companies-section">
+    <div class="container">
+        <h3 class="companies-title">Our candidates have been hired at:</h3>
+
+        <div class="row justify-content-center align-items-center">
+            <div class="col-4 col-md-2 mb-4 text-center">
+                <img src="{% static 'images/companies/booking.png' %}" class="company-logo" alt="Booking.com" onerror="this.src='https://via.placeholder.com/150x40?text=Booking.com'">
+            </div>
+            <div class="col-4 col-md-2 mb-4 text-center">
+                <img src="{% static 'images/companies/apple.png' %}" class="company-logo" alt="Apple" onerror="this.src='https://via.placeholder.com/150x40?text=Apple'">
+            </div>
+            <div class="col-4 col-md-2 mb-4 text-center">
+                <img src="{% static 'images/companies/dhl.png' %}" class="company-logo" alt="DHL" onerror="this.src='https://via.placeholder.com/150x40?text=DHL'">
+            </div>
+            <div class="col-4 col-md-2 mb-4 text-center">
+                <img src="{% static 'images/companies/amazon.png' %}" class="company-logo" alt="Amazon" onerror="this.src='https://via.placeholder.com/150x40?text=Amazon'">
+            </div>
+            <div class="col-4 col-md-2 mb-4 text-center">
+                <img src="{% static 'images/companies/amex.png' %}" class="company-logo" alt="American Express" onerror="this.src='https://via.placeholder.com/150x40?text=AmEx'">
+            </div>
+            <div class="col-4 col-md-2 mb-4 text-center">
+                <img src="{% static 'images/companies/accenture.png' %}" class="company-logo" alt="Accenture" onerror="this.src='https://via.placeholder.com/150x40?text=Accenture'">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">What our users say</h2>
+        <p class="section-subtitle">Join thousands of satisfied job seekers</p>
+
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "I landed my dream job within 2 weeks of using ResumeMe. The templates are professional and the builder is so easy to use!"
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{% static 'images/testimonials/user1.jpg' %}" class="author-avatar" alt="Sarah Johnson" onerror="this.src='https://via.placeholder.com/50x50?text=SJ'">
+                        <div>
+                            <div class="author-name">Sarah Johnson</div>
+                            <div class="author-title">Marketing Manager</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "The ATS-friendly templates helped my resume get past the initial screening. I received more interview calls than ever before!"
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{% static 'images/testimonials/user2.jpg' %}" class="author-avatar" alt="Michael Chen" onerror="this.src='https://via.placeholder.com/50x50?text=MC'">
+                        <div>
+                            <div class="author-name">Michael Chen</div>
+                            <div class="author-title">Software Engineer</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        "As someone who struggled with resume writing, ResumeMe was a game-changer. The guidance and templates are top-notch!"
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{% static 'images/testimonials/user3.jpg' %}" class="author-avatar" alt="Emily Rodriguez" onerror="this.src='https://via.placeholder.com/50x50?text=ER'">
+                        <div>
+                            <div class="author-name">Emily Rodriguez</div>
+                            <div class="author-title">HR Specialist</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Templates Section -->
+{% if featured_templates %}
+<section class="templates-section">
+    <div class="container">
+        <h2 class="section-title">Featured Resume Templates</h2>
+        <p class="section-subtitle">Start with one of our professionally designed templates</p>
+
+        <div class="row mt-5">
+            {% for template in featured_templates %}
+            <div class="col-md-4 mb-4">
+                <div class="template-card">
+                    <div class="position-relative">
+                        <img src="{{ template.preview_image.url }}" class="template-image" alt="{{ template.name }}" onerror="this.src='https://via.placeholder.com/400x600?text=Template+Preview'">
+                        {% if template.is_premium %}
+                        <span class="template-badge">Premium</span>
+                        {% endif %}
+                    </div>
+                    <div class="template-content">
+                        <h3 class="template-title">{{ template.name }}</h3>
+                        <p class="template-description">{{ template.description|truncatechars:100 }}</p>
+                        <a href="{% url 'resume:create_resume_with_template' template_slug=template.slug %}" class="btn btn-primary w-100">
+                            Use this template
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'resume:resume_templates' %}" class="btn btn-outline-primary btn-lg">
+                View All Templates <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Final CTA Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="mb-4">Ready to create your professional resume?</h2>
+                <p class="lead mb-5">Join thousands of job seekers who have successfully landed their dream jobs with ResumeMe.</p>
+                <a href="{% url 'resume:create_resume' %}" class="btn btn-primary btn-lg px-5">
+                    Get Started Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate counter
+        const resumeCounter = document.getElementById('resumeCounter');
+        const targetCount = {{ resumes_today }};
+        let currentCount = 0;
+        const duration = 2000; // 2 seconds
+        const frameRate = 60;
+        const totalFrames = duration / (1000 / frameRate);
+        const increment = targetCount / totalFrames;
+
+        function animateCounter() {
+            if (currentCount < targetCount) {
+                currentCount += increment;
+                if (currentCount > targetCount) {
+                    currentCount = targetCount;
+                }
+                resumeCounter.textContent = Math.floor(currentCount).toLocaleString();
+                requestAnimationFrame(animateCounter);
+            }
+        }
+
+        // Start animation when element is in viewport
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        observer.observe(resumeCounter);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add parallax effect to hero section
+        const heroSection = document.querySelector('.hero-section');
+        const shapes = document.querySelectorAll('.shape-blob');
+
+        window.addEventListener('scroll', function() {
+            const scrollPosition = window.scrollY;
+            if (scrollPosition < 800) {
+                shapes.forEach((shape, index) => {
+                    const speed = index === 0 ? 0.05 : 0.03;
+                    shape.style.transform = `translateY(${scrollPosition * speed}px)`;
+                });
+            }
+        });
+
+        // Add hover effects to feature cards
+        const featureCards = document.querySelectorAll('.feature-card');
+
+        featureCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.feature-icon i');
+                icon.classList.add('text-accent');
+
+                // Add a subtle rotation animation
+                icon.style.transition = 'transform 0.3s ease';
+                icon.style.transform = 'rotate(5deg) scale(1.1)';
+            });
+
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.feature-icon i');
+                icon.classList.remove('text-accent');
+                icon.style.transform = 'rotate(0deg) scale(1)';
+            });
+        });
+
+        // Add animation to company logos
+        const companyLogos = document.querySelectorAll('.company-logo');
+
+        companyLogos.forEach(logo => {
+            logo.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+
+            logo.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
+{% endblock %}
+

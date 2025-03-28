@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cover Letter Template List{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Cover Letter Templates</h1>
+    <p class="lead mb-5">Browse through our collection of cover letter templates.</p>
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for template in templates %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ template.image.url }}" class="card-img-top" alt="{{ template.name }}">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ template.name }}</h5>
+                    <p class="card-text">{{ template.description }}</p>
+                    <a href="{% url 'home:create_cover_letter' template.id %}" class="btn btn-primary">Select Template</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

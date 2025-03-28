@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Template Preview -->
+        <div class="col-lg-8">
+            <div class="card">
+                <img src="{{ template.preview_image.url }}" 
+                     class="card-img-top" 
+                     alt="{{ template.name }}">
+                <div class="card-body">
+                    <h1 class="card-title">{{ template.name }}</h1>
+                    <span class="badge bg-primary mb-3">{{ template.category|title }}</span>
+                    <p class="card-text">{{ template.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Selection Form -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Use This Template</h3>
+                    <form method="post" action="{% url 'home:cv_template_select' template.slug %}">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ field.errors.0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary w-100">
+                            Create Resume with This Template
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Related Templates -->
+            {% if related_templates %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h4 class="card-title">Similar Templates</h4>
+                    <div class="row g-3">
+                        {% for related in related_templates %}
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="row g-0">
+                                    <div class="col-4">
+                                        <img src="{{ related.thumbnail.url }}" 
+                                             class="img-fluid rounded-start" 
+                                             alt="{{ related.name }}">
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ related.name }}</h5>
+                                            <a href="{{ related.get_absolute_url }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                View Template
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

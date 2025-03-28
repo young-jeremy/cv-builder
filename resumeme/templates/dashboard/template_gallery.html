@@ -1,0 +1,81 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Resume Templates{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/template_gallery.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0 text-gray-800">Resume Templates</h1>
+            <p class="text-muted">Choose a professional template to make your resume stand out</p>
+        </div>
+    </div>
+    
+    <!-- Category Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{% url 'dashboard:template_gallery' %}" class="btn {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            All Templates
+                        </a>
+                        {% for key, name in categories.items %}
+                        <a href="{% url 'dashboard:template_gallery' %}?category={{ key }}" 
+                           class="btn {% if selected_category == key %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            {{ name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Templates Grid -->
+    <div class="row">
+        {% for template in templates %}
+        <div class="col-md-4 col-lg-3 mb-4">
+            <div class="card template-card h-100 shadow-sm">
+                {% if template.is_premium %}
+                <div class="premium-badge">
+                    <span>Premium</span>
+                </div>
+                {% endif %}
+                <img src="{{ template.preview_image.url }}" class="card-img-top template-preview" alt="{{ template.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ template.name }}</h5>
+                    <p class="card-text small text-muted">{{ template.description|truncatechars:80 }}</p>
+                    <div class="template-stats small mb-3">
+                        <span class="badge bg-light text-dark me-2">{{ template.get_category_display }}</span>
+                        <span class="text-muted">{{ template.usage_count }} uses</span>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'dashboard:template_preview' template.slug %}" class="btn btn-primary">Preview</a>
+                        <a href="{% url 'dashboard:customize_template' template.slug %}" class="btn btn-outline-primary">Use Template</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No templates found for the selected category.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/template_gallery.js' %}"></script>
+{% endblock %}
+

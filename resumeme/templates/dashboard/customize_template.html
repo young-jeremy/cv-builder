@@ -1,0 +1,160 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}Customize {{ template.name }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/template_customize.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/spectrum/spectrum.min.css' %}">
+<style>
+    /* Inline template-specific CSS */
+    {{ template.css }}
+    
+    /* Override with user customizations if available */
+    :root {
+        --primary-color: {{ selection.primary_color|default:template.primary_color }};
+        --secondary-color: {{ selection.secondary_color|default:template.secondary_color }};
+        --text-color: {{ selection.text_color|default:template.text_color }};
+        --font-family: {{ selection.font_family|default:'Arial, sans-serif' }};
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:template_gallery' %}">Templates</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:template_preview' template.slug %}">{{ template.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Customize</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800">Customize {{ template.name }}</h1>
+            <p class="text-muted">Personalize your template with colors and fonts</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-0">
+                    <div class="resume-preview-container">
+                        <div class="resume-preview" id="resume-preview">
+                            {% include "dashboard/partials/resume_preview.html" with template=template user_resume=user_resume %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Customization Options</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'dashboard:select_template' template.slug %}" method="post" id="customize-form">
+                        {% csrf_token %}
+                        
+                        {% if template.allows_color_customization %}
+                        <div class="mb-4">
+                            <h6>Colors</h6>
+                            
+                            <div class="mb-3">
+                                <label for="primary_color" class="form-label">Primary Color</label>
+                                <input type="text" class="form-control color-picker" id="primary_color" name="primary_color" 
+                                       value="{{ selection.primary_color|default:template.primary_color }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="secondary_color" class="form-label">Secondary Color</label>
+                                <input type="text" class="form-control color-picker" id="secondary_color" name="secondary_color" 
+                                       value="{{ selection.secondary_color|default:template.secondary_color }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="text_color" class="form-label">Text Color</label>
+                                <input type="text" class="form-control color-picker" id="text_color" name="text_color" 
+                                       value="{{ selection.text_color|default:template.text_color }}">
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if template.allows_font_customization %}
+                        <div class="mb-4">
+                            <h6>Typography</h6>
+                            
+                            <div class="mb-3">
+                                <label for="font_family" class="form-label">Font Family</label>
+                                <select class="form-select" id="font_family" name="font_family">
+                                    <option value="Arial, sans-serif" {% if selection.font_family == 'Arial, sans-serif' %}selected{% endif %}>Arial</option>
+                                    <option value="'Roboto', sans-serif" {% if selection.font_family == "'Roboto', sans-serif" %}selected{% endif %}>Roboto</option>
+                                    <option value="'Open Sans', sans-serif" {% if selection.font_family == "'Open Sans', sans-serif" %}selected{% endif %}>Open Sans</option>
+                                    <option value="'Lato', sans-serif" {% if selection.font_family == "'Lato', sans-serif" %}selected{% endif %}>Lato</option>
+                                    <option value="'Montserrat', sans-serif" {% if selection.font_family == "'Montserrat', sans-serif" %}selected{% endif %}>Montserrat</option>
+                                    <option value="'Playfair Display', serif" {% if selection.font_family == "'Playfair Display', serif" %}selected{% endif %}>Playfair Display</option>
+                                    <option value="'Merriweather', serif" {% if selection.font_family == "'Merriweather', serif" %}selected{% endif %}>Merriweather</option>
+                                </select>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-2"></i> Save and Use Template
+                            </button>
+                            <a href="{% url 'dashboard:template_preview' template.slug %}" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'vendor/spectrum/spectrum.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize color pickers
+        $(".color-picker").spectrum({
+            showInput: true,
+            preferredFormat: "hex",
+            showPalette: true,
+            palette: [
+                ["#2D3E50", "#3498DB", "#1ABC9C", "#16A085", "#27AE60"],
+                ["#E74C3C", "#C0392B", "#D35400", "#F39C12", "#F1C40F"]
+            ]
+        });
+        
+        // Live preview when customization options change
+        $("#customize-form input, #customize-form select").on('change', function() {
+            updatePreview();
+        });
+        
+        function updatePreview() {
+            $.ajax({
+                url: "{% url 'dashboard:render_resume_preview' %}",
+                type: "POST",
+                data: {
+                    template_slug: "{{ template.slug }}",
+                    primary_color: $("#primary_color").val(),
+                    secondary_color: $("#secondary_color").val(),
+                    text_color: $("#text_color").val(),
+                    font_family: $("#font_family").val(),
+                    csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                },
+                success: function(data) {
+                    $("#resume-preview").html(data.html);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+

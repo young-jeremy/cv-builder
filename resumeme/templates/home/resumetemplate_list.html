@@ -1,0 +1,215 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <h1 class="display-4 mb-3">Professional Resume Writing Services</h1>
+            <p class="lead">
+                Let our expert resume writers create a compelling, tailored resume that
+                gets you noticed by hiring managers and helps you land your dream job.
+            </p>
+        </div>
+    </div>
+
+    <!-- Services Pricing Cards -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        {% for service in services %}
+        <div class="col">
+            <div class="card h-100 {% if service.is_popular %}border-primary{% endif %}">
+                {% if service.is_popular %}
+                <div class="card-header bg-primary text-white text-center">
+                    Most Popular
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ service.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">${{ service.price }}</h6>
+                    <p class="card-text">{{ service.description }}</p>
+                    <p class="text-muted">Turnaround: {{ service.turnaround_time }}</p>
+                    
+                    <hr>
+                    
+                    <h6>Features:</h6>
+                    <ul class="list-unstyled">
+                        {% for feature in service.get_features_list %}
+                        <li>
+                            <i class="fas fa-check text-success me-2"></i>
+                            {{ feature }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="#" class="btn btn-primary">Order Now</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No services currently available.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Process Section -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-4">
+            <h2>Our Resume Writing Process</h2>
+            <p class="lead">We follow a comprehensive approach to create your perfect resume</p>
+        </div>
+        
+        <div class="col-md-3 text-center">
+            <div class="process-step">
+                <div class="process-icon">
+                    <i class="fas fa-user-edit fa-3x text-primary"></i>
+                </div>
+                <h5 class="mt-3">1. Consultation</h5>
+                <p>We start with understanding your career goals and experience.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3 text-center">
+            <div class="process-step">
+                <div class="process-icon">
+                    <i class="fas fa-pencil-alt fa-3x text-primary"></i>
+                </div>
+                <h5 class="mt-3">2. Writing</h5>
+                <p>Our expert writers craft a tailored resume highlighting your strengths.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3 text-center">
+            <div class="process-step">
+                <div class="process-icon">
+                    <i class="fas fa-sync-alt fa-3x text-primary"></i>
+                </div>
+                <h5 class="mt-3">3. Revision</h5>
+                <p>We refine the document based on your feedback.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-3 text-center">
+            <div class="process-step">
+                <div class="process-icon">
+                    <i class="fas fa-check-circle fa-3x text-primary"></i>
+                </div>
+                <h5 class="mt-3">4. Delivery</h5>
+                <p>Receive your finalized resume ready for job applications.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-4">
+            <h2>What Our Clients Say</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <span class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </span>
+                    </div>
+                    <p class="card-text">
+                        "The resume service was excellent. I got interviews for 3 jobs within a week of
+                        submitting my new resume. Worth every penny!"
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <h6 class="mb-0">John D.</h6>
+                    <small class="text-muted">Marketing Professional</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <span class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </span>
+                    </div>
+                    <p class="card-text">
+                        "The writer really understood my career path and highlighted achievements I
+                        hadn't even thought to include. Very professional service."
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <h6 class="mb-0">Sarah M.</h6>
+                    <small class="text-muted">Project Manager</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-center mb-3">
+                        <span class="text-warning">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </span>
+                    </div>
+                    <p class="card-text">
+                        "After struggling with my resume for months, I decided to get professional help.
+                        The result was far better than anything I could have created myself."
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <h6 class="mb-0">Michael T.</h6>
+                    <small class="text-muted">Software Engineer</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center py-5">
+                    <h3 class="card-title">Ready to Advance Your Career?</h3>
+                    <p class="card-text">
+                        Let our professional resume writers help you create a resume that gets results.
+                    </p>
+                    <a href="#" class="btn btn-light btn-lg">Get Started Today</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .process-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}

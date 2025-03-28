@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Features{% endblock %}
+
+{% block content %}
+<div class="features-container">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Resume Builder Features</h1>
+    <p class="text-lg text-gray-600 mb-6">Explore the powerful features of our resume builder that make creating a professional resume easy and efficient.</p>
+
+    <div class="features-grid">
+        {% for feature in features %}
+        <div class="feature-card">
+            <i class="{{ feature.icon }} feature-icon"></i>
+            <h2 class="feature-title">{{ feature.title }}</h2>
+            <p class="feature-description">{{ feature.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .features-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        background-color: #f9fafb;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+        color: #4299e1;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .feature-description {
+        color: #4a5568;
+    }
+</style>
+{% endblock %}

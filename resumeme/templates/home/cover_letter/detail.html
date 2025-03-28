@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <h1 class="card-title mb-1">{{ cover_letter.title }}</h1>
+                            <h6 class="text-muted">{{ cover_letter.company_name }} - {{ cover_letter.job_title }}</h6>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{% url 'home:cover_letter_edit' cover_letter.uuid %}" class="btn btn-primary">Edit</a>
+                            <a href="{% url 'home:cover_letter_delete' cover_letter.uuid %}" class="btn btn-danger">Delete</a>
+                        </div>
+                    </div>
+
+                    <div class="cover-letter-preview">
+                        {% if cover_letter.recipient_name or cover_letter.recipient_title %}
+                        <div class="recipient mb-4">
+                            {% if cover_letter.recipient_name %}
+                            <p>{{ cover_letter.recipient_name }}</p>
+                            {% endif %}
+                            {% if cover_letter.recipient_title %}
+                            <p>{{ cover_letter.recipient_title }}</p>
+                            {% endif %}
+                            {% if cover_letter.company_address %}
+                            <p>{{ cover_letter.company_address|linebreaks }}</p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="content">
+                            {{ cover_letter.content|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cover Letter Details</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Created:</strong> {{ cover_letter.created_at|date:"M d, Y" }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Last Updated:</strong> {{ cover_letter.updated_at|date:"M d, Y" }}
+                        </li>
+                        {% if cover_letter.template %}
+                        <li class="mb-2">
+                            <strong>Template:</strong> {{ cover_letter.template.name }}
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,598 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Track Your Job Applications{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Resume.io inspired styling */
+    :root {
+        --primary: #1a91f0;
+        --primary-light: rgba(26, 145, 240, 0.1);
+        --primary-dark: #0c7cd5;
+        --text-dark: #343a40;
+        --text-medium: #6c757d;
+        --text-light: #98a6ad;
+        --success: #28a745;
+        --success-light: rgba(40, 167, 69, 0.1);
+        --warning: #ffc107;
+        --warning-light: rgba(255, 193, 7, 0.1);
+        --danger: #dc3545;
+        --danger-light: rgba(220, 53, 69, 0.1);
+        --border: #e9ecef;
+        --bg-light: #f8f9fa;
+        --card-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background-color: #f5f7fa;
+        color: var(--text-dark);
+        line-height: 1.5;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* Header styling */
+    .page-header {
+        padding: 2rem 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-header h1 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    /* Stats cards */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 1.25rem;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card h3 {
+        font-size: 0.875rem;
+        color: var(--text-medium);
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-light);
+    }
+
+    /* Action button */
+    .action-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .action-button:hover {
+        background-color: var(--primary-dark);
+    }
+
+    .action-button svg {
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+    }
+
+    /* Tabs */
+    .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 1.5rem;
+    }
+
+    .tab {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+        color: var(--text-medium);
+        font-weight: 500;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: color 0.2s, border-color 0.2s;
+    }
+
+    .tab.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+    }
+
+    .tab:hover:not(.active) {
+        color: var(--text-dark);
+    }
+
+    /* Filter bar */
+    .filter-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .search-container {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-container input {
+        width: 100%;
+        padding: 0.625rem 1rem 0.625rem 2.5rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-container input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .search-container svg {
+        position: absolute;
+        left: 0.875rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        color: var(--text-light);
+    }
+
+    .filter-options {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 0.75rem;
+        color: var(--text-medium);
+        background-color: white;
+        cursor: pointer;
+        transition: border-color 0.2s;
+    }
+
+    .filter-option:hover {
+        border-color: var(--primary);
+    }
+
+    .filter-option svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Application cards */
+    .applications-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .application-card {
+        background-color: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .application-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .application-header {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .company-info {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .company-logo {
+        width: 48px;
+        height: 48px;
+        background-color: #f0f2f5;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.25rem;
+        color: var(--text-medium);
+    }
+
+    .position-info h3 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-dark);
+    }
+
+    .position-info p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--text-medium);
+    }
+
+    .position-info .date {
+        font-size: 0.75rem;
+        color: var(--text-light);
+        margin-top: 0.5rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        height: fit-content;
+    }
+
+    .status-applied {
+        background-color: var(--primary-light);
+        color: var(--primary);
+    }
+
+    .status-interview {
+        background-color: var(--warning-light);
+        color: var(--warning);
+    }
+
+    .status-offer {
+        background-color: var(--success-light);
+        color: var(--success);
+    }
+
+    .status-rejected {
+        background-color: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .application-details {
+        padding: 1.25rem;
+    }
+
+    .detail-group {
+        margin-bottom: 1rem;
+    }
+
+    .detail-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .detail-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--text-light);
+        margin-bottom: 0.25rem;
+        letter-spacing: 0.05em;
+    }
+
+    .detail-value {
+        font-size: 0.875rem;
+        color: var(--text-dark);
+    }
+
+    .application-actions {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.875rem 1.25rem;
+        background-color: var(--bg-light);
+        border-top: 1px solid var(--border);
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-medium);
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.375rem 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .action-btn:hover {
+        background-color: white;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .action-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .empty-state svg {
+        width: 64px;
+        height: 64px;
+        color: #dce0e6;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 0.875rem;
+        color: var(--text-medium);
+        max-width: 400px;
+        margin: 0 auto 2rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .stats-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .filter-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .search-container {
+            width: 100%;
+        }
+
+        .filter-options {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .stats-container {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page header -->
+    <div class="page-header">
+        <h1>Job Applications</h1>
+        <button class="action-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Add Application
+        </button>
+    </div>
+
+    <!-- Stats cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>Total Applications</h3>
+            <div class="stat-value">{{ applications|length|default:"0" }}</div>
+            <div class="stat-label">Applications submitted</div>
+        </div>
+        <div class="stat-card">
+            <h3>Interviews</h3>
+            <div class="stat-value">{{ interviews_count|default:"0" }}</div>
+            <div class="stat-label">Scheduled interviews</div>
+        </div>
+        <div class="stat-card">
+            <h3>Response Rate</h3>
+            <div class="stat-value">{{ response_rate|default:"0" }}%</div>
+            <div class="stat-label">Of applications</div>
+        </div>
+        <div class="stat-card">
+            <h3>Offers</h3>
+            <div class="stat-value">{{ offers_count|default:"0" }}</div>
+            <div class="stat-label">Job offers received</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active">All Applications</div>
+        <div class="tab">Active</div>
+        <div class="tab">Archived</div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+        <div class="search-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+            <input type="text" placeholder="Search applications...">
+        </div>
+        <div class="filter-options">
+            <button class="filter-option">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                </svg>
+                Filter
+            </button>
+            <button class="filter-option">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h5a1 1 0 000-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM13 16a1 1 0 102 0v-5.586l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L13 10.414V16z" />
+                </svg>
+                Sort
+            </button>
+            <button class="filter-option">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5 4a3 3 0 00-3 3v6a3 3 0 003 3h10a3 3 0 003-3V7a3 3 0 00-3-3H5zm-1 9v-1h5v2H5a1 1 0 01-1-1zm7 1h4a1 1 0 001-1v-1h-5v2zm0-4h5V8h-5v2zM9 8H4v2h5V8z" clip-rule="evenodd" />
+                </svg>
+                Status
+            </button>
+            <button class="filter-option">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                </svg>
+                Date
+            </button>
+        </div>
+    </div>
+
+    {% if applications %}
+    <!-- Applications grid -->
+    <div class="applications-grid">
+        {% for application in applications %}
+        <div class="application-card">
+            <div class="application-header">
+                <div class="company-info">
+                    {% if application.company_logo %}
+                    <img src="{{ application.company_logo.url }}" alt="{{ application.company_name }}" class="company-logo">
+                    {% else %}
+                    <div class="company-logo">
+                        {{ application.company_name|slice:":1" }}
+                    </div>
+                    {% endif %}
+                    <div class="position-info">
+                        <h3>{{ application.position }}</h3>
+                        <p>{{ application.company_name }}</p>
+                        <p class="date">Applied {{ application.date_applied|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+                <div class="status-badge
+                    {% if application.status == 'Applied' %}status-applied
+                    {% elif application.status == 'Interview' %}status-interview
+                    {% elif application.status == 'Offer' %}status-offer
+                    {% elif application.status == 'Rejected' %}status-rejected{% endif %}">
+                    {{ application.status }}
+                </div>
+            </div>
+            <div class="application-details">
+                <div class="detail-group">
+                    <div class="detail-label">Location</div>
+                    <div class="detail-value">{{ application.location|default:"Remote" }}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Salary</div>
+                    <div class="detail-value">{{ application.salary|default:"Not specified" }}</div>
+                </div>
+                <div class="detail-group">
+                    <div class="detail-label">Next Step</div>
+                    <div class="detail-value">{{ application.next_step|default:"Follow up in 1 week" }}</div>
+                </div>
+            </div>
+            <div class="application-actions">
+                <button class="action-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    Edit
+                </button>
+                <button class="action-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                    </svg>
+                    Update
+                </button>
+                <button class="action-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty state -->
+    <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        </svg>
+        <h3>No Applications Yet</h3>
+        <p>Start tracking your job applications to stay organized throughout your job search.</p>
+        <button class="action-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Add Your First Application
+        </button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

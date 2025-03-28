@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Job Search - Find Your Next Career Opportunity{% endblock %}
+
+{% block extra_css %}
+<style>
+    .job-search-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .search-header {
+        background-color: #f8fafc;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .search-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    
+    .search-input-group {
+        flex-grow: 1;
+        position: relative;
+        min-width: 200px;
+    }
+    
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        font-size: 1rem;
+    }
+    
+    .search-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+    }
+    
+    .search-button {
+        background-color: #4299e1;
+        color: white;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .search-button:hover {
+        background-color: #3182ce;
+    }
+    
+    .main-content {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+        .main-content {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .filters-sidebar {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+    }
+    
+    .filter-section {
+        background-color: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .filter-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #2d3748;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .job-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .category-card {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-color: #bee3f8;
+    }
+    
+    .category-icon {
+        width: 3rem;
+        height: 3rem;
+        margin: 0 auto 0.75rem;
+        background-color: #ebf8ff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4299e1;
+    }
+    
+    .category-name {
+        font-weight: 500;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+    }
+    
+    .category-count {
+        font-size: 0.875rem;
+        color: #718096;
+    }
+    
+    .job-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .job-card {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        transition: all 0.2s;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .job-card:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-color: #bee3f8;
+    }
+    
+    .job-header {
+        display: flex;
+...(about 235 lines omitted)...
+        </form>
+    </div>
+    </style>
+    
+    <!-- Job Categories -->
+    <div class="job-categories">
+        {% for category in job_categories %}
+        <a href="{% url 'home:job_search' %}?q={{ category.name }}" class="category-card">
+            <div class="category-icon">
+                <span class="material-icons">{{ category.icon }}</span>
+            </div>
+            <div class="category-name">{{ category.name }}</div>
+            <div class="category-count">{{ category.count }} jobs</div>
+        </a>
+        {% endfor %}
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Filters Sidebar -->
+        <div class="filters-sidebar">
+            <div class="filter-section">
+                <h3 class="filter-title">Refine Results</h3>
+                <form action="{% url 'home:job_search' %}" method="get">
+                    <!-- Keep existing search term and location -->
+                    <input type="hidden" name="q" value="{{ query }}">
+                    <input type="hidden" name="location" value="{{ location }}">
+                    
+                    <div class="filter-group">
+                        <label for="job_type" class="filter-label">Job Type</label>
+                        <select name="job_type" id="job_type" class="filter-select">
+                            <option value="">All Types</option>
+                            {% for type in job_types %}
+                            <option value="{{ type.id }}" {% if job_type == type.id %}selected{% endif %}>{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="experience" class="filter-label">Experience Level</label>
+                        <select name="experience" id="experience" class="filter-select">
+                            <option value="">All Levels</option>
+                            {% for level in experience_levels %}
+                            <option value="{{ level.id }}" {% if experience_level == level.id %}selected{% endif %}>{{ level.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="salary" class="filter-label">Salary Range</label>
+                        <select name="salary" id="salary" class="filter-select">
+                            <option value="">All Ranges</option>
+                            {% for range in salary_ranges %}
+                            <option value="{{ range.id }}" {% if salary_range == range.id %}selected{% endif %}>{{ range.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">Remote Options</label>
+                        <div class="filter-checkbox">
+                            <input type="checkbox" id="remote_only" name="remote_only" value="1" class="filter-checkbox-input">
+                            <label for="remote_only" class="filter-checkbox-label">Remote Only</label>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-actions">
+                        <button type="submit" class="filter-button">Apply Filters</button>
+                        <a href="{% url 'home:job_search' %}" class="filter-reset">Reset Filters</a>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="filter-section">
+                <h3 class="filter-title">Job Alerts</h3>
+                <p class="text-gray-600 mb-3">Get notified when new jobs match your criteria</p>
+                <form class="alert-form">
+                    <div class="filter-group">
+                        <input type="email" placeholder="Your email address" class="filter-input">
+                    </div>
+                    <button type="submit" class="filter-button w-full">Create Job Alert</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Job Listings -->
+        <div class="job-listings">
+            <div class="result-header">
+                <h2 class="results-title">{{ count }} Jobs Found</h2>
+                <div class="sort-options">
+                    <label for="sort" class="sort-label">Sort by:</label>
+                    <select id="sort" class="sort-select">
+                        <option value="relevance">Relevance</option>
+                        <option value="date">Date</option>
+                        <option value="salary">Salary</option>
+                    </select>
+                </div>
+            </div>
+            
+            {% if job_listings %}
+            <div class="job-list">
+                {% for job in job_listings %}
+                <div class="job-card">
+                    <div class="job-header">
+                        <div class="company-logo">
+                            <img src="{% static job.company_logo %}" alt="{{ job.company }}">
+                        </div>
+                        <div class="job-info">
+                            <h3 class="job-title">{{ job.title }}</h3>
+                            <div class="job-company">{{ job.company }}</div>
+                            <div class="job-meta">
+                                <div class="job-location">
+                                    <span class="material-icons">location_on</span>
+                                    {{ job.location }}
+                                </div>
+                                {% if job.remote %}
+                                <div class="job-remote">
+                                    <span class="material-icons">computer</span>
+                                    Remote
+                                </div>
+                                {% endif %}
+                                <div class="job-type">
+                                    <span class="material-icons">work</span>
+                                    {% for type in job_types %}
+                                        {% if type.id == job.job_type %}
+                                            {{ type.name }}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="job-salary">
+                            <div class="salary-amount">{{ job.salary }}</div>
+                            <div class="job-posted">Posted {{ job.days_ago }} day{{ job.days_ago|pluralize }} ago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="job-description">
+                        <p>{{ job.description }}</p>
+                    </div>
+                    
+                    <div class="job-requirements">
+                        <h4>Requirements:</h4>
+                        <ul>
+                            {% for req in job.requirements %}
+                            <li>{{ req }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="job-actions">
+                        <a href="#" class="apply-button">Apply Now</a>
+                        <button class="save-button">
+                            <span class="material-icons">bookmark_border</span>
+                            Save
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-results">
+                <div class="no-results-icon">
+                    <span class="material-icons">search_off</span>
+                </div>
+                <h3 class="no-results-title">No matching jobs found</h3>
+                <p class="no-results-message">Try adjusting your search criteria or browse all jobs</p>
+                <a href="{% url 'home:job_search' %}" class="no-results-button">Browse All Jobs</a>
+            </div>
+            {% endif %}
+            
+            <!-- Pagination -->
+            {% if job_listings|length > 10 %}
+            <div class="pagination">
+                <a href="#" class="page-prev">Previous</a>
+                <div class="page-numbers">
+                    <a href="#" class="page-number active">1</a>
+                    <a href="#" class="page-number">2</a>
+                    <a href="#" class="page-number">3</a>
+                    <span>...</span>
+                    <a href="#" class="page-number">9</a>
+                </div>
+                <a href="#" class="page-next">Next</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Job Search Tips -->
+    <div class="search-tips">
+        <h2 class="tips-title">Job Search Tips</h2>
+        <div class="tips-grid">
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <span class="material-icons">lightbulb</span>
+                </div>
+                <h3 class="tip-title">Use Specific Keywords</h3>
+                <p class="tip-text">Include industry-specific keywords from job descriptions to increase your chances of finding relevant positions.</p>
+            </div>
+            
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <span class="material-icons">refresh</span>
+                </div>
+                <h3 class="tip-title">Set Up Job Alerts</h3>
+                <p class="tip-text">Create job alerts to receive notifications when new positions matching your criteria are posted.</p>
+            </div>
+            
+            <div class="tip-card">
+                <div class="tip-icon">
+                    <span class="material-icons">description</span>
+                </div>
+                <h3 class="tip-title">Customize Your Resume</h3>
+                <p class="tip-text">Tailor your resume for each application to highlight relevant skills and experience.</p>
+                <a href="{% url 'home:resume_tips' %}" class="tip-link">Resume Tips →</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any client-side functionality here
+        
+        // Example: Toggle mobile filters visibility
+        const mobileFiltersToggle = document.getElementById('mobile-filters-toggle');
+        const filtersSidebar = document.querySelector('.filters-sidebar');
+        
+        if (mobileFiltersToggle && filtersSidebar) {
+            mobileFiltersToggle.addEventListener('click', function() {
+                filtersSidebar.classList.toggle('visible');
+            });
+        }
+    });
+</script>
+{% endblock %}

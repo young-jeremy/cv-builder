@@ -1,0 +1,70 @@
+.resume.professional-classic {
+    font-family: 'Arial', sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    color: #333;
+}
+
+.resume.professional-classic .header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #0D6EFD;
+    padding-bottom: 20px;
+}
+
+.resume.professional-classic h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #0D6EFD;
+}
+
+.resume.professional-classic .contact-info {
+    font-size: 14px;
+}
+
+.resume.professional-classic .section {
+    margin-bottom: 25px;
+}
+
+.resume.professional-classic h2 {
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    color: #0D6EFD;
+}
+
+.resume.professional-classic .experience-item,
+.resume.professional-classic .education-item {
+    margin-bottom: 15px;
+}
+
+.resume.professional-classic .job-title,
+.resume.professional-classic .degree {
+    font-weight: bold;
+}
+
+.resume.professional-classic .employer,
+.resume.professional-classic .institution {
+    font-style: italic;
+}
+
+.resume.professional-classic .date {
+    color: #666;
+    font-size: 14px;
+}
+
+.resume.professional-classic .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    padding: 0;
+}
+
+.resume.professional-classic .skills-list li {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    margin: 0 10px 10px 0;
+    border-radius: 3px;
+}

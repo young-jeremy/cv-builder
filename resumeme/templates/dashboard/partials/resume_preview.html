@@ -1,0 +1,102 @@
+<div class="resume-document" style="font-family: var(--font-family, Arial, sans-serif);">
+    <!-- This is a simplified example of a resume template structure -->
+    <!-- In a real implementation, you would inject the user's resume data -->
+
+    <div class="resume-header" style="background-color: var(--primary-color, #2D3E50); color: white; padding: 30px;">
+        <div class="resume-name">
+            <h1>{{ user_resume.full_name|default:"John Doe" }}</h1>
+            <p class="resume-title">{{ user_resume.title|default:"Software Engineer" }}</p>
+        </div>
+
+        <div class="resume-contact">
+            <p>{{ user_resume.email|default:"john.doe@example.com" }}</p>
+            <p>{{ user_resume.phone|default:"+1 (555) 123-4567" }}</p>
+            <p>{{ user_resume.location|default:"New York, NY" }}</p>
+        </div>
+    </div>
+
+    <div class="resume-body" style="padding: 20px; color: var(--text-color, #333333);">
+        <div class="resume-section">
+            <h2 style="color: var(--secondary-color, #3498DB);">Summary</h2>
+            <div class="section-content">
+                <p>{{ user_resume.summary|default:"Experienced software engineer with a passion for developing innovative programs that expedite the efficiency and effectiveness of organizational success." }}</p>
+            </div>
+        </div>
+
+        <div class="resume-section">
+            <h2 style="color: var(--secondary-color, #3498DB);">Experience</h2>
+            <div class="section-content">
+                {% if user_resume.experiences.all %}
+                    {% for exp in user_resume.experiences.all %}
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <h3>{{ exp.title }} at {{ exp.company }}</h3>
+                            <p class="experience-date">{{ exp.start_date|date:"M Y" }} - {% if exp.current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</p>
+                        </div>
+                        <p>{{ exp.description }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <h3>Senior Software Engineer at Tech Company</h3>
+                            <p class="experience-date">Jan 2020 - Present</p>
+                        </div>
+                        <p>Led development of a cloud-based solution that improved client satisfaction by 35%.</p>
+                    </div>
+                    <div class="experience-item">
+                        <div class="experience-header">
+                            <h3>Software Developer at Startup Inc.</h3>
+                            <p class="experience-date">Jun 2017 - Dec 2019</p>
+                        </div>
+                        <p>Developed and maintained web applications using modern JavaScript frameworks.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="resume-section">
+            <h2 style="color: var(--secondary-color, #3498DB);">Education</h2>
+            <div class="section-content">
+                {% if user_resume.education.all %}
+                    {% for edu in user_resume.education.all %}
+                    <div class="education-item">
+                        <h3>{{ edu.degree }} in {{ edu.field_of_study }}</h3>
+                        <p>{{ edu.institution }}, {{ edu.graduation_date|date:"Y" }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="education-item">
+                        <h3>Bachelor of Science in Computer Science</h3>
+                        <p>University of Technology, 2017</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="resume-section">
+            <h2 style="color: var(--secondary-color, #3498DB);">Skills</h2>
+            <div class="section-content skills-section">
+                {% if user_resume.skills.all %}
+                    <ul class="skills-list">
+                    {% for skill in user_resume.skills.all %}
+                        <li>{{ skill.name }}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                    <ul class="skills-list">
+                        <li>JavaScript</li>
+                        <li>React</li>
+                        <li>Node.js</li>
+                        <li>Python</li>
+                        <li>Django</li>
+                        <li>SQL</li>
+                        <li>Git</li>
+                        <li>AWS</li>
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="resume-builder">
+    <!-- Left Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>{{ resume.title }}</h2>
+            <button class="btn-rename">Rename</button>
+        </div>
+        
+        <div class="sections-nav">
+            <div class="section-item active" data-section="personal">
+                <i class="fas fa-user"></i>
+                Personal Details
+            </div>
+            <div class="section-item" data-section="professional">
+                <i class="fas fa-briefcase"></i>
+                Professional Summary
+            </div>
+            <div class="section-item" data-section="experience">
+                <i class="fas fa-building"></i>
+                Work Experience
+            </div>
+            <div class="section-item" data-section="education">
+                <i class="fas fa-graduation-cap"></i>
+                Education
+            </div>
+            <div class="section-item" data-section="skills">
+                <i class="fas fa-star"></i>
+                Skills
+            </div>
+            <div class="section-item" data-section="languages">
+                <i class="fas fa-language"></i>
+                Languages
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+        <div class="section-content" id="personal-section">
+            <!-- Personal Details Form -->
+        </div>
+        
+        <div class="section-content hidden" id="experience-section">
+            <!-- Experience Form -->
+        </div>
+        
+        <!-- Other sections... -->
+    </div>
+
+    <!-- Right Preview Panel -->
+    <div class="preview-panel">
+        <div class="preview-toolbar">
+            <button class="btn-download">Download PDF</button>
+            <div class="preview-controls">
+                <button class="btn-zoom-in"><i class="fas fa-search-plus"></i></button>
+                <button class="btn-zoom-out"><i class="fas fa-search-minus"></i></button>
+            </div>
+        </div>
+        <div class="resume-preview">
+            <!-- Resume Preview Content -->
+        </div>
+    </div>
+</div>
+{% endblock %} 

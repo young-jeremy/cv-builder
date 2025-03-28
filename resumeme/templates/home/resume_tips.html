@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Writing Tips - Create a Standout Resume{% endblock %}
+
+{% block extra_css %}
+<style>
+    .resume-tips-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .tips-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .tip-card {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background-color: white;
+        transition: all 0.2s;
+    }
+    
+    .tip-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    .tip-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #e6f2ff;
+        color: #1a91f0;
+        font-weight: 600;
+        margin-right: 0.5rem;
+    }
+    
+    .category-divider {
+        margin: 2.5rem 0;
+        position: relative;
+    }
+    
+    .category-divider h2 {
+        text-align: center;
+        background-color: #f5f7fa;
+        padding: 0 1rem;
+        display: inline-block;
+        position: relative;
+        z-index: 1;
+        margin-left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .category-divider:after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #e2e8f0;
+        z-index: 0;
+    }
+    
+    .example-section {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-left: 4px solid #1a91f0;
+    }
+    
+    .do-dont {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .do-section, .dont-section {
+        border-radius: 8px;
+        padding: 1rem;
+    }
+    
+    .do-section {
+        background-color: #f0fff4;
+        border: 1px solid #c6f6d5;
+    }
+    
+    .dont-section {
+        background-color: #fff5f5;
+        border: 1px solid #fed7d7;
+    }
+    
+    @media (max-width: 640px) {
+        .do-dont {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="resume-tips-container">
+    <div class="tips-header">
+        <h1 class="text-3xl font-bold mb-2">Resume Writing Tips</h1>
+        <p class="text-gray-600">Expert advice to create a resume that gets you noticed and hired</p>
+    </div>
+    
+    <!-- Introduction -->
+    <div class="mb-8">
+        <p>A well-crafted resume is your ticket to landing interviews and ultimately securing your dream job. Based on our analysis of thousands of successful resumes, we've compiled these tips to help you create a document that will impress employers and highlight your qualifications effectively.</p>
+    </div>
+    
+    <!-- General Tips -->
+    <div class="category-divider">
+        <h2 class="text-xl font-semibold">General Guidelines</h2>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">1</span>
+            <div>
+                <h3 class="font-semibold text-lg">Keep it concise</h3>
+                <p>Unless you're applying for an executive or academic position, limit your resume to one page. Recruiters spend an average of just 7 seconds reviewing each resume.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">2</span>
+            <div>
+                <h3 class="font-semibold text-lg">Use a clean, professional design</h3>
+                <p>Choose a simple, readable font and maintain consistent formatting throughout. Avoid excessive colors, graphics, or unusual layouts unless you're in a creative field.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">3</span>
+            <div>
+                <h3 class="font-semibold text-lg">Tailor for each job application</h3>
+                <p>Customize your resume for each position by emphasizing relevant skills and experiences that match the job description. Use keywords from the job posting to help pass through ATS systems.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Content Tips -->
+    <div class="category-divider">
+        <h2 class="text-xl font-semibold">Content Optimization</h2>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">4</span>
+            <div>
+                <h3 class="font-semibold text-lg">Use action verbs</h3>
+                <p>Begin bullet points with strong action verbs like "achieved," "implemented," or "managed" to convey your accomplishments more powerfully.</p>
+                
+                <div class="example-section mt-3">
+                    <h4 class="font-medium mb-2">Example:</h4>
+                    <div class="do-dont">
+                        <div class="do-section">
+                            <h5 class="font-medium text-green-700">✓ Better</h5>
+                            <p>"Implemented a new customer service protocol that reduced complaint resolution time by 35%"</p>
+                        </div>
+                        <div class="dont-section">
+                            <h5 class="font-medium text-red-700">✗ Avoid</h5>
+                            <p>"Was responsible for customer service and dealing with complaints"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">5</span>
+            <div>
+                <h3 class="font-semibold text-lg">Quantify your achievements</h3>
+                <p>Use numbers and percentages to showcase your impact. Specific metrics help employers understand the scope and results of your work.</p>
+                
+                <div class="example-section mt-3">
+                    <h4 class="font-medium mb-2">Example:</h4>
+                    <div class="do-dont">
+                        <div class="do-section">
+                            <h5 class="font-medium text-green-700">✓ Better</h5>
+                            <p>"Increased social media followers by 200% in 6 months and boosted engagement by 45%"</p>
+                        </div>
+                        <div class="dont-section">
+                            <h5 class="font-medium text-red-700">✗ Avoid</h5>
+                            <p>"Managed company social media accounts and increased followers"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">6</span>
+            <div>
+                <h3 class="font-semibold text-lg">Focus on achievements, not just duties</h3>
+                <p>Instead of simply listing job responsibilities, highlight your accomplishments and the value you added to previous employers.</p>
+                
+                <div class="example-section mt-3">
+                    <h4 class="font-medium mb-2">Example:</h4>
+                    <div class="do-dont">
+                        <div class="do-section">
+                            <h5 class="font-medium text-green-700">✓ Better</h5>
+                            <p>"Redesigned inventory management process, reducing stockouts by 25% and saving $45,000 annually"</p>
+                        </div>
+                        <div class="dont-section">
+                            <h5 class="font-medium text-red-700">✗ Avoid</h5>
+                            <p>"Responsible for managing inventory and ordering supplies"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ATS Tips -->
+    <div class="category-divider">
+        <h2 class="text-xl font-semibold">ATS Optimization</h2>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">7</span>
+            <div>
+                <h3 class="font-semibold text-lg">Use standard section headings</h3>
+                <p>Use conventional section titles like "Work Experience," "Education," and "Skills" to ensure ATS systems properly categorize your information.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">8</span>
+            <div>
+                <h3 class="font-semibold text-lg">Include relevant keywords</h3>
+                <p>Incorporate industry-specific terms and skills from the job description to help your resume pass through ATS filters.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">9</span>
+            <div>
+                <h3 class="font-semibold text-lg">Avoid complex formatting</h3>
+                <p>Stay away from tables, headers/footers, and text boxes, as many ATS systems cannot properly read this formatting.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Final Tips -->
+    <div class="category-divider">
+        <h2 class="text-xl font-semibold">Final Touches</h2>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">10</span>
+            <div>
+                <h3 class="font-semibold text-lg">Proofread carefully</h3>
+                <p>Typos and grammatical errors can immediately disqualify you. Have someone else review your resume before submitting it.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">11</span>
+            <div>
+                <h3 class="font-semibold text-lg">Update your contact information</h3>
+                <p>Ensure your email, phone number, and LinkedIn profile are current and professional. Consider adding a link to your portfolio if relevant.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tip-card">
+        <div class="flex items-start">
+            <span class="tip-number">12</span>
+            <div>
+                <h3 class="font-semibold text-lg">Save in the right format</h3>
+                <p>Unless otherwise specified, save and submit your resume as a PDF to preserve formatting across different devices and systems.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA -->
+    <div class="mt-10 text-center">
+        <h3 class="text-xl font-semibold mb-4">Ready to create your perfect resume?</h3>
+        <a href="{% url 'home:create_resume' %}" class="inline-block bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-200">
+            Build Your Resume Now
+        </a>
+    </div>
+</div>
+{% endblock %}

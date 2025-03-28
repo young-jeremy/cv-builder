@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="template-detail">
+    <div class="template-preview-section">
+        <div class="preview-container">
+            <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview">
+            
+            <!-- Color Scheme Selector -->
+            <div class="color-schemes">
+                <h3>Color Schemes</h3>
+                <div class="color-options">
+                    {% for scheme in template.color_schemes %}
+                    <div class="color-scheme" data-colors="{{ scheme|json_script:'colors' }}">
+                        {% for color in scheme %}
+                        <div class="color-swatch" style="background-color: {{ color }}"></div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Font Selector -->
+            <div class="font-selector">
+                <h3>Font Combinations</h3>
+                <div class="font-options">
+                    {% for pair in template.font_pairs %}
+                    <div class="font-pair">
+                        <span style="font-family: '{{ pair.heading }}'">Heading</span>
+                        <span style="font-family: '{{ pair.body }}'">Body Text</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="template-info-section">
+        <h1>{{ template.name }}</h1>
+        <p class="template-category">{{ template.get_category_display }}</p>
+        <div class="template-description">
+            {{ template.description|linebreaks }}
+        </div>
+
+        {% if template.is_premium %}
+        <div class="premium-info">
+            <i class="fas fa-crown"></i>
+            <p>This is a premium template</p>
+            {% if not user.is_premium %}
+            <a href="{% url 'upgrade_plan' %}" class="btn btn-premium">Upgrade to Premium</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <a href="{% url 'use_template' template.slug %}" class="btn btn-primary btn-large">
+            Use This Template
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.template-detail {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.preview-container {
+    position: sticky;
+    top: 2rem;
+}
+
+.template-preview {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.color-schemes, .font-selector {
+    margin-top: 2rem;
+}
+
+.color-options, .font-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.color-scheme {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-scheme:hover {
+    border-color: #007bff;
+}
+
+.color-swatch {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.font-pair {
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.font-pair:hover {
+    background: #e9ecef;
+}
+
+.template-info-section {
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.premium-info {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #fff8e5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-premium {
+    background: #ffd700;
+    color: #333;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.125rem;
+    text-align: center;
+    margin-top: 2rem;
+}
+</style>
+{% endblock %}

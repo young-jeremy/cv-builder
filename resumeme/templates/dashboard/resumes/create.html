@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create New Resume{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Create a New Resume</h1>
+    <p class="lead mb-5">Fill out the form below to create a new resume.</p>
+    
+    <form method="post" action="{% url 'dashboard:create_resume' %}">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="title" class="form-label">Resume Title</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Enter resume title" required>
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter a brief description of the resume"></textarea>
+        </div>
+        
+        <!-- Add more fields as necessary -->
+        
+        <button type="submit" class="btn btn-primary">Create Resume</button>
+        <a href="{% url 'dashboard:resume_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

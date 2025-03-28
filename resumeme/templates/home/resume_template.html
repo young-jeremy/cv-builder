@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ resume.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .resume-header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 24pt;
+        }
+
+        .resume-header h2 {
+            color: #3498db;
+            margin: 0.5rem 0;
+            font-size: 16pt;
+        }
+
+        .contact-info {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .resume-section {
+            margin-bottom: 2rem;
+        }
+
+        .resume-section h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Personal Information -->
+    {% if personal_info %}
+    <header class="resume-header">
+        <h1>{{ personal_info.name }}</h1>
+        {% if personal_info.title %}
+        <h2>{{ personal_info.title }}</h2>
+        {% endif %}
+
+        <div class="contact-info">
+            {% if personal_info.email %}
+            <div>{{ personal_info.email }}</div>
+            {% endif %}
+
+            {% if personal_info.phone %}
+            <div>{{ personal_info.phone }}</div>
+            {% endif %}
+
+            {% if personal_info.location %}
+            <div>{{ personal_info.location }}</div>
+            {% endif %}
+        </div>
+    </header>
+    {% endif %}
+
+    <!-- Resume Sections -->
+    {% for section in sections %}
+    <section class="resume-section">
+        <h2>{{ section.title }}</h2>
+
+        {% if section.type == 'experience' %}
+            {% include "pdf/sections/experience.html" with experiences=section.experiences.all %}
+        {% elif section.type == 'education' %}
+            {% include "pdf/sections/education.html" with education=section.education.all %}
+        {% elif section.type == 'skills' %}
+            {% include "pdf/sections/skills.html" with skills=section.skills.all %}
+        {% elif section.type == 'languages' %}
+            {% include "pdf/sections/languages.html" with languages=section.languages.all %}
+        {% endif %}
+    </section>
+    {% endfor %}
+</body>
+</html>

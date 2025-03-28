@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Upload Resume - ResumeMe{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Upload Your Existing Resume</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead mb-4">
+                        Already have a resume? Upload it and we'll extract the information to create a new resume.
+                    </p>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            {{ form|crispy }}
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading"><i class="bi bi-info-circle me-2"></i>How it works</h5>
+                            <p>Our resume parser will extract information from your uploaded resume and create a new resume in our system. You'll be able to edit and customize it afterward.</p>
+                            <hr>
+                            <p class="mb-0">Supported formats: PDF, DOCX, and TXT</p>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'dashboard:my_resumes' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Upload & Process</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <p>Want to create a resume from scratch instead?</p>
+                <a href="{% url 'dashboard:create_resume' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Create New Resume
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add drag and drop functionality for file upload
+        const fileInput = document.querySelector('input[type="file"]');
+        const uploadZone = document.querySelector('.card-body');
+        
+        if (fileInput && uploadZone) {
+            uploadZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadZone.classList.add('bg-light');
+            });
+            
+            uploadZone.addEventListener('dragleave', function() {
+                uploadZone.classList.remove('bg-light');
+            });
+            
+            uploadZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadZone.classList.remove('bg-light');
+                
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    // Trigger change event to update the file input display
+                    const event = new Event('change', { bubbles: true });
+                    fileInput.dispatchEvent(event);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+

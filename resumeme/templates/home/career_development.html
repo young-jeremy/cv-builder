@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Career Development Guide - Advance Your Career{% endblock %}
+
+{% block extra_css %}
+<style>
+    .development-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .development-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background-color: #f8fafc;
+        padding: 2.5rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #2d3748;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .category-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e0;
+    }
+    
+    .category-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .category-icon {
+        background-color: #ebf8ff;
+        color: #3182ce;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+    
+    .category-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        color: #2d3748;
+    }
+    
+    .category-description {
+        color: #4a5568;
+    }
+    
+    .strategy-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .strategy-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.75rem;
+        color: #2d3748;
+    }
+    
+    .strategy-description {
+        color: #4a5568;
+        margin-bottom: 0.75rem;
+    }
+    
+    .strategy-example {
+        background-color: #f8fafc;
+        border-left: 4px solid #4299e1;
+        padding: 1rem;
+        font-style: italic;
+        color: #4a5568;
+    }
+    
+    .resource-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .resource-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+    
+    .resource-description {
+        color: #4a5568;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+    }
+    
+    .resource-example {
+        display: inline-block;
+        background-color: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        color: #4a5568;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .resource-example:hover {
+        background-color: #ebf8ff;
+        border-color: #bee3f8;
+        color: #3182ce;
+    }
+    
+    .tips-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .tips-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.75rem;
+        color: #2d3748;
+    }
+    
+    .tips-description {
+        color: #4a5568;
+        margin-bottom: 0.75rem;
+    }
+    
+    .tips-list {
+        list-style: disc;
+        padding-left: 1.5rem;
+        color: #4a5568;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="development-container">
+    <div class="development-header">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ page_title }}</h1>
+        <p class="text-lg text-gray-600">{{ page_description }}</p>
+    </div>
+    
+    <!-- Career Development Categories -->
+    <div class="category-grid">
+        {% for category in categories %}
+        <div class="category-card">
+            <div class="category-header">
+                <div class="category-icon">
+                    <span class="material-icons">{{ category.icon }}</span>
+                </div>
+                <div>
+                    <div class="category-name">{{ category.name }}</div>
+                    <div class="category-description">{{ category.description }}</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Goal Setting Strategies -->
+    <section id="goal_setting">
+        <h2 class="section-title">Goal Setting Strategies</h2>
+        {% for strategy in goal_strategies %}
+        <div class="strategy-card">
+            <h3 class="strategy-title">{{ strategy.title }}</h3>
+            <p class="strategy-description">{{ strategy.description }}</p>
+            <div class="strategy-example">{{ strategy.example }}</div>
+        </div>
+        {% endfor %}
+    </section>
+    
+    <!-- Skill Enhancement Resources -->
+    <section id="skill_enhancement">
+        <h2 class="section-title">Skill Enhancement Resources</h2>
+        {% for resource in skill_resources %}
+        <div class="resource-card">
+            <h3 class="resource-name">{{ resource.name }}</h3>
+            <p class="resource-description">{{ resource.description }}</p>
+            <div class="resource-examples">
+                {% for example in resource.examples %}
+                <a href="{{ example.url }}" class="resource-example" target="_blank">{{ example.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    
+    <!-- Networking Tips -->
+    <section id="networking">
+        <h2 class="section-title">Networking Tips</h2>
+        {% for tip in networking_tips %}
+        <div class="tips-card">
+            <h3 class="tips-title">{{ tip.title }}</h3>
+            <p class="tips-description">{{ tip.description }}</p>
+            <ul class="tips-list">
+                {% for item in tip.tips %}
+                <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </section>
+    
+    <!-- Advancement Strategies -->
+    <section id="advancement">
+        <h2 class="section-title">Advancement Strategies</h2>
+        {% for strategy in advancement_strategies %}
+        <div class="strategy-card">
+            <h3 class="strategy-title">{{ strategy.title }}</h3>
+            <p class="strategy-description">{{ strategy.description }}</p>
+            <div class="strategy-example">{{ strategy.example }}</div>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

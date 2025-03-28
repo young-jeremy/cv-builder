@@ -1,0 +1,514 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Salary Negotiation Guide - Maximize Your Compensation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .negotiation-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .negotiation-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background-color: #f8fafc;
+        padding: 2.5rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #2d3748;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .phase-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .phase-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    
+    .phase-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e0;
+    }
+    
+    .phase-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .phase-icon {
+        background-color: #ebf8ff;
+        color: #3182ce;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+    
+    .phase-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        color: #2d3748;
+    }
+    
+    .phase-description {
+        color: #4a5568;
+    }
+    
+    .resource-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .resource-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+    
+    .resource-description {
+        color: #4a5568;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+    }
+    
+    .resource-example {
+        display: inline-block;
+        background-color: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        color: #4a5568;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .resource-example:hover {
+        background-color: #ebf8ff;
+        border-color: #bee3f8;
+        color: #3182ce;
+    }
+    
+    .script-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .script-scenario {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.75rem;
+        color: #2d3748;
+    }
+    
+    .script-text {
+        background-color: #f8fafc;
+        border-left: 4px solid #4299e1;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        font-style: italic;
+        color: #4a5568;
+    }
+    
+    .script-rationale {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+    
+    .mistake-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .mistake-card {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .mistake-content {
+        padding-right: 1rem;
+    }
+    
+    .mistake-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+    
+    .mistake-consequence {
+        color: #e53e3e;
+        margin-bottom: 0.5rem;
+        font-style: italic;
+    }
+    
+    .mistake-solution {
+        background-color: #f0fff4;
+        border-left: 4px solid #48bb78;
+        padding: 0.75rem;
+        color: #2f855a;
+    }
+    
+    .benefits-category {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin: 1.5rem 0 0.75rem;
+        color: #2d3748;
+    }
+    
+    .benefits-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .benefit-item {
+        background-color: #f7fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        padding: 0.75rem;
+        font-size: 0.875rem;
+        color: #4a5568;
+    }
+    
+    .industry-tabs {
+        display: flex;
+        overflow-x: auto;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1px;
+    }
+    
+    .industry-tab {
+        padding: 0.75rem 1.25rem;
+        font-weight: 500;
+        color: #4a5568;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+    
+    .industry-tab.active {
+        color: #3182ce;
+        border-bottom-color: #3182ce;
+    }
+    
+    .industry-content {
+        display: none;
+    }
+    
+    .industry-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .industry-tips-list {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+    }
+    
+    .tool-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.25rem;
+        margin-top: 1.5rem;
+    }
+    
+    .tool-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    
+    .tool-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #4299e1;
+    }
+    
+    .tool-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.75rem;
+        color: #2d3748;
+    }
+    
+    .tool-description {
+        color: #718096;
+        margin-bottom: 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .tool-link {
+        display: inline-block;
+        background-color: #ebf8ff;
+        color: #3182ce;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .tool-link:hover {
+        background-color: #bee3f8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="negotiation-container">
+    <div class="negotiation-header">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ page_title }}</h1>
+        <p class="text-xl text-gray-600">{{ page_description }}</p>
+    </div>
+    
+    <!-- Negotiation Phases -->
+    <section>
+        <h2 class="section-title">The Salary Negotiation Process</h2>
+        <div class="phase-grid">
+            {% for phase in phases %}
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-icon">
+                        <span class="material-icons">{{ phase.icon }}</span>
+                    </div>
+                    <h3 class="phase-name">{{ phase.name }}</h3>
+                </div>
+                <p class="phase-description">{{ phase.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <!-- Research Section -->
+    <section id="research">
+        <h2 class="section-title">Research Your Market Value</h2>
+        <p class="mb-6">Before entering any negotiation, you need to know your market value. Use these resources to gather data:</p>
+        
+        {% for resource in research_resources %}
+        <div class="resource-card">
+            <h3 class="resource-name">{{ resource.name }}</h3>
+            <p class="resource-description">{{ resource.description }}</p>
+            <div class="resource-examples">
+                {% for example in resource.examples %}
+                <a href="{{ example.url }}" class="resource-example" target="_blank">{{ example.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-8">
+            <h3 class="font-semibold text-blue-800 mb-2">Pro Tip: Prepare Your Compensation Range</h3>
+            <p class="text-blue-700">When researching, identify three numbers:</p>
+            <ul class="list-disc pl-5 text-blue-700 mt-2">
+                <li><strong>Minimum:</strong> The lowest offer you would accept</li>
+                <li><strong>Target:</strong> What you believe is fair based on your research</li>
+                <li><strong>Ideal:</strong> The best-case scenario that's still within market reality</li>
+            </ul>
+            <p class="text-blue-700 mt-2">Having this range prepared gives you flexibility during negotiations.</p>
+        </div>
+    </section>
+    
+    <!-- Negotiation Scripts -->
+    <section id="conversation">
+        <h2 class="section-title">Effective Negotiation Scripts</h2>
+        <p class="mb-6">Having prepared responses for common scenarios can help you navigate negotiations confidently:</p>
+        
+        {% for script in negotiation_scripts %}
+        <div class="script-card">
+            <h3 class="script-scenario">{{ script.scenario }}</h3>
+            <div class="script-text">{{ script.script }}</div>
+            <p class="script-rationale"><strong>Why it works:</strong> {{ script.rationale }}</p>
+        </div>
+        {% endfor %}
+    </section>
+    
+    <!-- Common Mistakes -->
+    <section id="mistakes">
+        <h2 class="section-title">Common Negotiation Mistakes to Avoid</h2>
+        <p class="mb-6">Even experienced professionals make these errors during salary negotiations:</p>
+        
+        {% for mistake in negotiation_mistakes %}
+        <div class="mistake-card">
+            <div class="mistake-content">
+                <h3 class="mistake-title">{{ mistake.mistake }}</h3>
+                <p class="mistake-consequence">{{ mistake.consequence }}</p>
+            </div>
+            <div class="mistake-solution">
+                <strong>Instead:</strong> {{ mistake.solution }}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    
+    <!-- Beyond Salary -->
+    <section id="benefits">
+        <h2 class="section-title">Negotiating Beyond Base Salary</h2>
+        <p class="mb-6">Total compensation often extends far beyond your base salary. Consider negotiating these valuable benefits:</p>
+        
+        {% for category in beyond_salary %}
+        <h3 class="benefits-category">{{ category.category }}</h3>
+        <div class="benefits-list">
+            {% for benefit in category.benefits %}
+            <div class="benefit-item">{{ benefit }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        
+        <div class="mt-8 bg-yellow-50 p-5 rounded-lg border border-yellow-100">
+            <h3 class="font-semibold text-yellow-800 mb-3">Benefits Valuation Strategy</h3>
+            <p class="text-yellow-700 mb-2">When evaluating a full compensation package, consider the monetary value of benefits:</p>
+            <ul class="list-disc pl-5 text-yellow-700">
+                <li>Health insurance: $5,000-$20,000+ annually depending on coverage and family size</li>
+                <li>Retirement matching: Often 3-6% of your salary</li>
+                <li>Extra PTO: Calculate your daily rate × number of additional days</li>
+                <li>Remote work: Potential savings on commuting, meals, and professional attire</li>
+                <li>Professional development: Training and certifications can be worth thousands</li>
+            </ul>
+            <p class="text-yellow-700 mt-2">A lower base salary with exceptional benefits can sometimes exceed the value of a higher salary with minimal benefits.</p>
+        </div>
+    </section>
+    
+    <!-- Industry-Specific Tips -->
+    <section id="industry">
+        <h2 class="section-title">Industry-Specific Negotiation Tips</h2>
+        <p class="mb-6">Negotiation norms and priorities vary by industry. Select your field for tailored advice:</p>
+        
+        <div class="industry-tabs">
+            {% for tip in industry_tips %}
+            <div class="industry-tab {% if forloop.first %}active{% endif %}" data-industry="{{ tip.industry|lower }}">{{ tip.industry }}</div>
+            {% endfor %}
+        </div>
+        
+        {% for tip in industry_tips %}
+        <div id="{{ tip.industry|lower }}-content" class="industry-content {% if forloop.first %}active{% endif %}">
+            <div class="industry-tips-list">
+                <ul class="list-disc pl-5 space-y-2">
+                    {% for item in tip.tips %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    
+    <!-- Tools and Resources -->
+    <section id="tools">
+        <h2 class="section-title">Salary Negotiation Tools</h2>
+        <p class="mb-4">Use these tools to strengthen your negotiation strategy:</p>
+        
+        <div class="tool-grid">
+            {% for tool in salary_tools %}
+            <div class="tool-card">
+                <h3 class="tool-name">{{ tool.name }}</h3>
+                <p class="tool-description">{{ tool.description }}</p>
+                <a href="{{ tool.link }}" class="tool-link">Access Tool</a>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    
+    <!-- Final Tips -->
+    <section class="mt-12 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-100">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Remember These Key Principles</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-2">Be Confident but Collaborative</h3>
+                <p class="text-gray-700">Approach negotiation as a problem-solving discussion, not a confrontation. Your goal is a win-win outcome.</p>
+            </div>
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-2">Practice Your Delivery</h3>
+                <p class="text-gray-700">Rehearse your talking points until you can deliver them naturally and confidently.</p>
+            </div>
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-2">Listen Actively</h3>
+                <p class="text-gray-700">Understanding the employer's constraints and priorities can help you find creative solutions.</p>
+            </div>
+            <div class="bg-white p-4 rounded shadow-sm">
+                <h3 class="font-semibold text-gray-800 mb-2">Get Everything in Writing</h3>
+                <p class="text-gray-700">Once you've reached an agreement, ensure all details are documented in your offer letter or contract.</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Industry tabs functionality
+        const industryTabs = document.querySelectorAll('.industry-tab');
+        
+        industryTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.industry-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.industry-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const industry = tab.getAttribute('data-industry');
+                document.getElementById(`${industry}-content`).classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

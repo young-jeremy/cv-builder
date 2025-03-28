@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Career Blog - Expert Career Advice and Insights{% endblock %}
+
+{% block extra_css %}
+<style>
+    .blog-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .blog-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+    }
+    
+    .blog-grid {
+        display: grid;
+        grid-template-columns: 1fr 3fr;
+        gap: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .blog-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .sidebar {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+    }
+    
+    .sidebar-section {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .sidebar-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .category-list, .tag-list, .recent-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .category-list li, .recent-list li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .category-list a, .recent-list a {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #4a5568;
+        text-decoration: none;
+        padding: 0.5rem 0;
+        transition: color 0.2s;
+    }
+    
+    .category-list a:hover, .recent-list a:hover {
+        color: #3182ce;
+    }
+    
+    .category-count {
+        background-color: #edf2f7;
+        border-radius: 9999px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        color: #4a5568;
+    }
+    
+    .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .tag {
+        display: inline-block;
+        background-color: #ebf4ff;
+        color: #4299e1;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+    
+    .tag:hover {
+        background-color: #bee3f8;
+    }
+    
+    .search-form {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .search-input {
+        flex: 1;
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+    }
+    
+    .search-button {
+        background-color: #4299e1;
+        color: white;
+        border: none;
+        border-radius: 0.375rem;
+        padding: 0.5rem 0.75rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .search-button:hover {
+        background-color: #3182ce;
+    }
+    
+    .main-content {
+        min-width: 0; /* Prevents overflow in grid */
+    }
+    
+    .articles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .article-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        background-color: white;
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .article-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+...(about 272 lines omitted)...
+                <div class="tag-list">
+                    {% for tag in tag_counts %}
+                        <a href="{% url 'home:career_blog' %}?tag={{ tag }}" class="tag">
+                            {{ tag }} ({{ tag_counts|get_item:tag }})
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Recent Articles</h3>
+                <ul class="recent-list">
+                    {% for article in recent_articles %}
+                        <li>
+                            <a href="{% url 'home:career_blog' %}?slug={{ article.slug }}">
+                                {{ article.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Subscribe</h3>
+                <p class="text-gray-600 mb-4">Get career tips and insights delivered to your inbox</p>
+                <form class="subscribe-form">
+                    <input type="email" placeholder="Your email address" class="search-input w-full mb-2">
+                    <button type="submit" class="search-button w-full">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            {% if article_detail %}
+                <!-- Article Detail View -->
+                <div class="article-detail">
+                    <div class="article-meta">
+                        <a href="{% url 'home:career_blog' %}?category={{ article_detail.category }}" class="article-category">
+                            {{ article_detail.category_name }}
+                        </a>
+                        <span class="article-date">{{ article_detail.date }}</span>
+                    </div>
+                    
+                    <h1 class="article-title-large">{{ article_detail.title }}</h1>
+                    
+                    <div class="article-author-info">
+                        <img src="{% static article_detail.author_image %}" alt="{{ article_detail.author }}" class="author-image">
+                        <div>
+                            <div class="author-name">{{ article_detail.author }}</div>
+                            <div class="author-position">{{ article_detail.author_position }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="article-featured-image">
+                        <img src="{% static article_detail.image %}" alt="{{ article_detail.title }}">
+                    </div>
+                    
+                    <div class="article-content">
+                        {{ article_detail.content|safe }}
+                    </div>
+                    
+                    <div class="article-tags">
+                        {% for tag in article_detail.tags %}
+                            <a href="{% url 'home:career_blog' %}?tag={{ tag }}" class="tag">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="article-share">
+                        <span>Share this article:</span>
+                        <div class="share-buttons">
+                            <a href="#" class="share-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                </svg>
+                            </a>
+                            <a href="#" class="share-button">
+                                <svg xmlns="http://www.w3

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - Resume Builder{% endblock %}
+
+{% block content %}
+<!-- About Hero Section -->
+<section class="bg-blue-600 text-white py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="text-4xl font-bold mb-6">About Us</h1>
+            <p class="text-xl">We help job seekers create professional resumes that get noticed by employers.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">{{ company_stats.users_count }}+</div>
+                <div class="text-gray-600">Active Users</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">{{ company_stats.resumes_created }}+</div>
+                <div class="text-gray-600">Resumes Created</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">{{ company_stats.success_stories }}+</div>
+                <div class="text-gray-600">Success Stories</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-blue-600 mb-2">{{ company_stats.countries_reached }}+</div>
+                <div class="text-gray-600">Countries</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="bg-gray-50 py-20">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            {% for member in team_members %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <img src="{{ member.image.url }}" alt="{{ member.name }}" class="w-full h-64 object-cover">
+                <div class="p-6">
+                    <h3 class="text-xl font-semibold mb-2">{{ member.name }}</h3>
+                    <p class="text-gray-600 mb-4">{{ member.position }}</p>
+                    <p class="text-gray-600 mb-4">{{ member.bio }}</p>
+                    <div class="flex space-x-4">
+                        {% if member.linkedin_url %}
+                        <a href="{{ member.linkedin_url }}" target="_blank" class="text-blue-600 hover:text-blue-700">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        {% endif %}
+                        {% if member.twitter_url %}
+                        <a href="{{ member.twitter_url }}" target="_blank" class="text-blue-400 hover:text-blue-500">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

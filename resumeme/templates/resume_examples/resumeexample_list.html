@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Example List{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Resume Examples</h1>
+    <p class="lead mb-5">Discover a variety of resume examples tailored to different industries and experience levels.</p>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for example in examples %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ example.image.url }}" class="card-img-top" alt="{{ example.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ example.title }}</h5>
+                    <p class="card-text">{{ example.description }}</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Industry:</strong> {{ example.industry }}</li>
+                        <li><strong>Experience Level:</strong> {{ example.experience_level }}</li>
+                    </ul>
+                    <a href="{% url 'home:resume_example_detail' example.id %}" class="btn btn-primary mt-3">Explore Example</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

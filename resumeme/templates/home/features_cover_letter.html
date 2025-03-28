@@ -1,0 +1,307 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cover Letter Features{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 mb-3">Professional Cover Letter Builder</h1>
+            <p class="lead mb-4">
+                Craft a compelling cover letter in minutes with our intuitive builder. 
+                Choose from expertly designed templates and make a great first impression.
+            </p>
+            <div class="d-flex gap-3">
+                <a href="{% url 'home:cover_letter_templates' %}" class="btn btn-primary btn-lg">
+                    Create Your Cover Letter
+                </a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg">
+                    Explore Features
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="{% static 'img/cover-letter-builder-hero.jpg' %}" alt="Cover Letter Builder" class="img-fluid rounded shadow-lg">
+        </div>
+    </div>
+    
+    <!-- Key Features Section -->
+    <div id="features" class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5">Powerful Cover Letter Features</h2>
+            <p class="lead">Everything you need to create a professional cover letter</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-file-alt fa-3x text-primary"></i>
+                    </div>
+                    <h4>Professional Templates</h4>
+                    <p class="text-muted">
+                        Choose from a variety of templates designed by HR professionals.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-magic fa-3x text-primary"></i>
+                    </div>
+                    <h4>AI Content Suggestions</h4>
+                    <p class="text-muted">
+                        Get personalized content suggestions based on your industry and experience.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-download fa-3x text-primary"></i>
+                    </div>
+                    <h4>Multiple Export Options</h4>
+                    <p class="text-muted">
+                        Download your cover letter as PDF, DOCX, or TXT, ready to submit to employers.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle fa-3x text-primary"></i>
+                    </div>
+                    <h4>ATS Optimization</h4>
+                    <p class="text-muted">
+                        Our builder ensures your document passes Applicant Tracking Systems.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-layer-group fa-3x text-primary"></i>
+                    </div>
+                    <h4>Section Management</h4>
+                    <p class="text-muted">
+                        Easily add, remove, and reorder sections to highlight your strengths.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-language fa-3x text-primary"></i>
+                    </div>
+                    <h4>Multilingual Support</h4>
+                    <p class="text-muted">
+                        Create cover letters in multiple languages for international job applications.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonials -->
+    <div class="row my-5 bg-light p-5 rounded">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5">What Our Users Say</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="card-text">
+                        "The cover letter builder was incredibly easy to use and helped me create a professional letter in no time. Highly recommend!"
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'img/testimonial-1.jpg' %}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                        <div>
+                            <h6 class="mb-0">Emily Johnson</h6>
+                            <small class="text-muted">Marketing Specialist</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="card-text">
+                        "I loved the AI content suggestions. It made writing my cover letter so much easier and more effective."
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'img/testimonial-2.jpg' %}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                        <div>
+                            <h6 class="mb-0">Robert Chen</h6>
+                            <small class="text-muted">Software Developer</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="card-text">
+                        "The export options were exactly what I needed. I could easily download my cover letter in multiple formats."
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'img/testimonial-3.jpg' %}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                        <div>
+                            <h6 class="mb-0">Sarah Williams</h6>
+                            <small class="text-muted">Project Manager</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="row my-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-5 text-center">
+                    <h2 class="card-title mb-3">Ready to Create Your Professional Cover Letter?</h2>
+                    <p class="card-text mb-4">
+                        Join thousands of job seekers who have successfully landed their dream jobs with our cover letter builder.
+                    </p>
+                    <a href="{% url 'home:cover_letter_templates' %}" class="btn btn-light btn-lg">
+                        Get Started Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .card {
+        transition: transform 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-outline-secondary {
+        border-color: #6c757d;
+        color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .display-4, .display-5 {
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .lead {
+        color: #6c757d;
+    }
+
+    .text-primary {
+        color: #007bff !important;
+    }
+
+    .text-warning {
+        color: #ffc107 !important;
+    }
+
+    .rounded-circle {
+        border-radius: 50% !important;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .bg-primary {
+        background-color: #007bff !important;
+    }
+
+    .text-white {
+        color: #fff !important;
+    }
+
+    .p-5 {
+        padding: 3rem !important;
+    }
+
+    .mb-3, .mb-4, .mb-5 {
+        margin-bottom: 1rem !important;
+    }
+
+    .d-flex {
+        display: flex !important;
+    }
+
+    .gap-3 {
+        gap: 1rem !important;
+    }
+</style>
+{% endblock %}

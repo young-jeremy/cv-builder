@@ -1,0 +1,362 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Format Guide - Choose the Right Resume Structure{% endblock %}
+
+{% block extra_css %}
+<style>
+    .formats-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+    }
+    
+    .formats-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background-color: #f8fafc;
+        padding: 2.5rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .format-tabs {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .format-tab {
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        color: #4a5568;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-bottom: 3px solid transparent;
+    }
+    
+    .format-tab.active {
+        color: #1a91f0;
+        border-bottom-color: #1a91f0;
+    }
+    
+    .format-tab:hover:not(.active) {
+        color: #2b6cb0;
+    }
+    
+    .format-content {
+        display: none;
+        padding: 1rem 0;
+    }
+    
+    .format-content.active {
+        display: block;
+    }
+    
+    .format-card {
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+        margin-bottom: 2rem;
+        background-color: white;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .format-header {
+        background-color: #f8fafc;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .format-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #2d3748;
+    }
+    
+    .format-badge {
+        display: inline-block;
+        background-color: #ebf4ff;
+        color: #4299e1;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        margin-top: 0.5rem;
+    }
+    
+    .format-body {
+        padding: 1.5rem;
+    }
+    
+    .format-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .format-section h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #2d3748;
+    }
+    
+    .advantage-list, .disadvantage-list, .structure-list, .case-list {
+        padding-left: 1.5rem;
+    }
+    
+    .advantage-list li, .structure-list li, .case-list li {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    
+    .advantage-list li:before {
+        content: '✓';
+        color: #48bb78;
+        font-weight: bold;
+        position: absolute;
+        left: -1.5rem;
+    }
+    
+    .disadvantage-list li {
+        margin-bottom: 0.5rem;
+        position: relative;
+    }
+    
+    .disadvantage-list li:before {
+        content: '✗';
+        color: #f56565;
+        font-weight: bold;
+        position: absolute;
+        left: -1.5rem;
+    }
+    
+    .structure-list li:before {
+        content: '•';
+        color: #4299e1;
+        font-weight: bold;
+        position: absolute;
+        left: -1.5rem;
+    }
+    
+    .case-list li:before {
+        content: '→';
+        color: #805ad5;
+        font-weight: bold;
+        position: absolute;
+        left: -1.5rem;
+    }
+    
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .comparison-table th, .comparison-table td {
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        text-align: left;
+    }
+    
+    .comparison-table th {
+        background-color: #f8fafc;
+        font-weight: 600;
+    }
+    
+    .format-visual {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1.5rem;
+        background-color: #f8fafc;
+    }
+    
+    @media (max-width: 640px) {
+        .format-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .format-tab {
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="formats-container">
+    <div class="formats-header">
+        <h1 class="text-3xl font-bold mb-2">Resume Format Guide</h1>
+        <p class="text-gray-600">Choose the right resume format to showcase your qualifications effectively</p>
+    </div>
+    
+    <div class="mb-8">
+        <p>The format of your resume is just as important as its content. Different resume formats highlight different aspects of your experience and qualifications. Choosing the right format can make your resume more effective for specific career situations and job applications.</p>
+    </div>
+    
+    <!-- Format Tabs -->
+    <div class="format-tabs">
+        {% for format in formats %}
+        <div class="format-tab {% if forloop.first %}active{% endif %}" data-tab="{{ format.id }}">{{ format.name }}</div>
+        {% endfor %}
+    </div>
+    
+    <!-- Format Content Sections -->
+    {% for format in formats %}
+    <div id="{{ format.id }}-content" class="format-content {% if forloop.first %}active{% endif %}">
+        <div class="format-card">
+            <div class="format-header">
+                <h2>{{ format.name }} Format</h2>
+                <div class="format-badge">Best for: {{ format.best_for }}</div>
+            </div>
+            
+            <div class="format-body">
+                <div class="format-section">
+                    <p>{{ format.description }}</p>
+                </div>
+                
+                <div class="format-section">
+                    <h3>Structure</h3>
+                    <ul class="structure-list">
+                        {% for item in format.structure %}
+                        <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="format-section">
+                        <h3>Advantages</h3>
+                        <ul class="advantage-list">
+                            {% for advantage in format.advantages %}
+                            <li>{{ advantage }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="format-section">
+                        <h3>Disadvantages</h3>
+                        <ul class="disadvantage-list">
+                            {% for disadvantage in format.disadvantages %}
+                            <li>{{ disadvantage }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="format-section">
+                    <h3>Example Use Cases</h3>
+                    <ul class="case-list">
+                        {% for case in format.example_cases %}
+                        <li>{{ case }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <!-- Format visual representation example -->
+                <div class="format-visual">
+                    <h4 class="font-medium mb-3 text-center">{{ format.name }} Format Visual Example</h4>
+                    
+                    <!-- This is a simple visual representation of the format structure -->
+                    <div class="bg-white p-4 border border-gray-300 rounded">
+                        {% for item in format.structure %}
+                        <div class="py-2 {% if forloop.first %}border-b border-gray-300{% endif %}">
+                            <div class="text-sm text-gray-500">{{ item }}</div>
+                            <div class="mt-1 h-4 bg-blue-100 rounded"></div>
+                            {% if item == 'Work experience (most recent first)' or item == 'Skills and qualifications (grouped by type)' or item == 'Key skills and qualifications' %}
+                            <div class="mt-1 h-4 bg-blue-100 rounded"></div>
+                            <div class="mt-1 h-4 bg-blue-100 rounded"></div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <!-- Comparison Table -->
+    <h2 class="text-2xl font-bold mb-4">Format Comparison at a Glance</h2>
+    
+    <div class="overflow-x-auto">
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Format</th>
+                    <th>Best For</th>
+                    <th>Focus</th>
+                    <th>ATS Friendly</th>
+                    <th>Employment Gaps</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Chronological</td>
+                    <td>Steady career progression</td>
+                    <td>Work history</td>
+                    <td>Highly</td>
+                    <td>Highlights gaps</td>
+                </tr>
+                <tr>
+                    <td>Functional</td>
+                    <td>Career changers, gaps</td>
+                    <td>Skills and abilities</td>
+                    <td>Less</td>
+                    <td>Minimizes gaps</td>
+                </tr>
+                <tr>
+                    <td>Combination</td>
+                    <td>Diverse experience</td>
+                    <td>Skills + Experience</td>
+                    <td>Moderately</td>
+                    <td>Can minimize gaps</td>
+                </tr>
+                <tr>
+                    <td>Targeted</td>
+                    <td>Specific positions</td>
+                    <td>Relevant qualifications</td>
+                    <td>Highly</td>
+                    <td>Can de-emphasize gaps</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- CTA -->
+    <div class="mt-10 text-center">
+        <h3 class="text-xl font-semibold mb-4">Ready to create your resume?</h3>
+        <p class="mb-6">Apply what you've learned by creating a professional resume in your preferred format.</p>
+        <a href="{% url 'home:create_resume' %}" class="inline-block bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-200">
+            Build Your Resume Now
+        </a>
+    </div>
+</div>
+
+<script>
+    // JavaScript for format tabs
+    document.addEventListener('DOMContentLoaded', function() {
+        const formatTabs = document.querySelectorAll('.format-tab');
+        
+        formatTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.format-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.format-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const formatId = tab.getAttribute('data-tab');
+                document.getElementById(`${formatId}-content`).classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

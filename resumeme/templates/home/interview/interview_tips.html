@@ -1,0 +1,573 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Interview Tips - Ace Your Job Interviews{% endblock %}
+
+{% block extra_css %}
+<style>
+    .tips-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .tips-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        background-color: #f8fafc;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .category-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e0;
+    }
+    
+    .category-icon {
+        background-color: #ebf8ff;
+        color: #3182ce;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+    
+    .category-icon span {
+        font-size: 1.5rem;
+    }
+    
+    .category-name {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+    
+    .category-description {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #2d3748;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .section-subtitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #4a5568;
+    }
+    
+    .question-tabs {
+        display: flex;
+        border-bottom: 1px solid #e2e8f0;
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+        padding-bottom: 1px;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .question-tab {
+        padding: 0.75rem 1.25rem;
+        font-weight: 500;
+        color: #4a5568;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+    
+    .question-tab.active {
+        color: #3182ce;
+        border-bottom-color: #3182ce;
+    }
+    
+    .question-content {
+        display: none;
+    }
+    
+    .question-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .question-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .question-text {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        color: #2d3748;
+    }
+    
+    .tips-text {
+        margin-bottom: 1rem;
+        color: #4a5568;
+    }
+    
+    .example-box {
+        background-color: #f8fafc;
+        border-left: 4px solid #3182ce;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        font-style: italic;
+        color: #4a5568;
+    }
+    
+    .checklist-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .checklist-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        color: #2d3748;
+    }
+    
+    .checklist-items {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .checklist-item {
+        padding: 0.5rem 0;
+        padding-left: 2rem;
+        position: relative;
+    }
+    
+    .checklist-item:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.7rem;
+        height: 1.25rem;
+        width: 1.25rem;
+        border: 2px solid #3182ce;
+        border-radius: 0.25rem;
+    }
+    
+    .industry-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .industry-tab {
+        padding: 0.5rem 1rem;
+        background-color: #edf2f7;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #4a5568;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .industry-tab.active, .industry-tab:hover {
+        background-color: #3182ce;
+        color: white;
+    }
+    
+    .industry-content {
+        display: none;
+    }
+    
+    .industry-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    .tips-section {
+        margin-bottom: 3rem;
+    }
+    
+    .tips-section:last-child {
+        margin-bottom: 0;
+    }
+    
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .tips-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+    }
+    
+    .tips-card-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        color: #2d3748;
+    }
+    
+    .tips-list {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    .tips-item {
+        padding: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    .tips-item:before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        top: 0.5rem;
+        color: #3182ce;
+        font-size: 1.25rem;
+        line-height: 1;
+    }
+    
+    .resource-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .resource-name {
+        font-weight: 600;
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+    }
+    
+    .resource-description {
+        color: #4a5568;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-features {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .resource-feature {
+        padding: 0.25rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+        font-size: 0.875rem;
+    }
+    
+    .resource-feature:before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 0.25rem;
+        color: #38a169;
+        font-weight: bold;
+    }
+    
+    .resource-link {
+        margin-top: auto;
+        padding: 0.75rem 1rem;
+        background-color: #3182ce;
+        color: white;
+        text-align: center;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+    
+    .resource-link:hover {
+        background-color: #2c5282;
+        text-decoration: none;
+    }
+    
+    /* Section highlighting on scroll */
+    .highlight-section {
+        scroll-margin-top: 2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+        .categories-grid {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+        
+        .tips-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="tips-container">
+    <div class="tips-header">
+        <h1 class="text-3xl font-bold mb-4">{{ page_title }}</h1>
+        <p class="text-xl text-gray-600">{{ page_description }}</p>
+    </div>
+    
+    <!-- Categories Section -->
+    <div class="categories-grid">
+        {% for category in categories %}
+        <a href="#{{ category.id }}" class="category-card">
+            <div class="category-icon">
+                <span class="material-icons">{{ category.icon }}</span>
+            </div>
+            <h2 class="category-name">{{ category.name }}</h2>
+            <p class="category-description">{{ category.description }}</p>
+        </a>
+        {% endfor %}
+    </div>
+    
+    <!-- Preparation Section -->
+    <div id="preparation" class="tips-section highlight-section">
+        <h2 class="section-title">Interview Preparation</h2>
+        
+        <p class="mb-6">Thorough preparation is key to interview success. Use this checklist to ensure you're ready for your upcoming interview:</p>
+        
+        {% for checklist in preparation_checklist %}
+        <div class="checklist-card">
+            <h3 class="checklist-title">{{ checklist.category }}</h3>
+            <ul class="checklist-items">
+                {% for item in checklist.items %}
+                <li class="checklist-item">{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+        
+        <p class="mb-6">Download our <a href="#" class="text-blue-600 hover:underline">Complete Interview Preparation Guide</a> for a detailed walkthrough of the preparation process.</p>
+    </div>
+    
+    <!-- Common Questions Section -->
+    <div id="questions" class="tips-section highlight-section">
+        <h2 class="section-title">Common Interview Questions</h2>
+        
+        <p class="mb-6">Being prepared for these frequently asked questions will help you respond confidently and effectively during your interview.</p>
+        
+        <div class="question-tabs">
+            {% for category in question_categories %}
+            <div class="question-tab {% if forloop.first %}active{% endif %}" data-tab="{{ category.id }}">{{ category.name }}</div>
+            {% endfor %}
+        </div>
+        
+        {% for category in question_categories %}
+        <div id="{{ category.id }}-content" class="question-content {% if forloop.first %}active{% endif %}">
+            {% for q in category.questions %}
+            <div class="question-card">
+                <h3 class="question-text">{{ q.question }}</h3>
+                <p class="tips-text"><strong>Tips:</strong> {{ q.tips }}</p>
+                <p class="text-sm text-gray-700 font-medium mb-2">Sample Answer:</p>
+                <div class="example-box">
+                    <p>{{ q.example|linebreaksbr }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Behavioral Questions Section -->
+    <div id="behavioral" class="tips-section highlight-section">
+        <h2 class="section-title">Behavioral Interview Questions</h2>
+        
+        <p class="mb-6">Behavioral questions ask about past experiences to predict future performance. The STAR method can help you structure effective responses:</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                <h3 class="font-bold text-blue-700 mb-2">S - Situation</h3>
+                <p class="text-sm">Describe the context and background of the specific situation.</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                <h3 class="font-bold text-blue-700 mb-2">T - Task</h3>
+                <p class="text-sm">Explain your responsibility or role in that situation.</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                <h3 class="font-bold text-blue-700 mb-2">A - Action</h3>
+                <p class="text-sm">Describe the specific actions you took to address the situation.</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                <h3 class="font-bold text-blue-700 mb-2">R - Result</h3>
+                <p class="text-sm">Share the outcomes of your actions, preferably with measurable results.</p>
+            </div>
+        </div>
+        
+        <p class="mb-6">For additional guidance, see the Behavioral Questions tab in the Common Questions section above.</p>
+    </div>
+    
+    <!-- Technical Interview Section -->
+    <div id="technical" class="tips-section highlight-section">
+        <h2 class="section-title">Technical Interviews</h2>
+        
+        <p class="mb-6">Technical interviews assess your specialized knowledge and problem-solving abilities. Preparation strategies vary by field:</p>
+        
+        <div class="industry-tabs">
+            {% for industry in industries %}
+            <div class="industry-tab {% if forloop.first %}active{% endif %}" data-industry="{{ industry.id }}">{{ industry.name }}</div>
+            {% endfor %}
+        </div>
+        
+        {% for industry in industries %}
+        <div id="{{ industry.id }}-content" class="industry-content {% if forloop.first %}active{% endif %}">
+            <div class="bg-white border border-gray-200 rounded-lg p-5 mb-6">
+                <h3 class="text-lg font-semibold mb-3">{{ industry.name }} Interview Tips</h3>
+                <ul class="list-disc pl-5 space-y-2">
+                    {% for tip in industry.specific_tips %}
+                    <li>{{ tip }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <h3 class="section-subtitle">General Technical Interview Strategies</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white p-5 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold mb-3">Think Aloud</h4>
+                <p>Verbalize your thought process as you work through problems. This gives the interviewer insight into your problem-solving approach, even if you don't immediately arrive at the correct solution.</p>
+            </div>
+            <div class="bg-white p-5 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold mb-3">Clarify Requirements</h4>
+                <p>Ask questions to ensure you understand the problem before diving into a solution. This demonstrates thoughtfulness and helps you avoid solving the wrong problem.</p>
+            </div>
+            <div class="bg-white p-5 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold mb-3">Consider Edge Cases</h4>
+                <p>Proactively identify and address potential edge cases or limitations in your solution. This shows attention to detail and thoroughness in your approach.</p>
+            </div>
+            <div class="bg-white p-5 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold mb-3">Iterate and Improve</h4>
+                <p>Start with a working solution, then look for opportunities to optimize. Explain trade-offs between different approaches, demonstrating your analytical abilities.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Virtual Interviews Section -->
+    <div id="remote" class="tips-section highlight-section">
+        <h2 class="section-title">Virtual Interview Tips</h2>
+        
+        <p class="mb-6">Virtual interviews require specific preparation to ensure you make a strong impression through a screen.</p>
+        
+        <div class="tips-grid">
+            {% for section in virtual_interview_tips %}
+            <div class="tips-card">
+                <h3 class="tips-card-title">{{ section.title }}</h3>
+                <ul class="tips-list">
+                    {% for tip in section.tips %}
+                    <li class="tips-item">{{ tip }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-8 bg-blue-50 p-5 rounded-lg border border-blue-100">
+            <h3 class="font-semibold text-lg mb-3">Virtual Interview Checklist</h3>
+            <p class="mb-3">48 Hours Before:</p>
+            <ul class="list-disc pl-5 mb-4">
+                <li>Confirm interview details and time zone</li>
+                <li>Test your camera, microphone, and internet connection</li>
+                <li>Install and test any required software</li>
+                <li>Choose your interview location</li>
+            </ul>
+            
+            <p class="mb-3">Day of Interview:</p>
+            <ul class="list-disc pl-5 mb-4">
+                <li>Close unnecessary applications</li>
+                <li>Set up lighting and adjust camera position</li>
+                <li>Prepare water and notes (out of camera view)</li>
+                <li>Dress professionally from head to toe (in case you need to stand)</li>
+                <li>Connect 5-10 minutes early</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Follow-up Section -->
+    <div id="followup" class="tips-section highlight-section">
+        <h2 class="section-title">Follow-Up Strategies</h2>
+        
+        <p class="mb-6">What you do after the interview can be almost as important as the interview itself. These strategies can help you stand out from other candidates.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-5 border border-gray-200 rounded-lg">
+                <h3 class="font-semibold mb-3 text-lg">Send a Thank-You Note</h3>
+                <p class="mb-3">Send a personalized thank-you email within 24 hours of your interview. Reference specific topics from your conversation to show engagement and attention to detail.</p>
+                <div class="bg-gray-50 p-3 rounded border border-gray-200">
+                    <h4 class="font-medium mb-2">Example:</h4>
+                    <p class="text-sm">
+                        "Dear Ms. Johnson,<br><br>
+                        Thank you for taking the time to discuss the Marketing Manager position with me today. I enjoyed learning more about your team's innovative approach to content marketing, particularly the campaign strategy you described for the upcoming product launch.<br><br>
+                        Our conversation reinforced my enthusiasm for the role and my confidence that my experience developing integrated marketing campaigns would allow me to make valuable contributions to your team. The collaborative culture you described aligns perfectly with my work style.<br><br>
+                        I look forward to the possibility of working together. Please don't hesitate to contact me if you need any additional information.<br><br>
+                        Sincerely,<br>
+                        Alex Taylor"
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-white p-5 border border-gray-200 rounded-lg">
+                <h3 class="font-semibold mb-3 text-lg">Follow-Up Timeline</h3>
+                <ul class="space-y-3">
+                    <li>
+                        <span class="font-medium">Within 24 hours:</span>
+                        <p class="text-sm">Send thank-you emails to each interviewer</p>
+                    </li>
+                    <li>
+                        <span class="font-medium">Within 1-2 days:</span>
+                        <p class="text-sm">Send any additional information promised during the interview</p>
+                    </li>
+                    <li>
+                        <span class="font-medium">If given a timeframe:</span>
+                        <p class

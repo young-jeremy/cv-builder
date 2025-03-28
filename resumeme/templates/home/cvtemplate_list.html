@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Templates - Choose Your Design{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<section class="bg-blue-600 text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl font-bold mb-4">Professional Resume Templates</h1>
+        <p class="text-xl max-w-3xl mx-auto">Choose from our collection of professionally designed resume templates to make your application stand out.</p>
+    </div>
+</section>
+
+<!-- Templates Grid -->
+<section class="py-16">
+    <div class="container mx-auto px-4">
+        <!-- Filter Controls -->
+        <div class="mb-10 flex flex-wrap justify-center gap-4">
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-full hover:bg-blue-700 transition duration-300">All Templates</button>
+            <button class="bg-gray-200 text-gray-800 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300">Professional</button>
+            <button class="bg-gray-200 text-gray-800 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300">Creative</button>
+            <button class="bg-gray-200 text-gray-800 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300">Simple</button>
+            <button class="bg-gray-200 text-gray-800 px-6 py-2 rounded-full hover:bg-gray-300 transition duration-300">Modern</button>
+        </div>
+
+        <!-- Templates Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for object in object_list %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                <div class="relative">
+                    <img src="{{ object.preview_image.url }}" alt="{{ object.name }}" class="w-full h-80 object-cover">
+                    {% if object.is_premium %}
+                    <div class="absolute top-0 right-0 bg-yellow-500 text-white px-4 py-1">Premium</div>
+                    {% endif %}
+                </div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2">{{ object.name }}</h3>
+                    <div class="flex justify-between items-center mt-4">
+                        <a href="{% url 'template_preview' object.id %}" class="text-blue-600 hover:text-blue-800">Preview</a>
+                        <a href="{% url 'create_resume' %}?template={{ object.id }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300">Use Template</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-16">
+                <p class="text-xl text-gray-600">No templates found. Please check back later.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

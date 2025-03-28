@@ -1,0 +1,419 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6">
+            <h1 class="display-4 mb-3">Professional CV Builder</h1>
+            <p class="lead mb-4">
+                Create a standout CV in minutes with our easy-to-use builder. 
+                Choose from expert-designed templates and get hired faster.
+            </p>
+            <div class="d-flex gap-3">
+                <a href="{% url 'home:cv_templates' %}" class="btn btn-primary btn-lg">
+                    Create Your CV
+                </a>
+                <a href="#features" class="btn btn-outline-secondary btn-lg">
+                    Explore Features
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="{% static 'img/cv-builder-hero.jpg' %}" alt="CV Builder" class="img-fluid rounded shadow-lg">
+        </div>
+    </div>
+    
+    <!-- Key Features Section -->
+    <div id="features" class="row mb-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5">Powerful CV Building Features</h2>
+            <p class="lead">Everything you need to create a professional CV</p>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-file-alt fa-3x text-primary"></i>
+                    </div>
+                    <h4>Professional Templates</h4>
+                    <p class="text-muted">
+                        Choose from dozens of ATS-friendly templates designed by HR professionals.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-magic fa-3x text-primary"></i>
+                    </div>
+                    <h4>AI Content Suggestions</h4>
+                    <p class="text-muted">
+                        Get personalized content suggestions based on your industry and experience.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-download fa-3x text-primary"></i>
+                    </div>
+                    <h4>Multiple Export Options</h4>
+                    <p class="text-muted">
+                        Download your CV as PDF, DOCX, or TXT, ready to submit to employers.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-check-circle fa-3x text-primary"></i>
+                    </div>
+                    <h4>ATS Optimization</h4>
+                    <p class="text-muted">
+                        Our CV builder ensures your document passes Applicant Tracking Systems.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-layer-group fa-3x text-primary"></i>
+                    </div>
+                    <h4>Section Management</h4>
+                    <p class="text-muted">
+                        Easily add, remove, and reorder sections to highlight your strengths.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-language fa-3x text-primary"></i>
+                    </div>
+                    <h4>Multilingual Support</h4>
+                    <p class="text-muted">
+                        Create CVs in multiple languages for international job applications.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- How It Works Section -->
+    <div class="row my-5 py-5 bg-light rounded">
+        <div class="col-12 text-center mb-5">
+            <h2 class="display-5">How It Works</h2>
+            <p class="lead">Create your professional CV in 3 simple steps</p>
+        </div>
+        
+        <div class="col-md-4 text-center mb-4">
+            <div class="step-circle mb-3">1</div>
+            <h4>Choose a Template</h4>
+            <p>
+                Browse our collection of professionally designed CV templates and select the one that fits your style.
+            </p>
+        </div>
+        
+        <div class="col-md-4 text-center mb-4">
+            <div class="step-circle mb-3">2</div>
+            <h4>Add Your Details</h4>
+            <p>
+                Fill in your information with our easy-to-use editor. Our AI will help you write compelling content.
+            </p>
+        </div>
+        
+        <div class="col-md-4 text-center mb-4">
+            <div class="step-circle mb-3">3</div>
+            <h4>Download & Apply</h4>
+            <p>
+                Export your finished CV in your preferred format and start applying for jobs with confidence.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Template Showcase -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5">Premium CV Templates</h2>
+            <p class="lead mb-5">Stand out with our professionally designed templates</p>
+        </div>
+        
+        <div class="col-12">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/cv-template-1.jpg' %}" class="card-img-top" alt="Professional CV Template">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Professional</h5>
+                            <p class="card-text">Clean and minimalist design perfect for corporate positions.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/cv-template-2.jpg' %}" class="card-img-top" alt="Creative CV Template">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Creative</h5>
+                            <p class="card-text">Eye-catching design ideal for creative industries.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{% static 'img/cv-template-3.jpg' %}" class="card-img-top" alt="Modern CV Template">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Modern</h5>
+                            <p class="card-text">Contemporary layout perfect for tech and startups.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'home:cv_templates' %}" class="btn btn-primary">View All Templates</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonials -->
+    <div class="row my-5 bg-light p-5 rounded">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5">What Our Users Say</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="card-text">
+                        "I created my CV in less than an hour and got called for an interview the next day after submitting it. The templates are professional and the guidance was incredibly helpful."
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'img/testimonial-1.jpg' %}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                        <div>
+                            <h6 class="mb-0">Emily Johnson</h6>
+                            <small class="text-muted">Marketing Specialist</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="card-text">
+                        "As someone switching careers, I wasn't sure how to present my experience. The CV builder made it easy to highlight my transferable skills. I've now secured a position in my new field!"
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'img/testimonial-2.jpg' %}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                        <div>
+                            <h6 class="mb-0">Robert Chen</h6>
+                            <small class="text-muted">Software Developer</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0">
+                <div class="card-body">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <p class="card-text">
+                        "The export options are excellent - I needed both PDF and Word formats for different applications, and the quality of both was perfect. The AI suggestions saved me hours of writing."
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <div class="d-flex align-items-center">
+                        <img src="{% static 'img/testimonial-3.jpg' %}" class="rounded-circle me-3" width="50" height="50" alt="User">
+                        <div>
+                            <h6 class="mb-0">Sarah Williams</h6>
+                            <small class="text-muted">Project Manager</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="row my-5">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5">Frequently Asked Questions</h2>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="accordion" id="faqAccordion1">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Is my CV optimized for ATS?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion1">
+                        <div class="accordion-body">
+                            Yes! All our CV templates are designed to be ATS-friendly. They use a clean structure and formatting that can be easily parsed by Applicant Tracking Systems, ensuring your CV gets past the first screening stage.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Can I create multiple CVs?
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion1">
+                        <div class="accordion-body">
+                            Absolutely! You can create and save multiple versions of your CV tailored for different positions or industries. This allows you to quickly apply to various job opportunities with targeted CVs.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            What formats can I download my CV in?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion1">
+                        <div class="accordion-body">
+                            Our platform allows you to download your CV in PDF, DOCX (Microsoft Word), and plain text formats. The PDF format maintains perfect formatting for digital applications, while DOCX allows for further editing if needed.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="accordion" id="faqAccordion2">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+                            How does the AI content suggestion work?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse show" aria-labelledby="headingFour" data-bs-parent="#faqAccordion2">
+                        <div class="accordion-body">
+                            Our AI analyzes the information you provide about your experience and skills, then suggests professionally written bullet points and descriptions tailored to your industry. You can use these suggestions as-is or modify them to better match your specific experience.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                            Can I use my own custom fonts and colors?
+                        </button>
+                    </h2>
+                    <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion2">
+                        <div class="accordion-body">
+                            Yes, our premium plans allow you to customize fonts, colors, and spacing to create a unique look while maintaining professional standards. We also provide guidance on which fonts and colors are most appropriate for different industries.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingSix">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                            Is my data secure?
+                        </button>
+                    </h2>
+                    <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion2">
+                        <div class="accordion-body">
+                            We take data security very seriously. All your personal information and CV content is encrypted and stored securely. We never share your information with third parties without your explicit consent. You can delete your account and all associated data at any time.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Call to Action -->
+    <div class="row my-5">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body p-5 text-center">
+                    <h2 class="card-title mb-3">Ready to Create Your Professional CV?</h2>
+                    <p class="card-text mb-4">
+                        Join thousands of job seekers who have successfully landed their dream jobs with our CV builder.
+                    </p>
+                    <a href="{% url 'home:cv_templates' %}" class="btn btn-light btn-lg">
+                        Get Started Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .step-circle {
+        width: 60px;
+        height: 60px;
+        background-color: #0d6efd;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0 auto;
+    }
+    
+    .card {
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-10px);
+    }
+</style>
+{% endblock %}

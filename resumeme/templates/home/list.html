@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">CV Templates</h1>
+
+    <!-- Category Filter -->
+    <div class="category-filter mb-4">
+        <div class="btn-group">
+            <a href="{% url 'home:cv_templates' %}" 
+               class="btn btn-outline-primary {% if not request.GET.category %}active{% endif %}">
+                All
+            </a>
+            {% for category in categories %}
+            <a href="{% url 'home:cv_templates' %}?category={{ category }}" 
+               class="btn btn-outline-primary {% if request.GET.category == category %}active{% endif %}">
+                {{ category|title }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Templates Grid -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for template in templates %}
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ template.thumbnail.url }}" 
+                     class="card-img-top" 
+                     alt="{{ template.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ template.name }}</h5>
+                    <p class="card-text">{{ template.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">{{ template.category|title }}</span>
+                        <a href="{{ template.get_absolute_url }}" 
+                           class="btn btn-outline-primary">View Template</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No templates found in this category.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1">&laquo; First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+            </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

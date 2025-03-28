@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cover Letter Builder - Create Your Professional Cover Letter{% endblock %}
+
+{% block extra_css %}
+<style>
+    .builder-container {
+        display: flex;
+        min-height: calc(100vh - 80px);
+    }
+    
+    .editor-sidebar {
+        width: 300px;
+        background-color: #f7fafc;
+        border-right: 1px solid #e2e8f0;
+        padding: 1.5rem;
+        overflow-y: auto;
+    }
+    
+    .editor-section {
+        margin-bottom: 2rem;
+    }
+    
+    .editor-section-title {
+        font-weight: 600;
+        font-size: 1.125rem;
+        margin-bottom: 1rem;
+        color: #2d3748;
+    }
+    
+    .editor-field {
+        margin-bottom: 1rem;
+    }
+    
+    .editor-label {
+        display: block;
+        font-weight: 500;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    
+    .editor-input,
+    .editor-textarea {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        color: #2d3748;
+    }
+    
+    .editor-textarea {
+        height: 100px;
+        resize: vertical;
+    }
+    
+    .preview-container {
+        flex-grow: 1;
+        padding: 2rem;
+        overflow-y: auto;
+    }
+    
+    .preview-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .preview-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+    }
+    
+    .cover-letter-preview {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .cover-letter-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .cover-letter-section-title {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+    
+    .cover-letter-content {
+        color: #4a5568;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="builder-container">
+    <!-- Editor Sidebar -->
+    <div class="editor-sidebar">
+        {% for section in sections %}
+        <div class="editor-section">
+            <div class="editor-section-title">{{ section.name }}</div>
+            {% for field in section.fields %}
+            <div class="editor-field">
+                <label class="editor-label" for="{{ field.id }}">{{ field.label }}</label>
+                {% if field.type == 'textarea' %}
+                <textarea id="{{ field.id }}" class="editor-textarea" placeholder="{{ field.placeholder }}">{{ sample_data[section.id][field.id] }}</textarea>
+                {% else %}
+                <input type="{{ field.type }}" id="{{ field.id }}" class="editor-input" placeholder="{{ field.placeholder }}" value="{{ sample_data[section.id][field.id] }}">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Preview Container -->
+    <div class="preview-container">
+        <div class="preview-header">
+            <h1 class="preview-title">Cover Letter Preview</h1>
+        </div>
+        <div class="cover-letter-preview">
+            {% for section in sections %}
+            <div class="cover-letter-section">
+                <div class="cover-letter-section-title">{{ section.name }}</div>
+                <div class="cover-letter-content">
+                    {% for field in section.fields %}
+                    <p>{{ sample_data[section.id][field.id] }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

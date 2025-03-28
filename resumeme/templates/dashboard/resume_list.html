@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume List{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-4 mb-4">Your Resumes</h1>
+    <p class="lead mb-5">Manage your resumes and create new ones to enhance your job applications.</p>
+    
+    <div class="row mb-4">
+        <div class="col text-end">
+            <a href="{% url 'dashboard:create_resume' %}" class="btn btn-success">Create New Resume</a>
+        </div>
+    </div>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for resume in resumes %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ resume.title }}</h5>
+                    <p class="card-text">{{ resume.description }}</p>
+                    <ul class="list-unstyled">
+                        <li><strong>Last Updated:</strong> {{ resume.last_updated|date:"F j, Y" }}</li>
+                        <li><strong>Status:</strong> {{ resume.status }}</li>
+                    </ul>
+                    <div class="d-flex justify-content-between mt-3">
+                        <a href="{% url 'dashboard:view_resume' resume.id %}" class="btn btn-primary">View</a>
+                        <a href="{% url 'dashboard:edit_resume' resume.id %}" class="btn btn-secondary">Edit</a>
+                        <form method="post" action="{% url 'dashboard:delete_resume' resume.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No resumes found. <a href="{% url 'dashboard:create_resume' %}">Create a new resume</a> to get started.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

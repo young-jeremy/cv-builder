@@ -1,0 +1,114 @@
+{% extends 'base_dashboard.html' %}
+{% load static %}
+
+{% block title %}{{ template.name }} - Preview{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/template_preview.css' %}">
+<style>
+    /* Inline template-specific CSS */
+    {{ template.css }}
+    
+    /* Override with user customizations if available */
+    {% if selection %}
+    :root {
+        --primary-color: {{ selection.primary_color|default:template.primary_color }};
+        --secondary-color: {{ selection.secondary_color|default:template.secondary_color }};
+        --text-color: {{ selection.text_color|default:template.text_color }};
+        --font-family: {{ selection.font_family|default:'Arial, sans-serif' }};
+    }
+    {% else %}
+    :root {
+        --primary-color: {{ template.primary_color }};
+        --secondary-color: {{ template.secondary_color }};
+        --text-color: {{ template.text_color }};
+        --font-family: Arial, sans-serif;
+    }
+    {% endif %}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'dashboard:template_gallery' %}">Templates</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ template.name }}</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0 text-gray-800">{{ template.name }}</h1>
+            <p class="text-muted">{{ template.description }}</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-0">
+                    <div class="resume-preview-container">
+                        <div class="resume-preview">
+                            {% include "dashboard/partials/resume_preview.html" with template=template user_resume=user_resume %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Template Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6>Category</h6>
+                        <p>{{ template.get_category_display }}</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Features</h6>
+                        <ul class="list-unstyled">
+                            {% if template.has_photo %}
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Photo support</li>
+                            {% endif %}
+                            {% if template.allows_color_customization %}
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Color customization</li>
+                            {% endif %}
+                            {% if template.allows_font_customization %}
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Font customization</li>
+                            {% endif %}
+                            {% if template.allows_section_reordering %}
+                            <li><i class="fas fa-check-circle text-success me-2"></i> Section reordering</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    {% if template.is_premium and not request.user.profile.has_premium_access %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-crown me-2"></i> This is a premium template. <a href="{% url 'subscription:plans' %}">Upgrade</a> to use it.
+                    </div>
+                    {% else %}
+                    <form action="{% url 'dashboard:select_template' template.slug %}" method="post">
+                        {% csrf_token %}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check me-2"></i> Use This Template
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        <a href="{% url 'dashboard:customize_template' template.slug %}" class="btn btn-link">
+                            Customize Colors & Fonts
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
