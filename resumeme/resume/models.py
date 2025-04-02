@@ -4,6 +4,8 @@ from django.utils.text import slugify
 from colorfield.fields import ColorField
 import uuid
 
+from home.models import Template
+
 
 class Resume(models.Model):
     """Main resume model that contains user's resume data."""
@@ -50,12 +52,26 @@ class Resume(models.Model):
         return f"{self.full_name}'s Resume - {self.title}"
 
     def save(self, *args, **kwargs):
+        # Handle template assignment
+        if hasattr(self, '_template_to_assign'):
+            # Get the correct Template instance
+            try:
+                template_id = self._template_to_assign.id
+                self.template = ResumeTemplate.objects.get(id=template_id)  # Changed Template to ResumeTemplate
+            except Exception as e:
+                print(f"Error assigning template: {e}")
+            del self._template_to_assign
+
         # Generate slug if not provided
         if not self.slug:
-            self.slug = slugify(self.title)
+            base_slug = slugify(self.title) if self.title else 'resume'
+            self.slug = base_slug
+
             # Check if slug exists and append random string if needed
-            if Resume.objects.filter(slug=self.slug).exists():
-                self.slug = f"{self.slug}-{uuid.uuid4().hex[:6]}"
+            counter = 1
+            while Resume.objects.filter(slug=self.slug).exists():
+                self.slug = f"{base_slug}-{counter}" if counter < 5 else f"{base_slug}-{uuid.uuid4().hex[:6]}"
+                counter += 1
 
         # Generate public URL if resume is public and URL not set
         if self.is_public and not self.public_url:
@@ -78,6 +94,9 @@ class Resume(models.Model):
     def increment_download_count(self):
         self.download_count += 1
         self.save(update_fields=['download_count'])
+
+
+
 
 
 class Education(models.Model):
@@ -350,3 +369,17 @@ class ResumeTemplate(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ResumeSection(models.Model):
+    """Sections within a resume"""
+    resume = models.ForeignKey(Resume, related_name='sections', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    order = models.IntegerField(default=0)
+    content = models.JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.resume.title} - {self.name}"
+
+    class Meta:
+        ordering = ['order']

@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Resume Editor - {{ resume.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/resume-editor.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="resume-editor-container">
+    <div class="editor-sidebar">
+        <div class="sidebar-header">
+            <h2>{{ resume.title }}</h2>
+            <p>Template: {{ template.name }}</p>
+            
+            <div class="template-actions">
+                <button id="save-resume" class="btn btn-primary">Save Resume</button>
+                <button id="preview-resume" class="btn btn-secondary">Preview</button>
+                <a href="{% url 'template_list' %}" class="btn btn-outline">Change Template</a>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <div class="color-scheme-selector">
+                <h3>Color Scheme</h3>
+                <div class="color-options">
+                    {% for color in template.colors.all %}
+                    <div class="color-option {% if color.id == color_scheme.id %}selected{% endif %}"
+                         data-color-id="{{ color.id }}" 
+                         style="background-color: {{ color.primary_color }}">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="sections-manager">
+                <h3>Resume Sections</h3>
+                <div class="sections-list" id="sections-sortable">
+                    {% for section in sections %}
+                    <div class="section-item" data-section-id="{{ section.id }}">
+                        <div class="section-drag-handle">
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                        <div class="section-name">{{ section.name }}</div>
+                        <div class="section-actions">
+                            <button class="btn-icon edit-section" title="Edit Section">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon delete-section" title="Delete Section">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button id="add-section" class="btn btn-outline btn-sm">
+                    <i class="fas fa-plus"></i> Add Section
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="editor-content">
+        <div class="resume-preview" style="--primary-color: {{ color_scheme.primary_color }}; --secondary-color: {{ color_scheme.secondary_color }};">
+            <div class="resume-container {{ template.slug }}-template">
+                {% for section in sections %}
+                <div class="resume-section" id="section-{{ section.id }}">
+                    <h3 class="section-title">{{ section.name }}</h3>
+                    <div class="section-content editable" data-section-id="{{ section.id }}">
+                        {% if section.content %}
+                            <!-- Render section content based on section type -->
+                            {% if section.name == 'Contact Information' %}
+                                <div class="contact-info">
+                                    <p>{{ section.content.name|default:"Your Name" }}</p>
+                                    <p>{{ section.content.email|default:"email@example.com" }}</p>
+                                    <p>{{ section.content.phone|default:"(123) 456-7890" }}</p>
+                                    <p>{{ section.content.location|default:"City, State" }}</p>
+                                </div>
+                            {% elif section.name == 'Professional Summary' %}
+                                <div class="summary">
+                                    <p>{{ section.content.summary|default:"Write a professional summary that highlights your experience and skills." }}</p>
+                                </div>
+                            {% elif section.name == 'Work Experience' %}
+                                <div class="experience">
+                                    {% for job in section.content.jobs|default:[] %}
+                                    <div class="job-entry">
+                                        <div class="job-header">
+                                            <h4>{{ job.title }}</h4>
+                                            <p>{{ job.company }} | {{ job.dates }}</p>
+                                        </div>
+                                        <p>{{ job.description }}</p>
+                                    </div>
+                                    {% empty %}
+                                    <div class="job-entry placeholder">
+                                        <div class="job-header">
+                                            <h4>Job Title</h4>
+                                            <p>Company Name | Start Date - End Date</p>
+                                        </div>
+                                        <p>Describe your responsibilities and achievements</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% elif section.name == 'Education' %}
+                                <div class="education">
+                                    {% for edu in section.content.education|default:[] %}
+                                    <div class="education-entry">
+                                        <h4>{{ edu.degree }}</h4>
+                                        <p>{{ edu.institution }} | {{ edu.dates }}</p>
+                                        {% if edu.description %}
+                                        <p>{{ edu.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                    {% empty %}
+                                    <div class="education-entry placeholder">
+                                        <h4>Degree Name</h4>
+                                        <p>Institution | Graduation Year</p>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% elif section.name == 'Skills' %}
+                                <div class="skills">
+                                    <ul>
+                                        {% for skill in section.content.skills|default:[] %}
+                                        <li>{{ skill }}</li>
+                                        {% empty %}
+                                        <li>Skill 1</li>
+                                        <li>Skill 2</li>
+                                        <li>Skill 3</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <div class="generic-section">
+                                    <p>{{ section.content.text|default:"Click to edit this section" }}</p>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <p class="placeholder-text">Click to edit this section</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Editor Modal -->
+<div id="section-editor-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Edit Section</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Dynamic form will be inserted here based on section type -->
+        </div>
+        <div class="modal-footer">
+            <button id="save-section" class="btn btn-primary">Save Changes</button>
+            <button class="cancel-modal btn btn-outline">Cancel</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+<script>
+    $(document).ready(function() {
+        // Make sections sortable
+        $("#sections-sortable").sortable({
+            handle: ".section-drag-handle",
+            update: function(event, ui) {
+                // Update section order in database
+                const sectionOrder = $(this).sortable('toArray', {attribute: 'data-section-id'});
+                
+                // Send AJAX request to update order
+                $.ajax({
+                    url: "{% url 'update_section_order' resume.id %}",
+                    method: "POST",
+                    data: {
+                        'section_order': JSON.stringify(sectionOrder),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        // Refresh the preview
+                        refreshResumePreview();
+                    }
+                });
+            }
+        });
+        
+        // Color scheme selection
+        $(".color-option").click(function() {
+            const colorId = $(this).data('color-id');
+            
+            // Update color scheme
+            $.ajax({
+                url: "{% url 'update_color_scheme' resume.id %}",
+                method: "POST",
+                data: {
+                    'color_id': colorId,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    // Update UI
+                    $(".color-option").removeClass('selected');
+                    $(`.color-option[data-color-id="${colorId}"]`).addClass('selected');
+                    
+                    // Update CSS variables
+                    document.documentElement.style.setProperty('--primary-color', response.primary_color);
+                    document.documentElement.style.setProperty('--secondary-color', response.secondary_color);
+                }
+            });
+        });
+        
+        // Section editing
+        $(".edit-section").click(function() {
+            const sectionId = $(this).closest('.section-item').data('section-id');
+            openSectionEditor(sectionId);
+        });
+        
+        // Inline editing
+        $(".section-content.editable").click(function() {
+            const sectionId = $(this).data('section-id');
+            openSectionEditor(sectionId);
+        });
+        
+        // Save resume
+        $("#save-resume").click(function() {
+            $.ajax({
+                url: "{% url 'save_resume' resume.id %}",
+                method: "POST",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    alert("Resume saved successfully!");
+                }
+            });
+        });
+        
+        // Preview resume
+        $("#preview-resume").click(function() {
+            window.open("{% url 'preview_resume' resume.id %}", "_blank");
+        });
+        
+        // Add new section
+        $("#add-section").click(function() {
+            openAddSectionModal();
+        });
+        
+        // Functions to handle section editing
+        function openSectionEditor(sectionId) {
+            // Fetch section data and open modal
+            $.ajax({
+                url: `/resume/section/${sectionId}/`,
+                method: "GET",
+                success: function(response) {
+                    // Populate modal with section data
+                    const modal = $("#section-editor-modal");
+                    modal.find(".modal-body").html(response.form_html);
+                    modal.find("#save-section").data('section-id', sectionId);
+                    modal.show();
+                }
+            });
+        }
+        
+        // Close modal
+        $(".close-modal, .cancel-modal").click(function() {
+            $("#section-editor-modal").hide();
+        });
+        
+        // Save section changes
+        $("#save-section").click(function() {
+            const sectionId = $(this).data('section-id');
+            const formData = $("#section-form").serialize();
+            
+            $.ajax({
+                url: `/resume/section/${sectionId}/update/`,
+                method: "POST",
+                data: formData,
+                success: function(response) {
+                    // Close modal
+                    $("#section-editor-modal").hide();
+                    
+                    // Refresh the preview
+                    refreshResumePreview();
+                }
+            });
+        });
+        
+        function refreshResumePreview() {
+            location.reload();
+        }
+    });
+</script>
+{% endblock %}

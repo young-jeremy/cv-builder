@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ resume.title }} - Preview{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/resume-preview.css' %}">
+<style>
+    :root {
+        --primary-color: {{ color_scheme.primary_color }};
+        --secondary-color: {{ color_scheme.secondary_color }};
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="preview-container">
+    <div class="preview-header">
+        <h1>{{ resume.title }}</h1>
+        <div class="preview-actions">
+            <a href="{% url 'resume_editor' %}?template={{ template.slug }}" class="btn btn-outline">Back to Editor</a>
+            <button id="print-resume" class="btn btn-primary">Print / Save PDF</button>
+        </div>
+    </div>
+    
+    <div class="resume-preview">
+        <div class="resume-container {{ template.slug }}-template">
+            {% for section in sections %}
+            <div class="resume-section">
+                <h3 class="section-title">{{ section.name }}</h3>
+                <div class="section-content">
+                    {% if section.content %}
+                        <!-- Render section content based on section type -->
+                        {% if section.name == 'Contact Information' %}
+                            <div class="contact-info">
+                                <p>{{ section.content.name|default:"Your Name" }}</p>
+                                <p>{{ section.content.email|default:"email@example.com" }}</p>
+                                <p>{{ section.content.phone|default:"(123) 456-7890" }}</p>
+                                <p>{{ section.content.location|default:"City, State" }}</p>
+                            </div>
+                        {% elif section.name == 'Professional Summary' %}
+                            <div class="summary">
+                                <p>{{ section.content.summary|default:"Write a professional summary that highlights your experience and skills." }}</p>
+                            </div>
+                        {% elif section.name == 'Work Experience' %}
+                            <div class="experience">
+                                {% for job in section.content.jobs|default:[] %}
+                                <div class="job-entry">
+                                    <div class="job-header">
+                                        <h4>{{ job.title }}</h4>
+                                        <p>{{ job.company }} | {{ job.dates }}</p>
+                                    </div>
+                                    <p>{{ job.description }}</p>
+                                </div>
+                                {% empty %}
+                                <div class="job-entry placeholder">
+                                    <div class="job-header">
+                                        <h4>Job Title</h4>
+                                        <p>Company Name | Start Date - End Date</p>
+                                    </div>
+                                    <p>Describe your responsibilities and achievements</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% elif section.name == 'Education' %}
+                            <div class="education">
+                                {% for edu in section.content.education|default:[] %}
+                                <div class="education-entry">
+                                    <h4>{{ edu.degree }}</h4>
+                                    <p>{{ edu.institution }} | {{ edu.dates }}</p>
+                                    {% if edu.description %}
+                                    <p>{{ edu.description }}</p>
+                                    {% endif %}
+                                </div>
+                                {% empty %}
+                                <div class="education-entry placeholder">
+                                    <h4>Degree Name</h4>
+                                    <p>Institution | Graduation Year</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% elif section.name == 'Skills' %}
+                            <div class="skills">
+                                <ul>
+                                    {% for skill in section.content.skills|default:[] %}
+                                    <li>{{ skill }}</li>
+                                    {% empty %}
+                                    <li>Skill 1</li>
+                                    <li>Skill 2</li>
+                                    <li>Skill 3</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <div class="generic-section">
+                                <p>{{ section.content.text|default:"This section is empty." }}</p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="placeholder-text">This section is empty.</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('print-resume').addEventListener('click', function() {
+        window.print();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Templates - Professional Resume Builder{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Template List Page Styles */
+  .templates-header {
+    background-color: #f8f9fa;
+    padding: 60px 0 40px;
+    text-align: center;
+  }
+  
+  .templates-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .templates-header p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    max-width: 800px;
+    margin: 0 auto 1.5rem;
+  }
+  
+  .template-filters {
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .filter-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .filter-tab {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 500;
+    color: #495057;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .filter-tab:hover {
+    background-color: #f1f3f5;
+    color: #212529;
+  }
+  
+  .filter-tab.active {
+    background-color: #e9ecef;
+    color: #212529;
+    font-weight: 600;
+  }
+  
+  .filter-tab i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+  }
+  
+  .template-grid {
+    padding: 3rem 0;
+  }
+  
+  .template-card {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 2rem;
+    position: relative;
+    background-color: #fff;
+  }
+  
+  .template-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  .template-preview {
+    position: relative;
+    height: 400px;
+    overflow: hidden;
+  }
+  
+  .template-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+  }
+  
+  .template-card:hover .template-preview img {
+    transform: scale(1.03);
+  }
+  
+  .template-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .template-card:hover .template-overlay {
+    opacity: 1;
+  }
+  
+  .template-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .template-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #2D9CDB;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .template-badge.premium {
+    background-color: #F2994A;
+  }
+  
+  .template-info {
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .template-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .template-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+  
+  .template-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .template-category {
+    background-color: #f1f3f5;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  
+  .template-colors {
+    display: flex;
+    gap: 5px;
+    margin-top: 0.5rem;
+  }
+  
+  .color-dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .cta-section {
+    background-color: #f8f9fa;
+    padding: 4rem 0;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .cta-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .cta-section p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .templates-header {
+      padding: 40px 0 30px;
+    }
+    
+    .templates-header h1 {
+      font-size: 2rem;
+    }
+    
+    .filter-tabs {
+      overflow-x: auto;
+      padding-bottom: 10px;
+      justify-content: flex-start;
+    }
+    
+    .template-preview {
+      height: 300px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Templates Header -->
+<section class="templates-header">
+  <div class="container">
+    <h1>Resume templates</h1>
+    <p>Each resume template is designed to follow the exact rules you need to get hired faster. 
+       Use our resume templates and get free access to 18 more career tools!</p>
+    <a href="{% url 'home:create_resume' %}" class="btn btn-primary btn-lg">Create my resume</a>
+  </div>
+</section>
+
+<!-- Template Filters -->
+<div class="template-filters">
+  <div class="container">
+    <div class="filter-tabs">
+      <a href="{% url 'templates_app:template_list' %}" class="filter-tab {% if not request.GET.category %}active{% endif %}">
+        <i class="fas fa-th-large"></i> All templates
+      </a>
+      {% for category in categories %}
+      <a href="{% url 'templates_app:template_list' %}?category={{ category.slug }}"
+         class="filter-tab {% if active_category.slug == category.slug %}active{% endif %}">
+        <i class="{{ category.icon }}"></i> {{ category.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Template Grid -->
+<section class="template-grid">
+  <div class="container">
+    <div class="row" id="template-grid">
+      {% for template in templates %}
+      <div class="col-md-6 col-lg-4">
+        <div class="template-card">
+          <div class="template-preview">
+            <img src="{{ template.preview_image.url }}" alt="{{ template.name }} Template">
+            <div class="template-overlay">
+              <div class="template-actions">
+                <a href="{% url 'templates_app:template_preview' template.slug %}" class="btn btn-light">Preview</a>
+                <a href="{% url 'templates_app:select_template' template.slug %}" class="btn btn-primary">Use Template</a>
+              </div>
+            </div>
+            {% if template.is_ats_friendly %}
+            <div class="template-badge">ATS-Friendly</div>
+            {% endif %}
+            {% if template.is_premium %}
+            <div class="template-badge premium">Premium</div>
+            {% endif %}
+          </div>
+          <div class="template-info">
+            <h3 class="template-name">{{ template.name }}</h3>
+            <div class="template-meta">
+              <div class="template-categories">
+                {% for category in template.categories.all %}
+                <span class="template-category">{{ category.name }}</span>
+                {% endfor %}
+              </div>
+              <div class="template-popularity">
+                <i class="fas fa-download"></i> {{ template.popularity }}
+              </div>
+            </div>
+            <div class="template-colors">
+              {% for color in template.colors.all|slice:":5" %}
+              <div class="color-dot" style="background-color: {{ color.primary_color }}"></div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <p class="text-muted">No templates found matching your criteria.</p>
+      </div>
+      {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+        {% endif %}
+        
+        {% for i in paginator.page_range %}
+          {% if page_obj.number == i %}
+          <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+          {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ i }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ i }}</a>
+          </li>
+          {% endif %}
+        {% endfor %}
+        
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to create your professional resume?</h2>
+    <p>Choose from our professionally designed templates and create a standout resume in minutes.</p>
+    <a href="{% url 'home:create_resume' %}" class="btn btn-primary btn-lg">Create my resume now</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Filter templates with AJAX
+    const filterLinks = document.querySelectorAll('.filter-tab');
+    
+    filterLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        if (!this.classList.contains('active')) {
+          // Update active class
+          document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          // Get category from URL
+          const url = new URL(this.href);
+          const category = url.searchParams.get('category');
+          
+          // Make AJAX request
+          fetch(`/templates/filter/?${category ? 'category=' + category : ''}`)
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('template-grid').innerHTML = data.html;
+            });
+          
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}
+

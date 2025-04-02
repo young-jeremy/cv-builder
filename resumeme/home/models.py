@@ -22,6 +22,7 @@ from django.urls import reverse
 import uuid
 
 
+
 class CoverLetterTemplate(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
@@ -254,6 +255,7 @@ class ResumeTemplate(models.Model):
     font_pairs = models.JSONField(null=True, blank=True)     # Store font combinations
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
 
 class TemplateSection(models.Model):
     template = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE)
@@ -753,10 +755,6 @@ class Language(models.Model):
         }
         return level_percentages.get(self.level, 0)
 
-from django.db import models
-from django.core.exceptions import ValidationError
-from django.utils import timezone
-
 
 class ResumeSection(models.Model):
     SECTION_TYPES = [
@@ -889,3 +887,74 @@ class SavedSection(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s {self.title}"
+
+
+from django.db import models
+from django.utils.text import slugify
+from django.urls import reverse
+from django.conf import settings
+
+
+class CareerCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name_plural = "Career Categories"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('career_advice_category', args=[self.slug])
+
+
+class CareerArticle(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    category = models.ForeignKey(CareerCategory, on_delete=models.CASCADE, related_name='articles')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='career_advice/', blank=True, null=True)
+    excerpt = models.TextField(max_length=300)
+    content = models.TextField()
+    published_date = models.DateTimeField(auto_now_add=True)
+    updated_date = models.DateTimeField(auto_now=True)
+    is_featured = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=True)
+    view_count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['-published_date']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('career_advice_detail', args=[self.slug])
+
+    def increment_view_count(self):
+        self.view_count += 1
+        self.save(update_fields=['view_count'])
+
+
+class NewsletterSubscription(models.Model):
+    email = models.EmailField(unique=True)
+    name = models.CharField(max_length=100, blank=True)
+    subscribed_date = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.email
+

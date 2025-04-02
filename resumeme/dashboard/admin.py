@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ResumeTemplate, UserTemplateSelection
+from .models import ResumeTemplate
 
 @admin.register(ResumeTemplate)
 class ResumeTemplateAdmin(admin.ModelAdmin):
@@ -28,11 +28,4 @@ class ResumeTemplateAdmin(admin.ModelAdmin):
         }),
     )
     readonly_fields = ('usage_count',)
-
-@admin.register(UserTemplateSelection)
-class UserTemplateSelectionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'template', 'selected_at')
-    list_filter = ('template', 'selected_at')
-    search_fields = ('user__email', 'template__name')
-    date_hierarchy = 'selected_at'
 

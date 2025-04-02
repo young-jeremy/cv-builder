@@ -94,7 +94,7 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('resumes/', views.resume_list, name='resume_list'),
     #path('resumes/create/', views.create_resume, name='create_resume'),
-    path('resumes/<int:resume_id>/edit/', views.edit_resume, name='edit_resume'),
+    path('resumes/<int:resume_id>/edit/', views.resume_edit, name='edit_resume'),
     path('resumes/<int:resume_id>/download/', views.download_resume, name='download_resume'),
     path('applications/', views.job_applications, name='job_applications'),
     path('applications/add/', views.add_application, name='add_application'),
@@ -116,5 +116,20 @@ urlpatterns = [
     path('my-resumes/', views.my_resumes, name='my_resumes'),
     path('resume/<int:resume_id>/delete/', views.delete_resume, name='delete_resume'),
 
+    path('career-advice/', views.career_advice_list, name='career_advice'),
+    path('career-advice/search/', views.career_advice_search, name='career_advice_search'),
+    path('career-advice/category/<slug:category_slug>/', views.career_advice_category, name='career_advice_category'),
+    path('career-advice/<slug:slug>/', views.career_advice_detail, name='career_advice_detail'),
+
+    # Newsletter subscription
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
+
+    path('career-advice/', views.career_advice_list, name='career_advice'),
+    path('career-advice/search/', views.career_advice_search, name='career_advice_search'),
+    path('career-advice/category/<slug:category_slug>/', views.career_advice_category, name='career_advice_category'),
+    path('career-advice/<slug:slug>/', views.career_advice_detail, name='career_advice_detail'),
+
+    # Newsletter subscription
+    path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
 
 ]

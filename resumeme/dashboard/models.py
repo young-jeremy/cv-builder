@@ -83,22 +83,6 @@ class ResumeTemplate(models.Model):
         return self.name
 
 
-class UserTemplateSelection(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    template = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE)
-
-    # User customizations
-    primary_color = ColorField(null=True, blank=True)
-    secondary_color = ColorField(null=True, blank=True)
-    text_color = ColorField(null=True, blank=True)
-    font_family = models.CharField(max_length=100, null=True, blank=True)
-
-    # Metadata
-    selected_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        unique_together = ('user', 'template')
-
 
 class UserDashboardSettings(models.Model):
     """User preferences for dashboard appearance and functionality."""

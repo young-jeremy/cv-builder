@@ -1,0 +1,82 @@
+<!-- templates/templates_app/resume_pdf_template.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ resume.title }} - Resume</title>
+    <style>
+        /* Add your PDF styling here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 5px;
+        }
+        /* Add more styling as needed */
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ resume.user.get_full_name }}</h1>
+        <!-- Add contact information, etc. -->
+    </div>
+
+    <!-- Render resume sections based on your data model -->
+    <!-- This is just a placeholder structure -->
+
+    <div class="section">
+        <div class="section-title">Professional Summary</div>
+        <p>{{ resume.summary|default:"" }}</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Experience</div>
+        {% for experience in resume.experience_set.all %}
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">{{ experience.title }}</span> at
+                    <span class="item-company">{{ experience.company }}</span>
+                    <span class="item-date">{{ experience.start_date }} - {{ experience.end_date|default:"Present" }}</span>
+                </div>
+                <div class="item-description">
+                    {{ experience.description }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <div class="section-title">Education</div>
+        {% for education in resume.education_set.all %}
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-degree">{{ education.degree }}</span> in
+                    <span class="item-field">{{ education.field_of_study }}</span>
+                    <span class="item-school">{{ education.school }}</span>
+                    <span class="item-date">{{ education.start_date }} - {{ education.end_date|default:"Present" }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <div class="section-title">Skills</div>
+        <ul>
+            {% for skill in resume.skill_set.all %}
+                <li>{{ skill.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

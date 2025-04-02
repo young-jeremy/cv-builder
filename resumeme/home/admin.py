@@ -4,11 +4,35 @@ from .models import (
     Contact, TeamMember, CompanyStats
 )
 
+
+
 from django.contrib import admin
 from .models import (
     ResumeTemplate, Resume, ResumeSection, WorkExperience,
     Education, Skill, Language, Certification, Project, SavedSection
 )
+from django.contrib import admin
+from .models import CareerCategory, CareerArticle, NewsletterSubscription
+
+@admin.register(CareerCategory)
+class CareerCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(CareerArticle)
+class CareerArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'author', 'published_date', 'is_featured', 'is_published')
+    list_filter = ('category', 'is_featured', 'is_published')
+    search_fields = ('title', 'excerpt', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+    date_hierarchy = 'published_date'
+
+@admin.register(NewsletterSubscription)
+class NewsletterSubscriptionAdmin(admin.ModelAdmin):
+    list_display = ('email', 'name', 'subscribed_date', 'is_active')
+    list_filter = ('is_active', 'subscribed_date')
+    search_fields = ('email', 'name')
+
 
 @admin.register(ResumeTemplate)
 class ResumeTemplateAdmin(admin.ModelAdmin):

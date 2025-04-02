@@ -1,0 +1,77 @@
+{% extends "templates_app/contemporary/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<section class="subscription-plans py-16">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4">Choose Your Plan</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                Select the perfect plan for your needs. Upgrade or downgrade at any time.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {% for plan in plans %}
+            <div class="plan-card bg-white rounded-lg shadow-lg overflow-hidden {% if plan.is_popular %}border-2 border-blue-500 relative{% endif %}">
+                {% if plan.is_popular %}
+                <div class="absolute top-0 right-0 bg-blue-500 text-white px-4 py-1 rounded-bl-lg font-medium">
+                    Most Popular
+                </div>
+                {% endif %}
+                
+                <div class="p-6 {% if plan.is_popular %}pt-10{% endif %}">
+                    <h3 class="text-xl font-bold mb-2">{{ plan.name }}</h3>
+                    <div class="price-container mb-6">
+                        <span class="text-4xl font-bold">{{ plan.price }}</span>
+                        <span class="text-gray-500">/{{ plan.period }}</span>
+                    </div>
+                    
+                    <ul class="features-list mb-8">
+                        {% for feature in plan.features %}
+                        <li class="flex items-start mb-3">
+                            <svg class="w-5 h-5 text-green-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            <span>{{ feature }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <a href="#" class="block text-center py-3 px-6 rounded-lg font-medium transition-colors duration-200 
+                        {% if plan.is_popular %}
+                        bg-blue-500 hover:bg-blue-600 text-white
+                        {% else %}
+                        bg-gray-100 hover:bg-gray-200 text-gray-800
+                        {% endif %}">
+                        {{ plan.button_text }}
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <p class="text-gray-600">
+                All plans include a 14-day free trial. No credit card required.
+            </p>
+            <p class="mt-4">
+                <a href="#" class="text-blue-500 hover:underline">View full plan comparison</a>
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .plan-card {
+        transition: transform 0.3s ease;
+    }
+    .plan-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}

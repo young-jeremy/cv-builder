@@ -1,0 +1,44 @@
+{% for template in templates %}
+<div class="col-md-6 col-lg-4">
+  <div class="template-card">
+    <div class="template-preview">
+      <img src="{{ template.preview_image.url }}" alt="{{ template.name }} Template">
+      <div class="template-overlay">
+        <div class="template-actions">
+          <a href="{% url 'template_preview' template.slug %}" class="btn btn-light">Preview</a>
+          <a href="{% url 'select_template' template.slug %}" class="btn btn-primary">Use Template</a>
+        </div>
+      </div>
+      {% if template.is_ats_friendly %}
+      <div class="template-badge">ATS-Friendly</div>
+      {% endif %}
+      {% if template.is_premium %}
+      <div class="template-badge premium">Premium</div>
+      {% endif %}
+    </div>
+    <div class="template-info">
+      <h3 class="template-name">{{ template.name }}</h3>
+      <div class="template-meta">
+        <div class="template-categories">
+          {% for category in template.categories.all %}
+          <span class="template-category">{{ category.name }}</span>
+          {% endfor %}
+        </div>
+        <div class="template-popularity">
+          <i class="fas fa-download"></i> {{ template.popularity }}
+        </div>
+      </div>
+      <div class="template-colors">
+        {% for color in template.colors.all|slice:":5" %}
+        <div class="color-dot" style="background-color: {{ color.primary_color }}"></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="col-12 text-center py-5">
+  <p class="text-muted">No templates found matching your criteria.</p>
+</div>
+{% endfor %}
+

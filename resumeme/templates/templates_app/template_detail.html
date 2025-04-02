@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ template.name }} - Resume Template{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Template Detail Page Styles */
+  .template-detail-header {
+    background-color: #f8f9fa;
+    padding: 40px 0;
+  }
+  
+  .template-detail-header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  .template-detail-header p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+  }
+  
+  .template-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .template-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 15px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+  }
+  
+  .template-badge i {
+    margin-right: 5px;
+  }
+  
+  .template-badge.ats {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+  
+  .template-badge.premium {
+    background-color: #fff3cd;
+    color: #664d03;
+  }
+  
+  .template-preview-container {
+    position: relative;
+    height: 700px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .template-preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  .template-actions {
+    margin-top: 1.5rem;
+  }
+  
+  .template-info-card {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #fff;
+  }
+  
+  .template-info-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .template-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .template-features li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  
+  .template-features li i {
+    color: #2D9CDB;
+    margin-right: 10px;
+    font-size: 1.1rem;
+  }
+  
+  .color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  
+  .color-option {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    position: relative;
+    border: 2px solid transparent;
+  }
+  
+  .color-option:hover {
+    transform: scale(1.1);
+  }
+  
+  .color-option.active {
+    border-color: #212529;
+  }
+  
+  .color-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  
+  .format-options {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  
+  .format-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  
+  .related-templates {
+    padding: 3rem 0;
+    background-color: #f8f9fa;
+  }
+  
+  .related-templates h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  @media (max-width: 768px) {
+    .template-detail-header h1 {
+      font-size: 1.8rem;
+    }
+    
+    .template-preview-container {
+      height: 500px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Template Detail Header -->
+<section class="template-detail-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1>{{ template.name }}</h1>
+        <p>{{ template.description }}</p>
+        
+        <div class="template-badges">
+          {% for category in template.categories.all %}
+          <span class="template-badge">
+            <i class="{{ category.icon }}"></i> {{ category.name }}
+          </span>
+          {% endfor %}
+          
+          {% if template.is_ats_friendly %}
+          <span class="template-badge ats">
+            <i class="fas fa-check-circle"></i> ATS-Friendly
+          </span>
+          {% endif %}
+          
+          {% if template.is_premium %}
+          <span class="template-badge premium">
+            <i class="fas fa-crown"></i> Premium
+          </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Template Preview and Details -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <!-- Template Preview -->
+        <div class="template-preview-container">
+          <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-image" id="preview-image">
+        </div>
+        
+        <!-- Template Actions -->
+        <div class="template-actions">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <a href="{% url 'templates_app:template_preview' template.slug %}" class="btn btn-outline-primary" target="_blank">
+                <i class="fas fa-eye me-2"></i> Preview Template
+              </a>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <div class="format-options">
+                <span class="format-badge">PDF</span>
+                <span class="format-badge">DOCX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <!-- Template Info Card -->
+        <div class="template-info-card">
+          <h3>Template Details</h3>
+          <ul class="template-features">
+            <li><i class="fas fa-check-circle"></i> Professional design</li>
+            <li><i class="fas fa-check-circle"></i> Customizable sections</li>
+            {% if template.is_ats_friendly %}
+            <li><i class="fas fa-check-circle"></i> ATS-optimized format</li>
+            {% endif %}
+            {% if template.has_photo %}
+            <li><i class="fas fa-check-circle"></i> Photo support</li>
+            {% endif %}
+            <li><i class="fas fa-check-circle"></i> Multiple color options</li>
+            <li><i class="fas fa-check-circle"></i> PDF & Word export</li>
+          </ul>
+          
+          <h3 class="mt-4">Color Options</h3>
+          <form method="post" action="{% url 'templates_app:select_template' template.slug %}" id="template-form">
+            {% csrf_token %}
+            <div class="color-options">
+              {% for color in colors %}
+              <div class="color-option {% if color.is_default %}active{% endif %}" style="background-color: {{ color.primary_color }}">
+                <input type="radio" name="color_scheme" value="{{ color.id }}" {% if color.is_default %}checked{% endif %}
+                       onchange="updatePreview('{{ color.id }}')">
+              </div>
+              {% endfor %}
+            </div>
+            
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus me-2"></i> Use This Template
+              </button>
+              {% if template.is_premium and not request.user.profile.has_premium_access %}
+              <div class="alert alert-warning mt-3 mb-0">
+                <i class="fas fa-crown me-2"></i> This is a premium template. <a href="{% url 'templates_app:subscription_plans' %}">Upgrade</a> to use it.
+              </div>
+              {% endif %}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Related Templates -->
+<section class="related-templates">
+  <div class="container">
+    <h2>Similar Templates</h2>
+    <div class="row">
+      {% for related in template.categories.first.templates.all|slice:":3" %}
+      {% if related.id != template.id %}
+      <div class="col-md-4">
+        <div class="template-card">
+          <div class="template-preview">
+            <img src="{{ related.preview_image.url }}" alt="{{ related.name }} Template">
+            <div class="template-overlay">
+              <div class="template-actions">
+                <a href="{% url 'templates_app:template_detail' related.slug %}" class="btn btn-primary">View Template</a>
+              </div>
+            </div>
+            {% if related.is_ats_friendly %}
+            <div class="template-badge">ATS-Friendly</div>
+            {% endif %}
+            {% if related.is_premium %}
+            <div class="template-badge premium">Premium</div>
+            {% endif %}
+          </div>
+          <div class="template-info">
+            <h3 class="template-name">{{ related.name }}</h3>
+            <div class="template-meta">
+              <div class="template-categories">
+                {% for category in related.categories.all %}
+                <span class="template-category">{{ category.name }}</span>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function updatePreview(colorId) {
+    // Update active color
+    document.querySelectorAll('.color-option').forEach(option => {
+      option.classList.remove('active');
+    });
+    event.target.closest('.color-option').classList.add('active');
+    
+    // Update preview image (in a real implementation, this would show different colored versions)
+    // For now, we'll just simulate a change
+    const previewImage = document.getElementById('preview-image');
+    previewImage.style.opacity = '0.8';
+    setTimeout(() => {
+      previewImage.style.opacity = '1';
+    }, 300);
+  }
+</script>
+{% endblock %}
+

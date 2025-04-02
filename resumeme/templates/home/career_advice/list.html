@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Career Advice - Professional Tips & Guidance{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Career Advice Page Styles */
+  .career-advice-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #1e88e5 100%);
+    padding: 60px 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .career-advice-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 80%);
+    opacity: 0.6;
+  }
+
+  .header-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .search-bar {
+    max-width: 600px;
+    margin: 30px auto 0;
+    position: relative;
+  }
+
+  .search-bar .form-control {
+    height: 54px;
+    border-radius: 30px;
+    padding: 10px 20px 10px 45px;
+    font-size: 16px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .search-bar .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+  }
+
+  .category-filters {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+
+  .filter-btn {
+    border-radius: 20px;
+    padding: 8px 16px;
+    margin: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 8px rgba(45, 156, 219, 0.2);
+  }
+
+  .filter-btn:hover:not(.active) {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+  }
+
+  .article-card {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: none;
+  }
+
+  .article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .article-img {
+    height: 200px;
+    object-fit: cover;
+  }
+
+  .article-category {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .category-interview {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+  }
+
+  .category-resume {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+  }
+
+  .category-job-search {
+    background-color: rgba(155, 89, 182, 0.1);
+    color: #9b59b6;
+  }
+
+  .category-career-growth {
+    background-color: rgba(241, 196, 15, 0.1);
+    color: #f1c40f;
+  }
+
+  .category-workplace {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+  }
+
+  .article-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1.4;
+  }
+
+  .article-excerpt {
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .article-meta {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #6c757d;
+  }
+
+  .article-author {
+    display: flex;
+    align-items: center;
+  }
+
+  .author-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+  }
+
+  .featured-article {
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    height: 400px;
+    margin-bottom: 30px;
+  }
+
+  .featured-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .featured-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+    color: white;
+  }
+
+  .featured-badge {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: inline-block;
+  }
+
+  .featured-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  .featured-excerpt {
+    font-size: 16px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+
+  .featured-meta {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    opacity: 0.8;
+  }
+
+  .newsletter-section {
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    padding: 40px;
+    margin: 50px 0;
+    text-align: center;
+  }
+
+  .newsletter-form {
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .newsletter-form .form-control {
+    height: 54px;
+    border-radius: 30px;
+    padding: 10px 150px 10px 20px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .newsletter-form .btn {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    height: 44px;
+    border-radius: 22px;
+    padding: 0 20px;
+  }
+
+  .pagination-container {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .page-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 5px;
+    border: none;
+    color: #495057;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .page-link:hover {
+    background-color: #e9ecef;
+    color: var(--primary-color);
+  }
+
+  .page-item.active .page-link {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 8px rgba(45, 156, 219, 0.2);
+  }
+
+  .page-item.disabled .page-link {
+    color: #6c757d;
+    opacity: 0.5;
+  }
+
+  @media (max-width: 768px) {
+    .career-advice-header {
+      padding: 40px 0;
+    }
+
+    .featured-article {
+      height: 300px;
+    }
+
+    .featured-title {
+      font-size: 22px;
+    }
+
+    .newsletter-section {
+      padding: 30px 20px;
+    }
+
+    .newsletter-form .form-control {
+      padding-right: 20px;
+    }
+
+    .newsletter-form .btn {
+      position: static;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 30px;
+      height: 50px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Career Advice Header -->
+<section class="career-advice-header">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto text-center header-content">
+        <h1 class="display-4 fw-bold mb-3">Career Advice</h1>
+        <p class="lead mb-4">Expert tips, insights, and guidance to help you navigate your career journey and achieve your professional goals.</p>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <form action="{% url 'home:career_advice_search' %}" method="get">
+            <div class="position-relative">
+              <i class="fas fa-search search-icon"></i>
+              <input type="text" name="q" class="form-control" placeholder="Search for career advice..." aria-label="Search">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content -->
+<div class="container py-5">
+  <!-- Category Filters -->
+  <div class="category-filters">
+    <div class="d-flex flex-wrap justify-content-center">
+      <a href="{% url 'home:career_advice' %}" class="btn filter-btn {% if not selected_category %}active{% endif %}">All Topics</a>
+      <a href="{% url 'home:career_advice_category' 'resume-writing' %}" class="btn filter-btn {% if selected_category == 'resume-writing' %}active{% endif %}">Resume Writing</a>
+      <a href="{% url 'home:career_advice_category' 'interview-tips' %}" class="btn filter-btn {% if selected_category == 'interview-tips' %}active{% endif %}">Interview Tips</a>
+      <a href="{% url 'home:career_advice_category' 'job-search' %}" class="btn filter-btn {% if selected_category == 'job-search' %}active{% endif %}">Job Search</a>
+      <a href="{% url 'home:career_advice_category' 'career-growth' %}" class="btn filter-btn {% if selected_category == 'career-growth' %}active{% endif %}">Career Growth</a>
+      <a href="{% url 'home:career_advice_category' 'workplace' %}" class="btn filter-btn {% if selected_category == 'workplace' %}active{% endif %}">Workplace</a>
+    </div>
+  </div>
+
+  <!-- Featured Article -->
+  {% if featured_article %}
+  <div class="featured-article">
+    <img src="{{ featured_article.image.url }}" alt="{{ featured_article.title }}" class="featured-img">
+    <div class="featured-content">
+      <span class="featured-badge">Featured</span>
+      <h2 class="featured-title">{{ featured_article.title }}</h2>
+      <p class="featured-excerpt">{{ featured_article.excerpt }}</p>
+      <div class="featured-meta">
+        <div class="article-author me-4">
+          <img src="{{ featured_article.author.profile_picture.url|default:'https://via.placeholder.com/30' }}" alt="{{ featured_article.author.get_full_name }}" class="author-avatar">
+          <span>{{ featured_article.author.get_full_name }}</span>
+        </div>
+        <div class="article-date">
+          <i class="far fa-calendar-alt me-1"></i> {{ featured_article.published_date|date:"F j, Y" }}
+        </div>
+      </div>
+    </div>
+    <a href="{% url 'career_advice:detail' featured_article.slug %}" class="stretched-link"></a>
+  </div>
+  {% endif %}
+
+  <!-- Latest Articles -->
+  <h2 class="mb-4">Latest Articles</h2>
+  <div class="row g-4">
+    {% for article in articles %}
+    <div class="col-lg-4 col-md-6">
+      <div class="card article-card">
+        <img src="{{ article.image.url|default:'https://via.placeholder.com/400x200' }}" class="card-img-top article-img" alt="{{ article.title }}">
+        <div class="card-body">
+          <span class="article-category category-{{ article.category.slug }}">{{ article.category.name }}</span>
+          <h3 class="article-title">{{ article.title }}</h3>
+          <p class="article-excerpt">{{ article.excerpt|truncatechars:120 }}</p>
+          <div class="article-meta">
+            <div class="article-author me-3">
+              <img src="{{ article.author.profile_picture.url|default:'https://via.placeholder.com/30' }}" alt="{{ article.author.get_full_name }}" class="author-avatar">
+              <span>{{ article.author.get_full_name }}</span>
+            </div>
+            <div class="article-date ms-auto">
+              <i class="far fa-calendar-alt me-1"></i> {{ article.published_date|date:"F j, Y" }}
+            </div>
+          </div>
+        </div>
+        <a href="{% url 'career_advice:detail' article.slug %}" class="stretched-link"></a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="alert alert-info">
+        <p class="mb-0">No articles found. Please check back later for new content.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Newsletter Section -->
+  <div class="newsletter-section">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h3 class="mb-3">Get Career Advice Delivered to Your Inbox</h3>
+        <p class="text-muted mb-4">Join our newsletter and receive the latest career tips, job search strategies, and professional development resources.</p>
+        <form class="newsletter-form" action="{% url 'home:newsletter_subscribe' %}" method="post">
+          {% csrf_token %}
+          <div class="position-relative">
+            <input type="email" name="email" class="form-control" placeholder="Enter your email address" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popular Topics -->
+  <div class="popular-topics mt-5">
+    <h2 class="mb-4">Popular Topics</h2>
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="topic-icon mb-3">
+              <i class="fas fa-file-alt fa-3x text-primary"></i>
+            </div>
+            <h4>Resume Writing</h4>
+            <p class="text-muted">Learn how to create a standout resume that gets noticed by employers.</p>
+            <a href="{% url 'home:career_advice_category' 'resume-writing' %}" class="btn btn-outline-primary">Explore</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="topic-icon mb-3">
+              <i class="fas fa-comments fa-3x text-success"></i>
+            </div>
+            <h4>Interview Tips</h4>
+            <p class="text-muted">Prepare for your interviews with expert advice and strategies.</p>
+            <a href="{% url 'home:career_advice_category' 'interview-tips' %}" class="btn btn-outline-success">Explore</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="topic-icon mb-3">
+              <i class="fas fa-search fa-3x text-info"></i>
+            </div>
+            <h4>Job Search</h4>
+            <p class="text-muted">Discover effective strategies to find and land your dream job.</p>
+            <a href="{% url 'home:career_advice_category' 'job-search' %}" class="btn btn-outline-info">Explore</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <div class="topic-icon mb-3">
+              <i class="fas fa-chart-line fa-3x text-warning"></i>
+            </div>
+            <h4>Career Growth</h4>
+            <p class="text-muted">Learn how to advance your career and achieve your professional goals.</p>
+            <a href="{% url 'home:career_advice_category' 'career-growth' %}" class="btn btn-outline-warning">Explore</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+  <nav aria-label="Page navigation" class="pagination-container">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+          <i class="fas fa-chevron-left"></i>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+      </li>
+      {% endif %}
+
+      {% for i in paginator.page_range %}
+        {% if page_obj.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+        {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      </li>
+      {% else %}
+      <li class="page-item disabled">
+        <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Preview: {{ template.name }} - Resume Template{% endblock %}
+
+{% block extra_css %}
+<style>
+  body {
+    background-color: #f8f9fa;
+    padding: 20px;
+  }
+  
+  .preview-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .preview-header {
+    background-color: #2D9CDB;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .preview-header h1 {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+  
+  .preview-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .preview-content {
+    padding: 20px;
+    height: calc(100vh - 120px);
+    overflow: auto;
+  }
+  
+  .resume-document {
+    width: 100%;
+    min-height: 1100px; /* A4 size approximation */
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+  }
+  
+  /* Sample resume styling - this would be replaced by the actual template CSS */
+  .resume-header {
+    padding: 30px;
+    background-color: {{ color.primary_color }};
+    color: white;
+  }
+  
+  .resume-name {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  
+  .resume-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .resume-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 0.9rem;
+  }
+  
+  .resume-contact-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .resume-contact-item i {
+    margin-right: 5px;
+  }
+  
+  .resume-body {
+    padding: 30px;
+  }
+  
+  .resume-section {
+    margin-bottom: 25px;
+  }
+  
+  .resume-section-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: {{ color.secondary_color }};
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid {{ color.primary_color }};
+  }
+  
+  .resume-item {
+    margin-bottom: 20px;
+  }
+  
+  .resume-item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  
+  .resume-item-subtitle {
+    color: #6c757d;
+    margin-bottom: 5px;
+  }
+  
+  .resume-item-date {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 10px;
+  }
+  
+  .resume-item-content {
+    font-size: 0.95rem;
+  }
+  
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .skill-item {
+    background-color: #f8f9fa;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="preview-container">
+  <div class="preview-header">
+    <h1>{{ template.name }} Preview</h1>
+    <div class="preview-actions">
+      <a href="{% url 'templates_app:template_detail' template.slug %}" class="btn btn-light btn-sm">Back to Details</a>
+      <a href="{% url 'templates_app:select_template' template.slug %}" class="btn btn-primary btn-sm">Use Template</a>
+    </div>
+  </div>
+  
+  <div class="preview-content">
+    <div class="resume-document">
+      <!-- This is a sample resume structure - in a real implementation, this would be the actual template HTML -->
+      <div class="resume-header">
+        <h1 class="resume-name">John Doe</h1>
+        <p class="resume-title">Senior Software Engineer</p>
+        <div class="resume-contact">
+          <div class="resume-contact-item">
+            <i class="fas fa-envelope"></i> john.doe@example.com
+          </div>
+          <div class="resume-contact-item">
+            <i class="fas fa-phone"></i> (555) 123-4567
+          </div>
+          <div class="resume-contact-item">
+            <i class="fas fa-map-marker-alt"></i> New York, NY
+          </div>
+          <div class="resume-contact-item">
+            <i class="fab fa-linkedin"></i> linkedin.com/in/johndoe
+          </div>
+        </div>
+      </div>
+      
+      <div class="resume-body">
+        <div class="resume-section">
+          <h2 class="resume-section-title">Summary</h2>
+          <p>Experienced software engineer with over 8 years of expertise in developing scalable web applications. Proficient in JavaScript, Python, and cloud technologies with a strong focus on code quality and performance optimization.</p>
+        </div>
+        
+        <div class="resume-section">
+          <h2 class="resume-section-title">Experience</h2>
+          
+          <div class="resume-item">
+            <h3 class="resume-item-title">Senior Software Engineer</h3>
+            <p class="resume-item-subtitle">Tech Solutions Inc., New York, NY</p>
+            <p class="resume-item-date">January 2020 - Present</p>
+            <div class="resume-item-content">
+              <ul>
+                <li>Led development of a cloud-based analytics platform that increased client satisfaction by 35%</li>
+                <li>Implemented CI/CD pipelines that reduced deployment time by 50%</li>
+                <li>Mentored junior developers and conducted code reviews to ensure code quality</li>
+                <li>Optimized database queries resulting in 40% faster application performance</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div class="resume-item">
+            <h3 class="resume-item-title">Software Developer</h3>
+            <p class="resume-item-subtitle">WebTech Innovations, Boston, MA</p>
+            <p class="resume-item-date">June 2017 - December 2019</p>
+            <div class="resume-item-content">
+              <ul>
+                <li>Developed and maintained web applications using React and Node.js</li>
+                <li>Collaborated with UX designers to implement responsive user interfaces</li>
+                <li>Integrated third-party APIs and services to enhance application functionality</li>
+                <li>Participated in agile development processes and sprint planning</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="resume-section">
+          <h2 class="resume-section-title">Education</h2>
+          
+          <div class="resume-item">
+            <h3 class="resume-item-title">Master of Science in Computer Science</h3>
+            <p class="resume-item-subtitle">Massachusetts Institute of Technology</p>
+            <p class="resume-item-date">2015 - 2017</p>
+          </div>
+          
+          <div class="resume-item">
+            <h3 class="resume-item-title">Bachelor of Science in Computer Engineering</h3>
+            <p class="resume-item-subtitle">University of California, Berkeley</p>
+            <p class="resume-item-date">2011 - 2015</p>
+          </div>
+        </div>
+        
+        <div class="resume-section">
+          <h2 class="resume-section-title">Skills</h2>
+          <ul class="skills-list">
+            <li class="skill-item">JavaScript</li>
+            <li class="skill-item">Python</li>
+            <li class="skill-item">React</li>
+            <li class="skill-item">Node.js</li>
+            <li class="skill-item">AWS</li>
+            <li class="skill-item">Docker</li>
+            <li class="skill-item">Kubernetes</li>
+            <li class="skill-item">CI/CD</li>
+            <li class="skill-item">MongoDB</li>
+            <li class="skill-item">PostgreSQL</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

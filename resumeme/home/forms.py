@@ -3,9 +3,31 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from django import forms
-# from .models import Resume, CVTemplate
 from django import forms
-# from .models import CoverLetter
+# from .models import NewsletterSubscription, CareerArticle
+
+class NewsletterSubscriptionForm(forms.ModelForm):
+    class Meta:
+       # model = NewsletterSubscription
+        fields = ['email', 'name']
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email address'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your name (optional)'})
+        }
+
+class CareerAdviceSearchForm(forms.Form):
+    q = forms.CharField(
+        label='Search',
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Search for career advice...'
+        })
+    )
+
+
+
 
 class CoverLetterForm(forms.ModelForm):
     class Meta:

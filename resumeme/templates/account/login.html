@@ -4,78 +4,254 @@
 
 {% block title %}{% trans "Sign In" %}{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Container styling */
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 20px;
+    }
+
+    .card {
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        margin: 0 auto;
+        border: none;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e88e5 100%);
+        color: white;
+        text-align: center;
+        border-radius: 15px 15px 0 0 !important;
+        padding: 25px;
+        border: none;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    /* Form field styling */
+    .form-control {
+        height: 50px;
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid #e0e0e0;
+        background-color: #f8f9fa;
+        width: 100%;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(45, 156, 219, 0.25);
+        background-color: #fff;
+    }
+
+    /* Label styling */
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 8px;
+        color: #495057;
+    }
+
+    /* Button styling */
+    .btn-primary {
+        height: 50px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, #1e88e5 100%);
+        border: none;
+        box-shadow: 0 4px 10px rgba(45, 156, 219, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(45, 156, 219, 0.4);
+    }
+
+    /* Social login buttons */
+    .social-login {
+        margin: 20px 0;
+    }
+
+    .social-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .google-btn {
+        background-color: #4CAF50 !important; /* Green color */
+        color: white !important;
+        border: none !important;
+        border-radius: 25px;
+        height: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .google-btn:hover {
+        background-color: #808080 !important; /* Grey on hover */
+        color: white !important;
+    }
+
+    .facebook-btn {
+        background-color: #3b5998 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 25px;
+        height: 50px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .facebook-btn:hover {
+        background-color: #2d4373 !important;
+    }
+
+    /* Divider styling */
+    .divider {
+        position: relative;
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background-color: #e0e0e0;
+        z-index: 1;
+    }
+
+    .divider-text {
+        position: relative;
+        background-color: white;
+        padding: 0 15px;
+        display: inline-block;
+        z-index: 2;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    /* Links styling */
+    .mt-3 a {
+        color: var(--primary-color);
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .mt-3 a:hover {
+        color: #1e88e5;
+        text-decoration: underline;
+    }
+
+    /* Alert styling */
+    .alert {
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">{% trans "Sign In" %}</h3>
-                </div>
-                <div class="card-body">
-                    {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endfor %}
+<div class="login-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center mb-0">{% trans "Sign In" %}</h3>
                     </div>
-                    {% endif %}
-                    
-                    <form class="login" method="POST" action="{% url 'account_login' %}">
-                        {% csrf_token %}
-                        {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.errors %}
-                            <div class="invalid-feedback d-block">
-                                {% for error in field.errors %}
-                                {{ error }}
-                                {% endfor %}
+                    <div class="card-body">
+                        {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                        {% if redirect_field_value %}
-                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-                        {% endif %}
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
-                        </div>
-                    </form>
-                    
-                    <hr>
-                    
-                    {% get_providers as socialaccount_providers %}
-                    {% if socialaccount_providers %}
-                    <div class="social-login text-center">
-                        <p>{% trans "Or sign in with:" %}</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            {% for provider in socialaccount_providers %}
-                            {% if provider.id == 'google' %}
-                            <a href="{% provider_login_url provider.id %}" class="btn btn-outline-danger">
-                                <i class="fab fa-google"></i> Google
-                            </a>
-                            {% elif provider.id == 'facebook' %}
-                            <a href="{% provider_login_url provider.id %}" class="btn btn-outline-primary">
-                                <i class="fab fa-facebook"></i> Facebook
-                            </a>
-                            {% else %}
-                            <a href="{% provider_login_url provider.id %}" class="btn btn-outline-secondary">
-                                {{ provider.name }}
-                            </a>
-                            {% endif %}
                             {% endfor %}
                         </div>
-                    </div>
-                    {% endif %}
-                    
-                    <div class="mt-3 text-center">
-                        <p>{% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a></p>
-                        <p><a href="{% url 'account_reset_password' %}">{% trans "Forgot your password?" %}</a></p>
+                        {% endif %}
+
+                        <form class="login" method="POST" action="{% url 'account_login' %}">
+                            {% csrf_token %}
+                            {% for field in form %}
+                            <div class="mb-4">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in field.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                            {% endif %}
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+                            </div>
+                        </form>
+
+                        <div class="divider">
+                            <span class="divider-text">{% trans "OR" %}</span>
+                        </div>
+
+                        {% get_providers as socialaccount_providers %}
+                        {% if socialaccount_providers %}
+                        <div class="social-login text-center">
+                            <p>{% trans "Sign in with:" %}</p>
+                            <div class="social-buttons">
+                                {% for provider in socialaccount_providers %}
+                                {% if provider.id == 'google' %}
+                                <a href="{% provider_login_url provider.id %}" class="btn google-btn">
+                                    <i class="fab fa-google me-2"></i> Google
+                                </a>
+                                {% else %}
+                                <a href="{% provider_login_url provider.id %}" class="btn btn-outline-secondary">
+                                    {{ provider.name }}
+                                </a>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="mt-4 text-center">
+                            <p>{% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Sign up" %}</a></p>
+                            <p><a href="{% url 'account_reset_password' %}">{% trans "Forgot your password?" %}</a></p>
+                        </div>
                     </div>
                 </div>
             </div>

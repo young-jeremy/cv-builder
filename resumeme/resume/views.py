@@ -17,7 +17,7 @@ from .forms import (
     ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm,
     CertificationForm, LanguageForm, ReferenceForm, CustomSectionForm
 )
-from dashboard.models import ResumeTemplate, UserTemplateSelection
+from dashboard.models import ResumeTemplate
 
 import json
 import uuid

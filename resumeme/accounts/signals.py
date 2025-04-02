@@ -13,3 +13,7 @@ def save_user_profile(sender, instance, **kwargs):
     """Save the UserProfile when the User is saved."""
     instance.profile.save()
 
+
+
+
+

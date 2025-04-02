@@ -1,73 +1,36 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView, CreateView, UpdateView
 from .models import *
-from .forms import *
-
-from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
-#from dashboard.models import Testimonial, FAQ, PricingPlan
-
-
 from django.views.generic import TemplateView, FormView
-from django.contrib import messages
-from django.urls import reverse_lazy
 from .models import Pricing, Feature, FAQ, Testimonial
 from .forms import ContactForm
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from dashboard.forms import ResumeForm
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponse
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
-from .forms import ResumeForm, ResumeSectionForm
-from .utils import PDFExporter, WordExporter, AIHelper
-import json
-from django.views.generic import View, DetailView
-from django.http import JsonResponse, HttpResponse, FileResponse
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.template.loader import render_to_string
-from .models import Resume, ResumeSection
 from .utils import WordExporter, PDFExporter, AIHelper
-import json
-import os
 from django.views.generic import View
 from django.http import JsonResponse, HttpResponse, FileResponse
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.template.loader import render_to_string
-from django.conf import settings
-from .models import Resume
 from .utils import PDFExporter
 import os
-import tempfile
 import textwrap
-from django.views.generic import ListView, DetailView
-from django.shortcuts import get_object_or_404
-from django.core.paginator import Paginator
 from .models import BlogPost, ResumeExample, CareerAdvice
-from django.views.generic import ListView, DetailView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse_lazy
 from .models import CVTemplate, Resume
 from .forms import CVTemplateSelectForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
 from .models import CoverLetter, CoverLetterTemplate
 from .forms import CoverLetterForm
 from django.views.generic import TemplateView
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.shortcuts import render
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy, reverse
+from .models import ResumeTemplate, Resume, ResumeSection
+from .forms import ResumeForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, DetailView
+from django.contrib import messages
+from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import CareerArticle, CareerCategory, NewsletterSubscription
+from .forms import NewsletterSubscriptionForm, CareerAdviceSearchForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
@@ -78,7 +41,6 @@ from django.template.loader import render_to_string
 from django.utils.text import slugify
 from django.contrib import messages
 import json
-import uuid
 from .models import ResumeTemplate, Resume, ResumeSection
 from .forms import ResumeForm
 
@@ -122,60 +84,6 @@ class ResumeTemplateListView(ListView):
         context['categories'] = dict(ResumeTemplate.CATEGORY_CHOICES)
         context['selected_category'] = self.request.GET.get('category', '')
         return context
-
-
-@login_required
-def create_resume(request, template_slug=None):
-    """Create a new resume, optionally based on a template"""
-    if template_slug:
-        template = get_object_or_404(ResumeTemplate, slug=template_slug)
-    else:
-        # If no template specified, use the first simple template
-        template = ResumeTemplate.objects.filter(category='simple').first()
-        if not template:
-            # Fallback to any template if no simple ones exist
-            template = ResumeTemplate.objects.first()
-
-    # Create a new resume with the selected template
-    resume = Resume.objects.create(
-        user=request.user,
-        template=template,
-        title=f"Untitled Resume - {template.name}",
-        content={
-            "personal_info": {
-                "first_name": "",
-                "last_name": "",
-                "email": request.user.email,
-                "phone": "",
-                "address": "",
-                "city": "",
-                "state": "",
-                "zip_code": "",
-                "country": "",
-                "linkedin": "",
-                "website": ""
-            }
-        }
-    )
-
-    # Create default sections
-    default_sections = [
-        {"type": "summary", "title": "Professional Summary", "order": 1},
-        {"type": "experience", "title": "Work Experience", "order": 2},
-        {"type": "education", "title": "Education", "order": 3},
-        {"type": "skills", "title": "Skills", "order": 4},
-    ]
-
-    for section in default_sections:
-        ResumeSection.objects.create(
-            resume=resume,
-            section_type=section["type"],
-            title=section["title"],
-            order=section["order"],
-            content={}
-        )
-
-    return redirect('resume_edit', uuid=resume.uuid)
 
 
 @login_required
@@ -1574,12 +1482,6 @@ def resume_list(request):
 
 
 @login_required
-def edit_resume(request, resume_id):
-    """View for editing an existing resume."""
-    # Fetch resume by ID logic
-    return render(request, 'dashboard/resume_form.html')
-
-@login_required
 def download_resume(request, resume_id):
     """View for downloading a resume as PDF."""
     # Logic for generating and serving PDF
@@ -2588,45 +2490,72 @@ def dashboard(request):
     })
 
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Template, Resume
-
-
 @login_required
-def create_resume(request):
-    """
-    View to create a resume based on the selected template.
-    """
-    # Fetch the selected template or return a 404 if not found
-    template = get_object_or_404(Template)
+def create_resume(request, template_slug=None):
+    """Create a new resume, optionally based on a template"""
+    # First, try to find the template
+    if template_slug:
+        template = get_object_or_404(ResumeTemplate, slug=template_slug)
+    else:
+        # If no template specified, use the first simple template
+        template = ResumeTemplate.objects.filter(category='simple').first()
+        if not template:
+            # Fallback to any template if no simple ones exist
+            template = ResumeTemplate.objects.first()
 
-    if request.method == 'POST':
-        # Create a new resume with the selected template
-        resume = Resume.objects.create(
-            user=request.user,
-            template=template,
-            title='Untitled Resume'
+    # Create a new resume without the template for now
+    resume = Resume(
+        user=request.user,
+        title="My Resume",
+    )
+
+    # Save the resume first without the template
+    resume.save()
+
+    # Now try to handle the template assignment
+    if template:
+        try:
+            # Try to find the corresponding Template object
+            from django.apps import apps
+            Template = apps.get_model('dashboard', 'Template')  # Adjust app name if needed
+
+            # Try to find a Template with the same ID or slug as the ResumeTemplate
+            template_obj = None
+            try:
+                template_obj = Template.objects.get(id=template.id)
+            except Template.DoesNotExist:
+                # If that fails, try to find by slug if Template has a slug field
+                if hasattr(Template, 'slug'):
+                    try:
+                        template_obj = Template.objects.get(slug=template.slug)
+                    except (Template.DoesNotExist, AttributeError):
+                        pass
+
+            # If we found a Template object, assign it
+            if template_obj:
+                resume.template = template_obj
+                resume.save()
+        except Exception as e:
+            # Log the error but continue
+            print(f"Error setting template: {e}")
+
+    # Create default sections
+    default_sections = [
+        {"type": "summary", "title": "Professional Summary", "order": 1},
+        {"type": "experience", "title": "Work Experience", "order": 2},
+        {"type": "education", "title": "Education", "order": 3},
+        {"type": "skills", "title": "Skills", "order": 4},
+    ]
+
+    for section in default_sections:
+        ResumeSection.objects.create(
+            resume=resume,
+            title=section["title"],
+            order=section["order"],
         )
 
-        # Redirect to the resume editing page
-        return redirect('edit_resume', resume_id=resume.id)
-
-    # Render a confirmation page or directly redirect to the edit page
-    return render(request, 'resume_builder/confirm_template.html', {
-        'template': template
-    })
-
-
-@login_required
-def edit_resume(request, resume_id):
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
-    if request.method == 'POST':
-        # Handle form submissions
-        pass
-    return render(request, 'resume_builder/edit_resume.html', {
-        'resume': resume
-    })
+    # Redirect to the resume editor using the resume ID
+    return redirect('home:edit_resume', resume_id=resume.id)
 
 
 class ResumeBuilderView(LoginRequiredMixin, CreateView):
@@ -2723,41 +2652,8 @@ def features_resume(request):
     return render(request, 'home/features_resume.html', {'features': features})
 
 
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
-from django.http import JsonResponse, HttpResponse
-from django.template.loader import render_to_string
-from django.utils.text import slugify
-from django.contrib import messages
-import json
-import uuid
-
-from .models import ResumeTemplate, Resume, ResumeSection
-from .forms import ResumeForm
 
 
-def home(request):
-    """Landing page view"""
-    # Count resumes created today
-    from django.utils import timezone
-    from django.db.models import Count
-    import random
-
-    today = timezone.now().date()
-    # For demo purposes, generate a random number or use actual count
-    resumes_today = Resume.objects.filter(created_at__date=today).count()
-    if resumes_today < 100:  # If it's a new site or few users
-        resumes_today = random.randint(1000, 50000)  # Show an impressive number
-
-    featured_templates = ResumeTemplate.objects.filter(is_featured=True)[:3]
-
-    return render(request, 'home/index.html', {
-        'resumes_today': resumes_today,
-        'featured_templates': featured_templates,
-    })
 
 
 @login_required
@@ -2768,80 +2664,6 @@ def my_resumes(request):
     return render(request, 'dashboard/my_resumes.html', {
         'resumes': resumes
     })
-
-
-class ResumeTemplateListView(ListView):
-    """View for browsing resume templates"""
-    model = ResumeTemplate
-    template_name = 'dashboard/resume_templates.html'
-    context_object_name = 'templates'
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        category = self.request.GET.get('category')
-        if category:
-            queryset = queryset.filter(category=category)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['categories'] = dict(ResumeTemplate.CATEGORY_CHOICES)
-        context['selected_category'] = self.request.GET.get('category', '')
-        return context
-
-
-@login_required
-def create_resume(request, template_slug=None):
-    """Create a new resume, optionally based on a template"""
-    if template_slug:
-        template = get_object_or_404(ResumeTemplate, slug=template_slug)
-    else:
-        # If no template specified, use the first simple template
-        template = ResumeTemplate.objects.filter(category='simple').first()
-        if not template:
-            # Fallback to any template if no simple ones exist
-            template = ResumeTemplate.objects.first()
-
-    # Create a new resume with the selected template
-    resume = Resume.objects.create(
-        user=request.user,
-        template=template,
-        title=f"Untitled Resume - {template.name}",
-        content={
-            "personal_info": {
-                "first_name": "",
-                "last_name": "",
-                "email": request.user.email,
-                "phone": "",
-                "address": "",
-                "city": "",
-                "state": "",
-                "zip_code": "",
-                "country": "",
-                "linkedin": "",
-                "website": ""
-            }
-        }
-    )
-
-    # Create default sections
-    default_sections = [
-        {"type": "summary", "title": "Professional Summary", "order": 1},
-        {"type": "experience", "title": "Work Experience", "order": 2},
-        {"type": "education", "title": "Education", "order": 3},
-        {"type": "skills", "title": "Skills", "order": 4},
-    ]
-
-    for section in default_sections:
-        ResumeSection.objects.create(
-            resume=resume,
-            section_type=section["type"],
-            title=section["title"],
-            order=section["order"],
-            content={}
-        )
-
-    return redirect('dashboard:resume_edit', uuid=resume.uuid)
 
 
 @login_required
@@ -2995,4 +2817,305 @@ def delete_resume(request, resume_id):
         return redirect('dashboard:my_resumes')
 
     return redirect('dashboard:my_resumes')
+
+
+# Career Advice Views
+def career_advice_list(request):
+    """Display a list of career advice articles."""
+    articles = CareerArticle.objects.filter(is_published=True)
+    featured_article = CareerArticle.objects.filter(is_published=True, is_featured=True).first()
+
+    # Pagination
+    paginator = Paginator(articles, 9)  # Show 9 articles per page
+    page = request.GET.get('page')
+
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page
+        articles = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range, deliver last page of results
+        articles = paginator.page(paginator.num_pages)
+
+    context = {
+        'articles': articles,
+        'featured_article': featured_article,
+        'is_paginated': True,
+        'paginator': paginator,
+        'page_obj': articles,
+    }
+
+    return render(request, 'home/career_advice/list.html', context)
+
+
+def career_advice_detail(request, slug):
+    """Display a single career advice article."""
+    article = get_object_or_404(CareerArticle, slug=slug, is_published=True)
+    article.increment_view_count()
+
+    # Get related articles
+    related_articles = CareerArticle.objects.filter(
+        category=article.category,
+        is_published=True
+    ).exclude(id=article.id)[:3]
+
+    context = {
+        'article': article,
+        'related_articles': related_articles,
+    }
+
+    return render(request, 'home/career_advice/detail.html', context)
+
+
+def career_advice_category(request, category_slug):
+    """Display articles filtered by category."""
+    category = get_object_or_404(CareerCategory, slug=category_slug)
+    articles = CareerArticle.objects.filter(category=category, is_published=True)
+
+    # Pagination
+    paginator = Paginator(articles, 9)  # Show 9 articles per page
+    page = request.GET.get('page')
+
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        articles = paginator.page(1)
+    except EmptyPage:
+        articles = paginator.page(paginator.num_pages)
+
+    context = {
+        'category': category,
+        'articles': articles,
+        'selected_category': category_slug,
+        'is_paginated': True,
+        'paginator': paginator,
+        'page_obj': articles,
+    }
+
+    return render(request, 'home/career_advice/list.html', context)
+
+
+def career_advice_search(request):
+    """Search for career advice articles."""
+    form = CareerAdviceSearchForm(request.GET)
+    query = request.GET.get('q', '')
+
+    if query:
+        articles = CareerArticle.objects.filter(
+            Q(title__icontains=query) |
+            Q(excerpt__icontains=query) |
+            Q(content__icontains=query),
+            is_published=True
+        )
+    else:
+        articles = CareerArticle.objects.none()
+
+    # Pagination
+    paginator = Paginator(articles, 9)  # Show 9 articles per page
+    page = request.GET.get('page')
+
+    try:
+        articles = paginator.page(page)
+    except PageNotAnInteger:
+        articles = paginator.page(1)
+    except EmptyPage:
+        articles = paginator.page(paginator.num_pages)
+
+    context = {
+        'form': form,
+        'query': query,
+        'articles': articles,
+        'is_paginated': True,
+        'paginator': paginator,
+        'page_obj': articles,
+    }
+
+    return render(request, 'home/career_advice/search_results.html', context)
+
+
+def newsletter_subscribe(request):
+    """Handle newsletter subscription."""
+    if request.method == 'POST':
+        form = NewsletterSubscriptionForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+
+            # Check if email already exists
+            if NewsletterSubscription.objects.filter(email=email).exists():
+                messages.info(request, "You're already subscribed to our newsletter!")
+            else:
+                form.save()
+                messages.success(request, "Thank you for subscribing to our newsletter!")
+        else:
+            messages.error(request, "Please enter a valid email address.")
+
+    # Redirect back to the referring page
+    return redirect(request.META.get('HTTP_REFERER', 'career_advice'))
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+from django.contrib import messages
+
+from .models import Resume, ResumeSection, Template, ResumeTemplate
+
+
+@login_required
+def resume_edit(request, resume_id):
+    """
+    View for editing an existing resume
+    """
+    # Get the resume object, ensuring it belongs to the current user
+    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+
+    # Get all sections for this resume
+    sections = resume.sections.all().order_by('order')
+
+    # If this is a POST request, update the resume
+    if request.method == 'POST':
+        # Update basic resume information
+        resume.title = request.POST.get('title', resume.title)
+        resume.full_name = request.POST.get('full_name', resume.full_name)
+        resume.email = request.POST.get('email', resume.email)
+        resume.phone = request.POST.get('phone', resume.phone)
+        resume.location = request.POST.get('location', resume.location)
+        resume.headline = request.POST.get('headline', resume.headline)
+        resume.summary = request.POST.get('summary', resume.summary)
+
+        # Save the updated resume
+        resume.save()
+
+        # Show success message
+        messages.success(request, 'Resume updated successfully!')
+
+        # Redirect back to the edit page
+        return redirect('templates_app:resume_edit', resume_id=resume.id)
+
+    # Get available templates for template switching
+    templates = ResumeTemplate.objects.filter(is_active=True)
+
+    # Render the edit template with the resume data
+    context = {
+        'resume': resume,
+        'sections': sections,
+        'templates': templates,
+        'active_tab': 'edit',  # For highlighting the active tab in navigation
+    }
+
+    return render(request, 'templates_app/edit_resume.html', context)
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_resume_section(request, resume_id, section_id):
+    """
+    API endpoint for updating a resume section
+    """
+    # Get the resume and section, ensuring they belong to the current user
+    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    section = get_object_or_404(ResumeSection, id=section_id, resume=resume)
+
+    # Update section data
+    section.title = request.POST.get('title', section.title)
+    section.order = request.POST.get('order', section.order)
+
+    # Save the updated section
+    section.save()
+
+    # Return success response
+    return JsonResponse({
+        'success': True,
+        'message': 'Section updated successfully',
+        'section': {
+            'id': section.id,
+            'title': section.title,
+            'order': section.order,
+        }
+    })
+
+
+@login_required
+@require_http_methods(["POST"])
+def create_resume_section(request, resume_id):
+    """
+    API endpoint for creating a new resume section
+    """
+    # Get the resume, ensuring it belongs to the current user
+    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+
+    # Get the highest order value to place the new section at the end
+    highest_order = resume.sections.aggregate(models.Max('order'))['order__max'] or 0
+
+    # Create new section
+    section = ResumeSection.objects.create(
+        resume=resume,
+        title=request.POST.get('title', 'New Section'),
+        order=highest_order + 1,
+    )
+
+    # Return success response
+    return JsonResponse({
+        'success': True,
+        'message': 'Section created successfully',
+        'section': {
+            'id': section.id,
+            'title': section.title,
+            'order': section.order,
+        }
+    })
+
+
+@login_required
+@require_http_methods(["DELETE"])
+def delete_resume_section(request, resume_id, section_id):
+    """
+    API endpoint for deleting a resume section
+    """
+    # Get the resume and section, ensuring they belong to the current user
+    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    section = get_object_or_404(ResumeSection, id=section_id, resume=resume)
+
+    # Delete the section
+    section.delete()
+
+    # Return success response
+    return JsonResponse({
+        'success': True,
+        'message': 'Section deleted successfully',
+    })
+
+
+@login_required
+@require_http_methods(["POST"])
+def change_resume_template(request, resume_id):
+    """
+    API endpoint for changing a resume's template
+    """
+    # Get the resume, ensuring it belongs to the current user
+    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+
+    # Get the template
+    template_id = request.POST.get('template_id')
+    if not template_id:
+        return JsonResponse({
+            'success': False,
+            'message': 'Template ID is required',
+        }, status=400)
+
+    # Get the ResumeTemplate
+    resume_template = get_object_or_404(ResumeTemplate, id=template_id)
+
+    # Update the resume's template
+    resume.template = resume_template.template
+    resume.save()
+
+    # Return success response
+    return JsonResponse({
+        'success': True,
+        'message': 'Template changed successfully',
+    })
+
 

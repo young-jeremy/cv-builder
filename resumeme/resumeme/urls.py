@@ -35,6 +35,8 @@ urlpatterns = [
     path('', include('home.urls')),
     path('account/', include('allauth.urls')),
     path('resume/', include('resume.urls')),
+    # path('career/', include('career.urls')),
+    path('templates_app/', include('templates_app.urls')),
 
 ]
 
