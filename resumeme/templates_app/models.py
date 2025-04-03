@@ -27,12 +27,44 @@ class TemplateCategory(models.Model):
 
 
 class ResumeTemplate(models.Model):
-    """Resume template model"""
+    # ... existing fields ...
+
     DIFFICULTY_CHOICES = [
         ('beginner', 'Beginner'),
         ('intermediate', 'Intermediate'),
         ('advanced', 'Advanced'),
     ]
+
+    CATEGORY_CHOICES = (
+        ('simple', 'Simple'),
+        ('professional', 'Professional'),
+        ('modern', 'Modern'),
+        ('creative', 'Creative'),
+    )
+
+    STYLE_CHOICES = (
+        ('classic', 'Classic'),
+        ('executive', 'Executive'),
+        ('corporate', 'Corporate'),
+        ('minimalist', 'Minimalist'),
+        ('elegant', 'Elegant'),
+        ('bold', 'Bold'),
+    )
+
+    COLOR_CHOICES = (
+        ('blue', 'Blue'),
+        ('black', 'Black'),
+        ('gray', 'Gray'),
+        ('green', 'Green'),
+        ('burgundy', 'Burgundy'),
+        ('navy', 'Navy'),
+    )
+
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='simple')
+    style = models.CharField(max_length=20, choices=STYLE_CHOICES, default='classic')
+    color = models.CharField(max_length=20, choices=COLOR_CHOICES, default='blue')
+    popularity = models.IntegerField(default=0)  # For sorting by popularity
+    created_at = models.DateTimeField(auto_now_add=True)
 
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)

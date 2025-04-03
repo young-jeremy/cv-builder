@@ -1,64 +1,46 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Resume Builder{% endblock %}</title>
-
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <!-- Base CSS -->
+    <title>Professional Resume Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #4f46e5;
-            --success-color: #16a34a;
-            --warning-color: #eab308;
-            --error-color: #dc2626;
-            --text-primary: #1f2937;
-            --text-secondary: #4b5563;
-            --text-light: #9ca3af;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f3f4f6;
-            --border-color: #e5e7eb;
+            --primary-color: #1a91f0;
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --light-gray: #f1f3f5;
+            --border-color: #e9ecef;
+            --success-color: #40c057;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            color: var(--text-primary);
-            line-height: 1.5;
+            color: var(--text-color);
+            background-color: #fff;
+            line-height: 1.6;
         }
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-primary);
-            border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-        }
-
-        .navbar-container {
-            max-width: 1280px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem 2rem;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -67,372 +49,590 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--primary-color);
+            font-size: 1.5rem;
+            color: var(--text-color);
             text-decoration: none;
         }
 
-        .nav-links {
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .nav-menu {
             display: flex;
-            gap: 2rem;
-            align-items: center;
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-left: 25px;
+            position: relative;
         }
 
         .nav-link {
-            color: var(--text-secondary);
+            color: var(--text-color);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.2s;
+            font-size: 0.95rem;
+            transition: color 0.3s;
         }
 
         .nav-link:hover {
             color: var(--primary-color);
         }
 
-        .auth-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--secondary-color);
-        }
-
-        .main-content {
-            margin-top: 4rem;
-            min-height: calc(100vh - 4rem);
-        }
-
-        .footer {
-            background: var(--bg-secondary);
-            padding: 4rem 0;
-            margin-top: 4rem;
-        }
-
-        .footer-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-        }
-
-        .footer-section h3 {
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.2s;
-        }
-
-        .footer-link:hover {
-            color: var(--primary-color);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .social-link {
-            color: var(--text-secondary);
-            font-size: 1.25rem;
-            transition: color 0.2s;
-        }
-
-        .social-link:hover {
-            color: var(--primary-color);
-        }
-
         .dropdown {
             position: relative;
+            display: inline-block;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
             min-width: 200px;
-            z-index: 1000;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            border-radius: 4px;
+            top: 100%;
+            left: 0;
         }
 
         .dropdown:hover .dropdown-content {
             display: block;
         }
 
-        .dropdown-link {
-            display: block;
-            padding: 0.75rem 1rem;
-            color: var(--text-secondary);
+        .dropdown-item {
+            padding: 12px 16px;
             text-decoration: none;
-            transition: background-color 0.2s;
+            display: block;
+            color: var(--text-color);
         }
 
-        .dropdown-link:hover {
-            background: var(--bg-secondary);
+        .dropdown-item:hover {
+            background-color: var(--light-gray);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d7ad7;
+        }
+
+        .btn-outline {
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            background-color: transparent;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hero-content {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .resume-preview {
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .decoration {
+            position: absolute;
+            z-index: -1;
+        }
+
+        .decoration-1 {
+            top: -20px;
+            right: 20px;
+            color: #7950f2;
+            font-size: 40px;
+        }
+
+        .decoration-2 {
+            bottom: 20px;
+            right: -10px;
+            color: #7950f2;
+            font-size: 40px;
+        }
+
+        .decoration-3 {
+            bottom: 100px;
+            right: -30px;
+            color: #fcc419;
+            font-size: 30px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        .stats-counter {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-item {
+            flex: 1;
+            padding: 20px;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .stat-item:first-child {
+            border-left: none;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-text {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* Counter Section */
+        .counter-section {
+            background-color: var(--light-gray);
+            padding: 30px 0;
+            text-align: center;
+            margin: 60px 0;
+            border-radius: 8px;
+        }
+
+        .counter-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .counter-icon {
+            font-size: 3rem;
             color: var(--primary-color);
         }
 
-        @media (max-width: 768px) {
-            .navbar-container {
-                padding: 1rem;
+        .counter-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .counter-text {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* Companies Section */
+        .companies-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .companies-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .companies-logos {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .company-logo {
+            max-width: 120px;
+            height: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .company-logo:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
             }
 
-            .nav-links {
-                display: none;
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 40px;
+                text-align: center;
             }
 
-            .auth-buttons {
-                display: none;
+            .cta-buttons {
+                justify-content: center;
             }
 
-            .mobile-menu-button {
-                display: block;
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stat-item {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                padding: 15px 0;
+            }
+
+            .stat-item:first-child {
+                border-top: none;
             }
         }
-    </style>
 
-    {% block extra_css %}{% endblock %}
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                margin-top: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-item {
+                margin: 0 10px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .companies-logos {
+                gap: 20px;
+            }
+
+            .company-logo {
+                max-width: 80px;
+            }
+        }
+
+        /* Editor Tools */
+        .editor-tools {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: var(--light-gray);
+            border-radius: 4px;
+        }
+
+        .tool-button {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tool-button:hover {
+            background-color: #e9ecef;
+            color: var(--text-color);
+        }
+
+        .tool-button.active {
+            background-color: #e9ecef;
+            color: var(--primary-color);
+        }
+
+        /* Export Options */
+        .export-options {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .export-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-option:hover {
+            background-color: var(--light-gray);
+        }
+
+        .export-icon {
+            color: var(--primary-color);
+        }
+
+        /* AI Writer */
+        .ai-writer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f3f0ff;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: #7950f2;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .ai-icon {
+            color: #7950f2;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <a href="{% url 'home:index' %}" class="logo">
-                <img src="{% static 'images/logo.svg' %}" alt="Logo" height="32">
-                ResumeBuilder
+    <header>
+        <div class="container header-container">
+            <a href="{% url 'home:landing' %}" class="logo">
+                <i class="fas fa-file-alt" style="color: var(--primary-color);"></i>
+                <span>ResumeBuilder</span>
             </a>
-
-            <div class="nav-links">
-                <a href="{% url 'templates_app:template_list' %}" class="nav-link">Resume Templates</a>
-                <div class="dropdown">
-                    <a href="#" class="nav-link">Features</a>
+            <ul class="nav-menu">
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Resume Templates <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
                     <div class="dropdown-content">
-                        <a href="{% url 'home:features_resume' %}" class="dropdown-link">Resume Builder</a>
-                        <a href="{% url 'home:features_cv' %}" class="dropdown-link">CV Builder</a>
-                        <a href="{% url 'home:features_cover' %}" class="dropdown-link">Cover Letter</a>
+                        <a href="{% url 'templates_app:professional_templates' %}" class="dropdown-item">Professional</a>
+                        <a href="{% url 'templates_app:creative_templates' %}" class="dropdown-item">Creative</a>
+                        <a href="{% url 'templates_app:simple_templates' %}" class="dropdown-item">Simple</a>
+                        <a href="{% url 'templates_app:modern_templates' %}" class="dropdown-item">Modern</a>
                     </div>
-                </div>
-                <a href="{% url 'home:pricing' %}" class="nav-link">Pricing</a>
-                <div class="dropdown">
-                    <a href="#" class="nav-link">Resources</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Resume Examples <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
                     <div class="dropdown-content">
-                        <a href="{% url 'home:blog' %}" class="dropdown-link">Career Blog</a>
-                        <a href="{% url 'home:resume_examples' %}" class="dropdown-link">Resume Examples</a>
-                        <a href="{% url 'home:career_advice' %}" class="dropdown-link">Career Advice</a>
+                        <a href="#" class="dropdown-item">By Industry</a>
+                        <a href="#" class="dropdown-item">By Job Title</a>
+                        <a href="#" class="dropdown-item">By Level</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Cover Letter <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#" class="dropdown-item">Templates</a>
+                        <a href="#" class="dropdown-item">Examples</a>
+                        <a href="#" class="dropdown-item">Writing Guide</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">Resources</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">FAQ</a>
+                </li>
+            </ul>
+            <div>
+                <a href="{% url 'accounts:profile' %}" class="btn btn-outline">My Account</a>
+                <a href="{% url 'resume:create_resume' %}" class="btn btn-primary">Build my resume</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero container">
+            <div class="hero-content">
+                <div class="stats-counter">
+                    <i class="fas fa-chart-line"></i> {{ resumes_created|default:"43,711" }} resumes created today
+                </div>
+                <h1>The professional resume builder</h1>
+                <p class="subtitle">Only 2% of resumes win. Yours will be one of them. Let's build you a resume that works.</p>
+
+                <div class="cta-buttons">
+                    <a href="{% url 'resume:create_resume' %}" class="btn btn-primary">Create my resume</a>
+                    <a href="{% url 'templates_app:upload_resume' %}" class="btn btn-outline">Upload my resume</a>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number">39%</div>
+                        <div class="stat-text">more likely to get hired</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">8%</div>
+                        <div class="stat-text">better pay with your next job</div>
                     </div>
                 </div>
             </div>
+            <div class="hero-image">
+                <div class="resume-preview">
+                    <img src="/placeholder.svg?height=500&width=350" alt="Resume Preview">
 
-            <div class="auth-buttons">
-                {% if user.is_authenticated %}
-                    <div class="dropdown">
-                        <button class="btn btn-outline">
-                            <i class="fas fa-user"></i>
-                            {{ user.first_name|default:user.username }}
-                        </button>
-                        <div class="dropdown-content">
-                            <a href="{% url 'dashboard:dashboard' %}" class="dropdown-link">
-                                <i class="fas fa-home"></i> Dashboard
-                            </a>
-                            <a href="{% url 'accounts:profile' %}" class="dropdown-link">
-                                <i class="fas fa-user-circle"></i> Profile
-                            </a>
-                            <a href="{% url 'accounts:settings' %}" class="dropdown-link">
-                                <i class="fas fa-cog"></i> Settings
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="{% url 'accounts:logout' %}" class="dropdown-link text-error">
-                                <i class="fas fa-sign-out-alt"></i> Logout
-                            </a>
+                    <div class="export-options">
+                        <div class="export-option">
+                            <i class="fas fa-file-word export-icon"></i> Export to DOCX
+                        </div>
+                        <div class="export-option">
+                            <i class="fas fa-file-alt export-icon"></i> Export to TXT
+                        </div>
+                        <div class="export-option">
+                            <i class="fas fa-link export-icon"></i> Share a link
                         </div>
                     </div>
-                {% else %}
-                    <a href="{% url 'account_login' %}" class="btn btn-outline">Log in</a>
-                    <a href="{% url 'account_signup' %}" class="btn btn-primary">Sign up</a>
-                {% endif %}
+
+                    <div class="ai-writer">
+                        <i class="fas fa-robot ai-icon"></i> AI Writer
+                    </div>
+                </div>
+                <div class="decoration decoration-1">✦</div>
+                <div class="decoration decoration-2">✦</div>
+                <div class="decoration decoration-3">✧</div>
             </div>
+        </section>
 
-            <!-- Mobile Menu Button -->
-            <button class="mobile-menu-button" aria-label="Menu">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu">
-        <div class="mobile-menu-header">
-            <a href="{% url 'home:index' %}" class="logo">
-                <img src="{% static 'images/logo.svg' %}" alt="Logo" height="32">
-            </a>
-            <button class="mobile-menu-close" aria-label="Close menu">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-
-        <div class="mobile-menu-content">
-            <!-- Mobile navigation links -->
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
+        <section class="counter-section container">
+            <div class="counter-container">
+                <div class="counter-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="counter-number">{{ resumes_created|default:"43,711" }}</div>
+                <div class="counter-text">resumes created today</div>
             </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        </section>
 
-        {% block content %}{% endblock %}
+        <section class="companies-section container">
+            <h2 class="companies-title">Our candidates have been hired at:</h2>
+            <div class="companies-logos">
+                <img src="/placeholder.svg?height=50&width=120" alt="Booking.com" class="company-logo">
+                <img src="/placeholder.svg?height=50&width=120" alt="Apple" class="company-logo">
+                <img src="/placeholder.svg?height=50&width=120" alt="DHL" class="company-logo">
+                <img src="/placeholder.svg?height=50&width=120" alt="Amazon" class="company-logo">
+                <img src="/placeholder.svg?height=50&width=120" alt="American Express" class="company-logo">
+                <img src="/placeholder.svg?height=50&width=120" alt="Accenture" class="company-logo">
+            </div>
+        </section>
+
+        <section class="editor-section container" style="display: none;">
+            <div class="editor-tools">
+                <button class="tool-button"><i class="fas fa-bold"></i></button>
+                <button class="tool-button"><i class="fas fa-italic"></i></button>
+                <button class="tool-button"><i class="fas fa-underline"></i></button>
+                <button class="tool-button"><i class="fas fa-strikethrough"></i></button>
+                <button class="tool-button"><i class="fas fa-list-ul"></i></button>
+                <button class="tool-button"><i class="fas fa-list-ol"></i></button>
+                <button class="tool-button"><i class="fas fa-link"></i></button>
+                <button class="tool-button"><i class="fas fa-palette"></i></button>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>Product</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:templates' %}" class="footer-link">Resume Templates</a></li>
-                    <li><a href="{% url 'home:cv_templates' %}" class="footer-link">CV Templates</a></li>
-                    <li><a href="{% url 'home:cover_letter' %}" class="footer-link">Cover Letter</a></li>
-                    <li><a href="{% url 'home:pricing' %}" class="footer-link">Pricing</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>Learn</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:career_advice' %}" class="footer-link">Career Blog</a></li>
-                    <li><a href="{% url 'home:resume_examples' %}" class="footer-link">Resume Examples</a></li>
-                    <li><a href="{% url 'home:career_advice' %}" class="footer-link">How to Write a Resume</a></li>
-                    <li><a href="{% url 'home:career_advice' %}" class="footer-link">Career Advice</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>Company</h3>home:
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:about' %}" class="footer-link">About Us</a></li>
-                    <li><a href="{% url 'home:contact' %}" class="footer-link">Contact</a></li>
-                    <li><a href="{% url 'home:help' %}" class="footer-link">Help Center</a></li>
-                    <li><a href="{% url 'home:privacy' %}" class="footer-link">Privacy Policy</a></li>
-                    <li><a href="{% url 'home:terms' %}" class="footer-link">Terms of Service</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-links">
-                    <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Scripts -->
-    <script src="{% static 'js/main.js' %}"></script>
     <script>
+        // Display the current count of resumes created
+        function updateCounter() {
+            const counterElement = document.querySelector('.counter-number');
+            const statsCounterElement = document.querySelector('.stats-counter');
 
-                document.addEventListener('DOMContentLoaded', function() {
-            // Mobile menu functionality
-            const mobileMenuButton = document.querySelector('.mobile-menu-button');
-            const mobileMenuClose = document.querySelector('.mobile-menu-close');
-            const mobileMenu = document.querySelector('.mobile-menu');
+            // This would typically come from your Django context
+            // For demo purposes, we'll increment it slightly
+            let count = parseInt(counterElement.textContent.replace(/,/g, ''));
+            count += Math.floor(Math.random() * 5) + 1;
 
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', () => {
-                    mobileMenu.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                });
+            const formattedCount = count.toLocaleString();
+            counterElement.textContent = formattedCount;
+
+            // Update the stats counter text as well
+            if (statsCounterElement) {
+                statsCounterElement.innerHTML = `<i class="fas fa-chart-line"></i> ${formattedCount} resumes created today`;
             }
+        }
 
-            if (mobileMenuClose) {
-                mobileMenuClose.addEventListener('click', () => {
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
-            }
+        // Update counter every 30 seconds
+        setInterval(updateCounter, 30000);
 
-            // Dropdown menus
+        // Toggle dropdown menus
+        document.addEventListener('DOMContentLoaded', function() {
             const dropdowns = document.querySelectorAll('.dropdown');
 
             dropdowns.forEach(dropdown => {
-                const trigger = dropdown.querySelector('.nav-link');
-                const content = dropdown.querySelector('.dropdown-content');
-
-                if (trigger && content) {
-                    trigger.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        content.classList.toggle('active');
-                    });
-                }
+                dropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                });
             });
 
-            // Close dropdowns when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.dropdown')) {
-                    document.querySelectorAll('.dropdown-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                }
-            });
-
-            // Alert messages auto-dismiss
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    alert.style.opacity = '0';
-                    setTimeout(() => {
-                        alert.remove();
-                    }, 300);
-                }, 5000);
+            document.addEventListener('click', function() {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
             });
         });
     </script>
-    {% block extra_js %}{% endblock %}
 </body>
 </html>
+

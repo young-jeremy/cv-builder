@@ -1,0 +1,56 @@
+<!-- templates_app/modern_templates/modern_template.html -->
+{% extends 'templates_app/base_category_template.html' %}
+
+{% block category_css %}
+<style>
+    .category-hero {
+        background-color: #f0fdfa;
+    }
+    
+    .category-title {
+        background: linear-gradient(90deg, #14b8a6, #2dd4bf);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+    
+    .filter-option.active {
+        background-color: #14b8a6;
+    }
+    
+    .modern-feature-icon {
+        color: #14b8a6;
+    }
+</style>
+{% endblock %}
+
+{% block category_features %}
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-layout-text-window fs-3 modern-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Contemporary Design</h3>
+        <p class="feature-description">Our modern templates feature contemporary layouts with creative styling that will make your resume stand out.</p>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-palette fs-3 modern-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Strategic Color Use</h3>
+        <p class="feature-description">Our modern templates use color strategically to highlight important sections and create visual interest without overwhelming the content.</p>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-columns-gap fs-3 modern-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Balanced Layout</h3>
+        <p class="feature-description">Our modern templates feature well-balanced layouts that combine creativity with professional presentation for maximum impact.</p>
+    </div>
+</div>
+{% endblock %}

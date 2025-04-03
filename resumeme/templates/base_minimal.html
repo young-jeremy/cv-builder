@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Resume Builder{% endblock %}</title>
+
+    <!-- Base styles for preview -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .preview-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .preview-toolbar-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .preview-toolbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .preview-toolbar-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .preview-toolbar-btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .preview-toolbar-btn-secondary {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #dee2e6;
+        }
+
+        .preview-content {
+            margin-top: 60px;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .resume-container {
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        @media print {
+            .preview-toolbar {
+                display: none;
+            }
+
+            .preview-content {
+                margin-top: 0;
+                padding: 0;
+            }
+
+            .resume-container {
+                box-shadow: none;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if not print_mode %}
+    <div class="preview-toolbar">
+        <h1 class="preview-toolbar-title">Resume Preview</h1>
+        <div class="preview-toolbar-actions">
+            <a href="{% url 'edit_resume' resume.uuid %}" class="preview-toolbar-btn preview-toolbar-btn-secondary">
+                <i class="bi bi-pencil"></i> Edit
+            </a>
+            <button onclick="window.print()" class="preview-toolbar-btn preview-toolbar-btn-secondary">
+                <i class="bi bi-printer"></i> Print
+            </button>
+            <a href="{% url 'export_resume' resume.uuid %}" class="preview-toolbar-btn preview-toolbar-btn-primary">
+                <i class="bi bi-download"></i> Export
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="preview-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Resume Templates Gallery{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+<style>
+    .template-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }
+    
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .template-preview {
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .template-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .template-card:hover .template-preview img {
+        transform: scale(1.05);
+    }
+    
+    .template-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .template-card:hover .template-overlay {
+        opacity: 1;
+    }
+    
+    .category-filter {
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+    }
+    
+    .category-filter::-webkit-scrollbar {
+        height: 5px;
+    }
+    
+    .category-filter::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+    
+    .swiper {
+        width: 100%;
+        height: 400px;
+        margin-bottom: 40px;
+    }
+    
+    .swiper-slide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .featured-template {
+        width: 100%;
+        max-width: 300px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .template-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+    
+    .template-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .filter-section {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .template-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    .skeleton-loader {
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+        border-radius: 5px;
+    }
+    
+    @keyframes loading {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="display-5 fw-bold mb-4">Resume Templates Gallery</h1>
+    <p class="lead mb-5">Browse our collection of professionally designed resume templates to find the perfect one for your career journey.</p>
+    
+    <!-- Featured Templates Carousel -->
+    <div class="mb-5">
+        <h2 class="h3 mb-4">Featured Templates</h2>
+        <div class="swiper featured-swiper">
+            <div class="swiper-wrapper">
+                {% for template in featured_templates %}
+                <div class="swiper-slide">
+                    <div class="featured-template">
+                        <div class="template-preview">
+                            <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="img-fluid">
+                            <div class="template-overlay">
+                                <div class="template-actions">
+                                    <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                                    <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                                </div>
+                            </div>
+                            {% if template.is_premium %}
+                            <div class="template-badge">
+                                <span class="badge bg-warning text-dark">Premium</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="p-3 bg-white">
+                            <h5 class="mb-1">{{ template.name }}</h5>
+                            <p class="text-muted small mb-0">{{ template.category.name }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+    
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <h3 class="h5 mb-3">Filter Templates</h3>
+                <div class="category-filter mb-3">
+                    <a href="{% url 'template_gallery' %}" class="btn {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %} me-2">All</a>
+                    {% for category in categories %}
+                    <a href="{% url 'template_gallery' %}?category={{ category.slug }}{% if search_query %}&search={{ search_query }}{% endif %}" class="btn {% if selected_category == category.slug %}btn-primary{% else %}btn-outline-primary{% endif %} me-2">{{ category.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3 class="h5 mb-3">Search Templates</h3>
+                <form method="get" class="d-flex">
+                    {% if selected_category %}
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                    {% endif %}
+                    <input type="text" name="search" class="form-control me-2" placeholder="Search templates" value="{{ search_query }}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Templates Grid -->
+    <div class="template-grid" id="templatesGrid">
+        {% for template in templates %}
+        <div class="template-card card border-0 shadow-sm" data-category="{{ template.category.slug }}">
+            <div class="template-preview">
+                <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="card-img-top">
+                <div class="template-overlay">
+                    <div class="template-actions">
+                        <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                        <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                    </div>
+                </div>
+                {% if template.is_premium %}
+                <div class="template-badge">
+                    <span class="badge bg-warning text-dark">Premium</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ template.name }}</h5>
+                <p class="card-text text-muted small">{{ template.category.name }}</p>
+                <p class="card-text">{{ template.description|truncatechars:100 }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No templates found matching your criteria. Please try different filters or search terms.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Load More Button -->
+    {% if templates.has_next %}
+    <div class="text-center mt-5">
+        <button id="loadMoreBtn" class="btn btn-outline-primary" data-page="2">Load More Templates</button>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Swiper
+        const swiper = new Swiper('.featured-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                640: {
+                    slidesPerView: 2,
+                },
+                992: {
+                    slidesPerView: 3,
+                }
+            }
+        });
+        
+        // Lazy loading for template images
+        const lazyLoadTemplates = function() {
+            const templateImages = document.querySelectorAll('.template-preview img[data-src]');
+            templateImages.forEach(img => {
+                if (isElementInViewport(img)) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+            });
+        };
+        
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+        
+        // Load more templates with AJAX
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                const page = this.dataset.page;
+                const category = '{{ selected_category }}';
+                const search = '{{ search_query }}';
+                
+                // Show loading state
+                loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+                loadMoreBtn.disabled = true;
+                
+                // Fetch more templates
+                fetch(`{% url 'template_gallery' %}?page=${page}${category ? '&category=' + category : ''}${search ? '&search=' + search : ''}&format=json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Append new templates
+                        const templatesGrid = document.getElementById('templatesGrid');
+                        data.templates.forEach(template => {
+                            const templateCard = document.createElement('div');
+                            templateCard.className = 'template-card card border-0 shadow-sm';
+                            templateCard.dataset.category = template.category_slug;
+                            
+                            templateCard.innerHTML = `
+                                <div class="template-preview">
+                                    <img src="${template.preview_image}" alt="${template.name}" class="card-img-top">
+                                    <div class="template-overlay">
+                                        <div class="template-actions">
+                                            <a href="/templates/${template.slug}/" class="btn btn-light">Preview</a>
+                                            <a href="/resume/create/${template.slug}/" class="btn btn-primary">Use Template</a>
+                                        </div>
+                                    </div>
+                                    ${template.is_premium ? '<div class="template-badge"><span class="badge bg-warning text-dark">Premium</span></div>' : ''}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">${template.name}</h5>
+                                    <p class="card-text text-muted small">${template.category_name}</p>
+                                    <p class="card-text">${template.description}</p>
+                                </div>
+                            `;
+                            
+                            templatesGrid.appendChild(templateCard);
+                        });
+                        
+                        // Update button state
+                        if (data.has_next) {
+                            loadMoreBtn.dataset.page = parseInt(page) + 1;
+                            loadMoreBtn.innerHTML = 'Load More Templates';
+                            loadMoreBtn.disabled = false;
+                        } else {
+                            loadMoreBtn.remove();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading more templates:', error);
+                        loadMoreBtn.innerHTML = 'Load More Templates';
+                        loadMoreBtn.disabled = false;
+                    });
+            });
+        }
+        
+        // Initialize lazy loading
+        window.addEventListener('scroll', lazyLoadTemplates);
+        window.addEventListener('resize', lazyLoadTemplates);
+        lazyLoadTemplates();
+    });
+</script>
+{% endblock %}

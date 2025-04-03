@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Preview Resume - {{ resume.title }} - ResumeMe{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Apply the template's CSS styles */
+    {{ resume.template.css_styles|safe }}
+    
+    /* Additional preview-specific styles */
+    .resume-preview-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .resume-actions {
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+    }
+    
+    .resume-actions .btn {
+        margin-bottom: 10px;
+    }
+    
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        
+        body {
+            background-color: white !important;
+        }
+        
+        .resume-preview-container {
+            box-shadow: none;
+            margin: 0;
+            padding: 0;
+        }
+    }
+    
+    /* Apply the primary color from the resume settings */
+    .primary-color {
+        color: {{ resume.primary_color }};
+    }
+    
+    .primary-bg {
+        background-color: {{ resume.primary_color }};
+    }
+    
+    .primary-border {
+        border-color: {{ resume.primary_color }};
+    }
+    
+    /* Apply the font family from the resume settings */
+    .resume-content {
+        font-family: {{ resume.font_family }}, sans-serif;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar with actions -->
+        <div class="col-md-3 col-lg-2 no-print">
+            <div class="resume-actions d-flex flex-column">
+                <a href="{% url 'dashboard:resume_edit' uuid=resume.uuid %}" class="btn btn-primary">
+                    <i class="bi bi-pencil me-2"></i>Edit Resume
+                </a>
+                <button id="print-resume" class="btn btn-outline-primary">
+                    <i class="bi bi-printer me-2"></i>Print
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" id="downloadDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-download me-2"></i>Download
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="downloadDropdown">
+                        <li><a class="dropdown-item" href="#" id="download-pdf">PDF</a></li>
+                        <li><a class="dropdown-item" href="#" id="download-docx">DOCX</a></li>
+                        <li><a class="dropdown-item" href="#" id="download-txt">TXT</a></li>
+                    </ul>
+                </div>
+                <a href="{% url 'dashboard:my_resumes' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to My Resumes
+                </a>
+            </div>
+        </div>
+        
+        <!-- Resume preview -->
+        <div class="col-md-9 col-lg-10">
+            <div class="resume-preview-container p-4">
+                <div class="resume-content">
+                    <!-- Render the resume using the template's HTML structure -->
+                    {% autoescape off %}
+                    {% with personal_info=resume.content.personal_info %}
+                    
+                    <!-- Replace placeholders in the template with actual content -->
+                    {% with template_html=resume.template.html_structure %}
+                    {{ template_html|safe|replace:"{first_name}"|replace:personal_info.first_name|replace:"{last_name}"|replace:personal_info.last_name|replace:"{email}"|replace:personal_info.email|replace:"{phone}"|replace:personal_info.phone|replace:"{address}"|replace:personal_info.address|replace:"{city}"|replace:personal_info.city|replace:"{state}"|replace:personal_info.state|replace:"{zip_code}"|replace:personal_info.zip_code|replace:"{linkedin}"|replace:personal_info.linkedin|replace:"{website}"|replace:personal_info.website }}
+                    {% endwith %}
+                    
+                    {% endwith %}
+                    {% endautoescape %}
+                    
+                    <!-- Sections -->
+                    {% for section in sections %}
+                    <div class="section {{ section.section_type }}">
+                        <h2>{{ section.title }}</h2>
+                        
+                        {% if section.section_type == 'summary' %}
+                        <p>{{ section.content.summary }}</p>
+                        
+                        {% elif section.section_type == 'experience' %}
+                        {% for item in section.content.items %}
+                        <div class="experience-item">
+                            <div class="job-header">
+                                <span class="job-title">{{ item.job_title }}</span> at <span class="employer">{{ item.employer }}</span>
+                                <div class="date">{{ item.start_date }} - {% if item.current_job %}Present{% else %}{{ item.end_date }}{% endif %}</div>
+                            </div>
+                            <p class="description">{{ item.description }}</p>
+                        </div>
+                        {% endfor %}
+                        
+                        {% elif section.section_type == 'education' %}
+                        {% for item in section.content.items %}
+                        <div class="education-item">
+                            <div class="education-header">
+                                <span class="degree">{{ item.degree }}</span> - <span class="institution">{{ item.institution }}</span>
+                                <div class="date">{{ item.start_date }} - {% if item.current_education %}Present{% else %}{{ item.end_date }}{% endif %}</div>
+                            </div>
+                            <p class="description">{{ item.description }}</p>
+                        </div>
+                        {% endfor %}
+                        
+                        {% elif section.section_type == 'skills' %}
+                        <ul class="skills-list">
+                            {% for skill in section.content.skills %}
+                            <li>{{ skill }}</li>
+                            {% endfor %}
+                        </ul>
+                        
+                        {% else %}
+                        <!-- Custom section -->
+                        <div class="custom-content">
+                            {{ section.content.text|linebreaks }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Print functionality
+        document.getElementById('print-resume').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // Download as PDF
+        document.getElementById('download-pdf').addEventListener('click', function(e) {
+            e.preventDefault();
+            // This would typically call an API endpoint to generate a PDF
+            window.location.href = "{% url 'dashboard:download_resume' uuid=resume.uuid format='pdf' %}";
+        });
+        
+        // Download as DOCX
+        document.getElementById('download-docx').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = "{% url 'dashboard:download_resume' uuid=resume.uuid format='docx' %}";
+        });
+        
+        // Download as TXT
+        document.getElementById('download-txt').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = "{% url 'dashboard:download_resume' uuid=resume.uuid format='txt' %}";
+        });
+    });
+</script>
+{% endblock %}
+

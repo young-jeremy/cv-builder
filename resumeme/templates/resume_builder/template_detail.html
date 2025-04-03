@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ template.name }} - Resume Template{% endblock %}
+
+{% block extra_css %}
+<style>
+    .template-detail-container {
+        padding: 40px 0;
+    }
+    
+    .template-preview {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+        position: relative;
+    }
+    
+    .template-preview img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .template-preview-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .template-preview:hover .template-preview-overlay {
+        opacity: 1;
+    }
+    
+    .template-info {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+    }
+    
+    .template-name {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .template-category {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        color: #495057;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .template-description {
+        color: #6c757d;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+    
+    .template-features {
+        margin-bottom: 30px;
+    }
+    
+    .feature-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+    
+    .feature-icon {
+        color: var(--primary-color);
+        margin-right: 10px;
+        font-size: 18px;
+    }
+    
+    .premium-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #ffc107;
+        color: #212529;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-left: 10px;
+    }
+    
+    .template-actions {
+        margin-top: 30px;
+    }
+    
+    .btn-use-template {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-bottom: 15px;
+        text-decoration: none;
+    }
+    
+    .btn-use-template:hover {
+        background-color: var(--primary-hover);
+        color: white;
+    }
+    
+    .btn-preview {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        background-color: white;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+    }
+    
+    .btn-preview:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .related-templates {
+        margin-top: 60px;
+    }
+    
+    .related-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .related-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .related-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .related-preview {
+        height: 150px;
+        background-color: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .related-preview img {
+        max-width: 100%;
+        max-height: 100%;
+    }
+    
+    .related-info {
+        padding: 15px;
+    }
+    
+    .related-name {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .related-category {
+        color: #6c757d;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    
+    .related-link {
+        display: block;
+        text-align: center;
+        padding: 8px 0;
+        background-color: #f8f9fa;
+        color: #495057;
+        border-top: 1px solid #dee2e6;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+    
+    .related-link:hover {
+        background-color: #e9ecef;
+    }
+    
+    .template-preview-iframe {
+        width: 100%;
+        height: 600px;
+        border: none;
+    }
+    
+    .modal-preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .modal-preview-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+    }
+    
+    .modal-preview-body {
+        padding: 0;
+    }
+    
+    .modal-preview-footer {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container template-detail-container">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="template-preview">
+                <img src="{{ template.preview_image.url }}" alt="{{ template.name }} Template Preview">
+                <div class="template-preview-overlay">
+                    <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#previewModal">
+                        <i class="bi bi-eye me-2"></i> Full Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="template-info">
+                <h1 class="template-name">
+                    {{ template.name }}
+                    {% if template.is_premium %}
+                    <span class="premium-badge">
+                        <i class="bi bi-star-fill me-1"></i> Premium
+                    </span>
+                    {% endif %}
+                </h1>
+                
+                <div class="template-category">
+                    <i class="bi bi-folder me-1"></i> {{ template.category.name }}
+                </div>
+                
+                <div class="template-description">
+                    {{ template.description|linebreaks }}
+                </div>
+                
+                <div class="template-features">
+                    <h3 class="feature-title">Features</h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            <span>Professional design optimized for readability</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            <span>ATS-friendly format to pass applicant tracking systems</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            <span>Customizable colors and sections</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            <span>Multiple export options (PDF, DOCX, TXT)</span>
+                        </li>
+                        <li class="feature-item">
+                            <i class="bi bi-check-circle-fill feature-icon"></i>
+                            <span>Mobile-responsive design</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="template-actions">
+                    <a href="{% url 'create_resume_with_template' template.slug %}" class="btn-use-template">
+                        <i class="bi bi-plus-lg me-2"></i> Use This Template
+                    </a>
+                    <button class="btn-preview" data-bs-toggle="modal" data-bs-target="#previewModal">
+                        <i class="bi bi-eye me-2"></i> Preview Template
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if related_templates %}
+    <div class="related-templates">
+        <h2 class="related-title">Similar Templates</h2>
+        <div class="related-grid">
+            {% for related in related_templates %}
+            <div class="related-card">
+                <div class="related-preview">
+                    <img src="{{ related.preview_image.url }}" alt="{{ related.name }} Template Preview">
+                </div>
+                <div class="related-info">
+                    <h3 class="related-name">{{ related.name }}</h3>
+                    <div class="related-category">{{ related.category.name }}</div>
+                </div>
+                <a href="{% url 'template_detail' related.slug %}" class="related-link">View Template</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Template Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-preview-header">
+                <h5 class="modal-preview-title" id="previewModalLabel">{{ template.name }} Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-preview-body">
+                <iframe src="{% url 'template_preview' template.slug %}" class="template-preview-iframe"></iframe>
+            </div>
+            <div class="modal-preview-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">
+                    Use This Template
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

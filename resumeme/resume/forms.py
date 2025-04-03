@@ -1,134 +1,178 @@
 from django import forms
-from django.forms import ModelForm
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import (
-    Resume, Education, Experience, Skill, Project,
-    Certification, Language, Reference, CustomSection, CoverLetter
+    Resume, PersonalInfo, Experience, Education,
+    Skill, Project, Language, Certification, TemplateColor
 )
 
-class ResumeForm(ModelForm):
+
+class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
+
+
+class ResumeForm(forms.ModelForm):
     class Meta:
         model = Resume
-        fields = [
-            'title', 'full_name', 'email', 'phone', 'location',
-            'headline', 'summary', 'profile_photo',
-            'primary_color', 'secondary_color', 'font_family',
-        ]
+        fields = ['title', 'template']
         widgets = {
-            'summary': forms.Textarea(attrs={'rows': 4}),
-            'primary_color': forms.TextInput(attrs={'type': 'color'}),
-            'secondary_color': forms.TextInput(attrs={'type': 'color'}),
-            'font_family': forms.Select(choices=[
-                ('Arial, sans-serif', 'Arial'),
-                ('Helvetica, sans-serif', 'Helvetica'),
-                ('Georgia, serif', 'Georgia'),
-                ('Times New Roman, serif', 'Times New Roman'),
-                ('Courier New, monospace', 'Courier New'),
-                ('Verdana, sans-serif', 'Verdana'),
-                ('Roboto, sans-serif', 'Roboto'),
-                ('Open Sans, sans-serif', 'Open Sans'),
-                ('Lato, sans-serif', 'Lato'),
-                ('Montserrat, sans-serif', 'Montserrat'),
-            ]),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'template': forms.Select(attrs={'class': 'form-select'}),
         }
 
 
-class EducationForm(ModelForm):
+class PersonalInfoForm(forms.ModelForm):
     class Meta:
-        model = Education
-        fields = [
-            'institution', 'degree', 'field_of_study', 'location',
-            'start_date', 'end_date', 'current', 'description', 'gpa'
-        ]
+        model = PersonalInfo
+        exclude = ['resume']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 3}),
+            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'job_title': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'website': forms.URLInput(attrs={'class': 'form-control'}),
+            'linkedin': forms.URLInput(attrs={'class': 'form-control'}),
+            'github': forms.URLInput(attrs={'class': 'form-control'}),
+            'summary': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'profile_image': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
 
-class ExperienceForm(ModelForm):
+class ExperienceForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+    end_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+
     class Meta:
         model = Experience
-        fields = [
-            'company', 'title', 'location',
-            'start_date', 'end_date', 'current', 'description'
-        ]
+        exclude = ['resume', 'order']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 3}),
+            'company': forms.TextInput(attrs={'class': 'form-control'}),
+            'position': forms.TextInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'current': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
 
-class SkillForm(ModelForm):
+class EducationForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+    end_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+
+    class Meta:
+        model = Education
+        exclude = ['resume', 'order']
+        widgets = {
+            'institution': forms.TextInput(attrs={'class': 'form-control'}),
+            'degree': forms.TextInput(attrs={'class': 'form-control'}),
+            'field_of_study': forms.TextInput(attrs={'class': 'form-control'}),
+            'location': forms.TextInput(attrs={'class': 'form-control'}),
+            'current': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+
+class SkillForm(forms.ModelForm):
     class Meta:
         model = Skill
-        fields = ['name', 'level']
+        exclude = ['resume', 'order']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'level': forms.Select(attrs={'class': 'form-select'}),
+        }
 
 
-class ProjectForm(ModelForm):
+class ProjectForm(forms.ModelForm):
+    start_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+    end_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+
     class Meta:
         model = Project
-        fields = [
-            'title', 'description', 'url',
-            'start_date', 'end_date', 'current'
-        ]
+        exclude = ['resume', 'order']
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
-            'description': forms.Textarea(attrs={'rows': 3}),
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'url': forms.URLInput(attrs={'class': 'form-control'}),
         }
 
 
-class CertificationForm(ModelForm):
-    class Meta:
-        model = Certification
-        fields = [
-            'name', 'issuing_organization', 'issue_date',
-            'expiration_date', 'credential_id', 'credential_url'
-        ]
-        widgets = {
-            'issue_date': forms.DateInput(attrs={'type': 'date'}),
-            'expiration_date': forms.DateInput(attrs={'type': 'date'}),
-        }
-
-
-class LanguageForm(ModelForm):
+class LanguageForm(forms.ModelForm):
     class Meta:
         model = Language
-        fields = ['name', 'proficiency']
-
-
-class ReferenceForm(ModelForm):
-    class Meta:
-        model = Reference
-        fields = [
-            'name', 'company', 'title', 'email', 'phone', 'reference_text'
-        ]
+        exclude = ['resume', 'order']
         widgets = {
-            'reference_text': forms.Textarea(attrs={'rows': 3}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'proficiency': forms.Select(attrs={'class': 'form-select'}),
         }
 
 
-class CustomSectionForm(ModelForm):
+class CertificationForm(forms.ModelForm):
+    issue_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+    expiration_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+    )
+
     class Meta:
-        model = CustomSection
-        fields = ['title', 'content']
+        model = Certification
+        exclude = ['resume', 'order']
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 4}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'issuing_organization': forms.TextInput(attrs={'class': 'form-control'}),
+            'credential_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'credential_url': forms.URLInput(attrs={'class': 'form-control'}),
         }
 
 
-class CoverLetterForm(ModelForm):
+class TemplateColorForm(forms.ModelForm):
     class Meta:
-        model = CoverLetter
-        fields = [
-            'title', 'resume', 'recipient_name', 'recipient_company',
-            'recipient_address', 'greeting', 'body', 'closing'
-        ]
+        model = TemplateColor
+        exclude = ['resume']
         widgets = {
-            'recipient_address': forms.Textarea(attrs={'rows': 2}),
-            'body': forms.Textarea(attrs={'rows': 10}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'color_code': forms.TextInput(attrs={'class': 'form-control color-picker'}),
         }
 
+
+class ResumeExportForm(forms.Form):
+    EXPORT_CHOICES = (
+        ('pdf', 'PDF'),
+        ('docx', 'Word Document (DOCX)'),
+        ('txt', 'Plain Text (TXT)'),
+    )
+
+    export_format = forms.ChoiceField(
+        choices=EXPORT_CHOICES,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'})
+    )
 

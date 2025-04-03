@@ -1,0 +1,56 @@
+<!-- templates_app/simple_templates/simple_template.html -->
+{% extends 'templates_app/base_category_template.html' %}
+
+{% block category_css %}
+<style>
+    .category-hero {
+        background-color: #f0f9ff;
+    }
+
+    .category-title {
+        background: linear-gradient(90deg, #0ea5e9, #38bdf8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .filter-option.active {
+        background-color: #0ea5e9;
+    }
+
+    .simple-feature-icon {
+        color: #0ea5e9;
+    }
+</style>
+{% endblock %}
+
+{% block category_features %}
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-eye-fill fs-3 simple-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Clean & Minimal</h3>
+        <p class="feature-description">Our simple templates focus on content with clean layouts and minimal distractions, making your qualifications stand out.</p>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-search fs-3 simple-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">ATS Optimized</h3>
+        <p class="feature-description">All our simple templates are designed to pass through Applicant Tracking Systems with ease, ensuring your resume gets seen by recruiters.</p>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-file-earmark-text fs-3 simple-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Traditional Format</h3>
+        <p class="feature-description">Our simple templates follow traditional resume formats that are widely accepted across industries and preferred by hiring managers.</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+<!-- templates_app/creative_templates/creative_template.html -->
+{% extends 'templates_app/base_category_template.html' %}
+
+{% block category_css %}
+<style>
+    .category-hero {
+        background-color: #faf5ff;
+    }
+
+    .category-title {
+        background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .filter-option.active {
+        background-color: #8b5cf6;
+    }
+
+    .creative-feature-icon {
+        color: #8b5cf6;
+    }
+</style>
+{% endblock %}
+
+{% block category_features %}
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-brush fs-3 creative-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Unique Design</h3>
+        <p class="feature-description">Our creative templates stand out with unique designs and bold styling elements that showcase your personality and creativity.</p>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-grid-3x3-gap fs-3 creative-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Innovative Layouts</h3>
+        <p class="feature-description">Our creative templates feature innovative layouts that break traditional resume conventions while remaining professional and effective.</p>
+    </div>
+</div>
+<div class="col-md-4">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <i class="bi bi-person-badge fs-3 creative-feature-icon"></i>
+        </div>
+        <h3 class="feature-title">Personal Branding</h3>
+        <p class="feature-description">Our creative templates are designed to showcase your personal brand and make a memorable impression on potential employers.</p>
+    </div>
+</div>
+{% endblock %}

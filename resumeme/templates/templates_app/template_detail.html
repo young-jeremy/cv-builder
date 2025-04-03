@@ -1,4 +1,3 @@
-{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}{{ template.name }} - Resume Template{% endblock %}
@@ -220,7 +219,7 @@
       <div class="col-lg-8">
         <!-- Template Preview -->
         <div class="template-preview-container">
-          <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-image" id="preview-image">
+          <img src="{% if template.preview_image %}{{ template.preview_image.url }}{% else %}{% static 'images/template-placeholder.jpg' %}{% endif %}" alt="{{ template.name }} Template">
         </div>
         
         <!-- Template Actions -->
@@ -297,7 +296,7 @@
       <div class="col-md-4">
         <div class="template-card">
           <div class="template-preview">
-            <img src="{{ related.preview_image.url }}" alt="{{ related.name }} Template">
+            <img src="{% if related.preview_image %}{{ related.preview_image.url }}{% else %}{% static 'images/template-placeholder.jpg' %}{% endif %}" alt="{{ related.name }} Template">
             <div class="template-overlay">
               <div class="template-actions">
                 <a href="{% url 'templates_app:template_detail' related.slug %}" class="btn btn-primary">View Template</a>

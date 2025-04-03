@@ -1,0 +1,18 @@
+{% extends 'base_minimal.html' %}
+{% load static %}
+
+{% block title %}Preview: {{ resume.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    {{ resume.template.css_styles|safe }}
+    {{ resume.custom_css|safe }}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="resume-container">
+    {{ resume.template.html_structure|safe }}
+</div>
+{% endblock %}
+

@@ -1,34 +1,620 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView
-from django.http import JsonResponse
 from django.db.models import Count, Q
-from django.contrib import messages
 from django.urls import reverse
-
 from .models import ResumeTemplate, TemplateCategory, TemplateColor, UserTemplateSelection
 from .forms import TemplateFilterForm
-
-# views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ResumeTemplate, UserTemplateSelection
-from resume.models import  Resume, ResumeSection
-
-# Add these to your views.py
+from resume.models import  Resume
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
-from django.shortcuts import render, get_object_or_404
 from home.models import Resume  # Assuming you have a Resume model
-
-# templates_app/views.py
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import io
 from django.template.loader import get_template
 from xhtml2pdf import pisa  # You'll need to install this: pip install xhtml2pdf
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy, reverse
+from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
+from django.utils.text import slugify
+from django.contrib import messages
+import json
+from dashboard.models import ResumeUploadForm
+# views.py
+class AllTemplatesView(ListView):
+    """View for browsing all resume templates"""
+    model = ResumeTemplate
+    template_name = 'templates_app/all_templates.html'
+    context_object_name = 'templates'
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(is_active=True)
+
+        # Filter by category if provided
+        category = self.request.GET.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+
+        # Filter by style if provided
+        style = self.request.GET.get('style')
+        if style:
+            queryset = queryset.filter(style=style)
+
+        # Filter by color if provided
+        color = self.request.GET.get('color')
+        if color:
+            queryset = queryset.filter(color=color)
+
+        # Search by name or description
+        search = self.request.GET.get('search')
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search) |
+                Q(description__icontains=search)
+            )
+
+        # Sort by popularity, newest, or name
+        sort = self.request.GET.get('sort', 'popular')
+        if sort == 'newest':
+            queryset = queryset.order_by('-created_at')
+        elif sort == 'name':
+            queryset = queryset.order_by('name')
+        else:  # Default to popular
+            queryset = queryset.order_by('-popularity')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add filter options to context
+        context['categories'] = ResumeTemplate.objects.values_list('category', flat=True).distinct()
+        context['styles'] = ResumeTemplate.objects.values_list('style', flat=True).distinct()
+        context['colors'] = ResumeTemplate.objects.values_list('color', flat=True).distinct()
+
+        # Add current filter selections
+        context['selected_category'] = self.request.GET.get('category', '')
+        context['selected_style'] = self.request.GET.get('style', '')
+        context['selected_color'] = self.request.GET.get('color', '')
+        context['selected_sort'] = self.request.GET.get('sort', 'popular')
+        context['search_query'] = self.request.GET.get('search', '')
+
+        return context
+
+
+class SimpleTemplatesView(ListView):
+    """View for browsing simple resume templates"""
+    model = ResumeTemplate
+    template_name = 'templates_app/simple_templates/simple_template.html'
+    context_object_name = 'templates'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(category='simple')
+
+        # Filter by style if provided
+        style = self.request.GET.get('style')
+        if style:
+            queryset = queryset.filter(style=style)
+
+        # Filter by color if provided
+        color = self.request.GET.get('color')
+        if color:
+            queryset = queryset.filter(color=color)
+
+        # Sort by popularity, newest, or name
+        sort = self.request.GET.get('sort', 'popular')
+        if sort == 'newest':
+            queryset = queryset.order_by('-created_at')
+        elif sort == 'name':
+            queryset = queryset.order_by('name')
+        else:  # Default to popular
+            queryset = queryset.order_by('-popularity')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add filter options to context
+        context['styles'] = ResumeTemplate.objects.filter(category='simple').values_list('style', flat=True).distinct()
+        context['colors'] = ResumeTemplate.objects.filter(category='simple').values_list('color', flat=True).distinct()
+
+        # Add current filter selections
+        context['selected_style'] = self.request.GET.get('style', '')
+        context['selected_color'] = self.request.GET.get('color', '')
+        context['selected_sort'] = self.request.GET.get('sort', 'popular')
+
+        # Add category information
+        context['category'] = 'simple'
+        context['category_title'] = 'Simple Resume Templates'
+        context['category_description'] = 'Clean and straightforward designs that focus on content.'
+
+        return context
+
+
+class ModernTemplatesView(ListView):
+    """View for browsing modern resume templates"""
+    model = ResumeTemplate
+    template_name = 'templates_app/modern_templates/modern_template.html'
+    context_object_name = 'templates'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(category='modern')
+
+        # Filter by style if provided
+        style = self.request.GET.get('style')
+        if style:
+            queryset = queryset.filter(style=style)
+
+        # Filter by color if provided
+        color = self.request.GET.get('color')
+        if color:
+            queryset = queryset.filter(color=color)
+
+        # Sort by popularity, newest, or name
+        sort = self.request.GET.get('sort', 'popular')
+        if sort == 'newest':
+            queryset = queryset.order_by('-created_at')
+        elif sort == 'name':
+            queryset = queryset.order_by('name')
+        else:  # Default to popular
+            queryset = queryset.order_by('-popularity')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add filter options to context
+        context['styles'] = ResumeTemplate.objects.filter(category='modern').values_list('style', flat=True).distinct()
+        context['colors'] = ResumeTemplate.objects.filter(category='modern').values_list('color', flat=True).distinct()
+
+        # Add current filter selections
+        context['selected_style'] = self.request.GET.get('style', '')
+        context['selected_color'] = self.request.GET.get('color', '')
+        context['selected_sort'] = self.request.GET.get('sort', 'popular')
+
+        # Add category information
+        context['category'] = 'modern'
+        context['category_title'] = 'Modern Resume Templates'
+        context['category_description'] = 'Contemporary designs with creative layouts and styling.'
+
+        return context
+
+
+class CreativeTemplatesView(ListView):
+    """View for browsing creative resume templates"""
+    model = ResumeTemplate
+    template_name = 'templates_app/creative_templates/creative_template.html'
+    context_object_name = 'templates'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(category='creative')
+
+        # Filter by style if provided
+        style = self.request.GET.get('style')
+        if style:
+            queryset = queryset.filter(style=style)
+
+        # Filter by color if provided
+        color = self.request.GET.get('color')
+        if color:
+            queryset = queryset.filter(color=color)
+
+        # Sort by popularity, newest, or name
+        sort = self.request.GET.get('sort', 'popular')
+        if sort == 'newest':
+            queryset = queryset.order_by('-created_at')
+        elif sort == 'name':
+            queryset = queryset.order_by('name')
+        else:  # Default to popular
+            queryset = queryset.order_by('-popularity')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add filter options to context
+        context['styles'] = ResumeTemplate.objects.filter(category='creative').values_list('style',
+                                                                                           flat=True).distinct()
+        context['colors'] = ResumeTemplate.objects.filter(category='creative').values_list('color',
+                                                                                           flat=True).distinct()
+
+        # Add current filter selections
+        context['selected_style'] = self.request.GET.get('style', '')
+        context['selected_color'] = self.request.GET.get('color', '')
+        context['selected_sort'] = self.request.GET.get('sort', 'popular')
+
+        # Add category information
+        context['category'] = 'creative'
+        context['category_title'] = 'Creative Resume Templates'
+        context['category_description'] = 'Bold and unique designs that help you stand out.'
+
+        return context
+
+def template_detail(request, template_slug):
+    template = get_object_or_404(ResumeTemplate, slug=template_slug, is_active=True)
+
+    # Get sample data for preview
+    sample_data = {
+        'personal_info': {
+            'full_name': 'John Doe',
+            'job_title': 'Software Engineer',
+            'email': 'john.doe@example.com',
+            'phone': '(123) 456-7890',
+            'address': 'New York, NY',
+            'summary': 'Experienced software engineer with a passion for developing innovative solutions...'
+        },
+        'experiences': [
+            {
+                'company': 'Tech Solutions Inc.',
+                'position': 'Senior Software Engineer',
+                'location': 'New York, NY',
+                'start_date': '2018-01-01',
+                'end_date': None,
+                'current': True,
+                'description': 'Led development of cloud-based applications...'
+            },
+            {
+                'company': 'Digital Innovations',
+                'position': 'Software Developer',
+                'location': 'Boston, MA',
+                'start_date': '2015-03-01',
+                'end_date': '2017-12-31',
+                'current': False,
+                'description': 'Developed and maintained web applications...'
+            }
+        ],
+        'educations': [
+            {
+                'institution': 'MIT',
+                'degree': 'Master of Science',
+                'field_of_study': 'Computer Science',
+                'location': 'Cambridge, MA',
+                'start_date': '2013-09-01',
+                'end_date': '2015-05-31',
+                'current': False,
+                'description': ''
+            }
+        ],
+        'skills': [
+            {'name': 'JavaScript', 'level': 5},
+            {'name': 'Python', 'level': 4},
+            {'name': 'React', 'level': 4},
+            {'name': 'Node.js', 'level': 3},
+            {'name': 'SQL', 'level': 4}
+        ],
+        'languages': [
+            {'name': 'English', 'proficiency': 'native'},
+            {'name': 'Spanish', 'proficiency': 'professional'}
+        ],
+        'projects': [
+            {
+                'title': 'E-commerce Platform',
+                'description': 'Developed a full-stack e-commerce platform...',
+                'url': 'https://github.com/johndoe/ecommerce',
+                'start_date': '2019-06-01',
+                'end_date': '2019-12-31'
+            }
+        ],
+        'certifications': [
+            {
+                'name': 'AWS Certified Solutions Architect',
+                'issuing_organization': 'Amazon Web Services',
+                'issue_date': '2020-01-15',
+                'expiration_date': '2023-01-15',
+                'credential_id': 'AWS-123456',
+                'credential_url': 'https://aws.amazon.com/certification/verify'
+            }
+        ]
+    }
+
+    # Get related templates (same category)
+    related_templates = ResumeTemplate.objects.filter(
+        category=template.category,
+        is_active=True
+    ).exclude(id=template.id).order_by('?')[:3]
+
+    # Get color schemes for customization preview
+    color_schemes = [
+        {'name': 'Default', 'primary': '#3b82f6', 'secondary': '#6c757d', 'accent': '#10b981'},
+        {'name': 'Professional', 'primary': '#1e40af', 'secondary': '#475569', 'accent': '#0369a1'},
+        {'name': 'Creative', 'primary': '#7c3aed', 'secondary': '#6b7280', 'accent': '#ec4899'},
+        {'name': 'Modern', 'primary': '#0f766e', 'secondary': '#4b5563', 'accent': '#f59e0b'},
+        {'name': 'Classic', 'primary': '#b91c1c', 'secondary': '#374151', 'accent': '#ca8a04'}
+    ]
+
+    return render(request, 'templates_app/latest_template_detail.html', {
+        'template': template,
+        'sample_data': sample_data,
+        'related_templates': related_templates,
+        'color_schemes': color_schemes
+    })
+
+def compare_templates(request):
+    template_ids = request.GET.getlist('templates')
+
+    if not template_ids or len(template_ids) < 2:
+        # Default to comparing the first template from each category
+        templates = []
+        for category in TemplateCategory.objects.all():
+            template = ResumeTemplate.objects.filter(category=category, is_active=True).first()
+            if template:
+                templates.append(template)
+
+        if len(templates) < 2:
+            # If still not enough, just get any two templates
+            templates = ResumeTemplate.objects.filter(is_active=True)[:2]
+    else:
+        templates = ResumeTemplate.objects.filter(id__in=template_ids, is_active=True)
+
+    # Get all templates for selection
+    all_templates = ResumeTemplate.objects.filter(is_active=True).order_by('category__name', 'name')
+
+    # Sample data for preview
+    sample_data = {
+        'personal_info': {
+            'full_name': 'John Doe',
+            'job_title': 'Software Engineer',
+            'email': 'john.doe@example.com',
+            'phone': '(123) 456-7890',
+        }
+    }
+
+    return render(request, 'resume_builder/compare_templates.html', {
+        'templates': templates,
+        'all_templates': all_templates,
+        'sample_data': sample_data
+    })
+
+
+def category_showcase(request, category_slug):
+    category = get_object_or_404(TemplateCategory, slug=category_slug)
+    templates = ResumeTemplate.objects.filter(category=category, is_active=True)
+
+    return render(request, 'templates_app/category_showcase.html', {
+        'category': category,
+        'templates': templates
+    })
+
+def template_api(request):
+    page = request.GET.get('page', 1)
+    category = request.GET.get('category')
+    search = request.GET.get('search')
+
+    templates = ResumeTemplate.objects.filter(is_active=True)
+
+    if category:
+        templates = templates.filter(category__slug=category)
+
+    if search:
+        templates = templates.filter(
+            Q(name__icontains=search) |
+            Q(description__icontains=search) |
+            Q(category__name__icontains=search)
+        )
+
+    paginator = Paginator(templates, 9)  # 9 templates per page
+    page_obj = paginator.get_page(page)
+
+    templates_data = []
+    for template in page_obj:
+        templates_data.append({
+            'id': template.id,
+            'name': template.name,
+            'slug': template.slug,
+            'description': template.description[:100] + '...' if len(
+                template.description) > 100 else template.description,
+            'preview_image': template.preview_image.url,
+            'category_name': template.category.name,
+            'category_slug': template.category.slug,
+            'is_premium': template.is_premium
+        })
+
+    return JsonResponse({
+        'templates': templates_data,
+        'has_next': page_obj.has_next(),
+        'total_pages': paginator.num_pages
+    })
+
+
+def template_detail(request, template_slug):
+    template = get_object_or_404(ResumeTemplate, slug=template_slug, is_active=True)
+
+    # Get sample data for preview
+    sample_data = {
+        'personal_info': {
+            'full_name': 'John Doe',
+            'job_title': 'Software Engineer',
+            'email': 'john.doe@example.com',
+            'phone': '(123) 456-7890',
+            'address': 'New York, NY',
+            'summary': 'Experienced software engineer with a passion for developing innovative solutions...'
+        },
+        'experiences': [
+            {
+                'company': 'Tech Solutions Inc.',
+                'position': 'Senior Software Engineer',
+                'location': 'New York, NY',
+                'start_date': '2018-01-01',
+                'end_date': None,
+                'current': True,
+                'description': 'Led development of cloud-based applications...'
+            },
+            {
+                'company': 'Digital Innovations',
+                'position': 'Software Developer',
+                'location': 'Boston, MA',
+                'start_date': '2015-03-01',
+                'end_date': '2017-12-31',
+                'current': False,
+                'description': 'Developed and maintained web applications...'
+            }
+        ],
+        'educations': [
+            {
+                'institution': 'MIT',
+                'degree': 'Master of Science',
+                'field_of_study': 'Computer Science',
+                'location': 'Cambridge, MA',
+                'start_date': '2013-09-01',
+                'end_date': '2015-05-31',
+                'current': False,
+                'description': ''
+            }
+        ],
+        'skills': [
+            {'name': 'JavaScript', 'level': 5},
+            {'name': 'Python', 'level': 4},
+            {'name': 'React', 'level': 4},
+            {'name': 'Node.js', 'level': 3},
+            {'name': 'SQL', 'level': 4}
+        ],
+        'languages': [
+            {'name': 'English', 'proficiency': 'native'},
+            {'name': 'Spanish', 'proficiency': 'professional'}
+        ],
+        'projects': [
+            {
+                'title': 'E-commerce Platform',
+                'description': 'Developed a full-stack e-commerce platform...',
+                'url': 'https://github.com/johndoe/ecommerce',
+                'start_date': '2019-06-01',
+                'end_date': '2019-12-31'
+            }
+        ],
+        'certifications': [
+            {
+                'name': 'AWS Certified Solutions Architect',
+                'issuing_organization': 'Amazon Web Services',
+                'issue_date': '2020-01-15',
+                'expiration_date': '2023-01-15',
+                'credential_id': 'AWS-123456',
+                'credential_url': 'https://aws.amazon.com/certification/verify'
+            }
+        ]
+    }
+
+    # Get related templates (same category)
+    related_templates = ResumeTemplate.objects.filter(
+        category=template.category,
+        is_active=True
+    ).exclude(id=template.id).order_by('?')[:3]
+
+    # Get color schemes for customization preview
+    color_schemes = [
+        {'name': 'Default', 'primary': '#3b82f6', 'secondary': '#6c757d', 'accent': '#10b981'},
+        {'name': 'Professional', 'primary': '#1e40af', 'secondary': '#475569', 'accent': '#0369a1'},
+        {'name': 'Creative', 'primary': '#7c3aed', 'secondary': '#6b7280', 'accent': '#ec4899'},
+        {'name': 'Modern', 'primary': '#0f766e', 'secondary': '#4b5563', 'accent': '#f59e0b'},
+        {'name': 'Classic', 'primary': '#b91c1c', 'secondary': '#374151', 'accent': '#ca8a04'}
+    ]
+
+    return render(request, 'templates_app/template_detail.html', {
+        'template': template,
+        'sample_data': sample_data,
+        'related_templates': related_templates,
+        'color_schemes': color_schemes
+    })
+
+# views.py
+def template_gallery(request):
+    categories = TemplateCategory.objects.all()
+    selected_category = request.GET.get('category')
+    search_query = request.GET.get('search', '')
+
+    templates = ResumeTemplate.objects.filter(is_active=True)
+
+    # Apply filters
+    if selected_category:
+        category = get_object_or_404(TemplateCategory, slug=selected_category)
+        templates = templates.filter(category=category)
+
+    if search_query:
+        templates = templates.filter(
+            Q(name__icontains=search_query) |
+            Q(description__icontains=search_query) |
+            Q(category__name__icontains=search_query)
+        )
+
+    # Get featured templates (one from each category)
+    featured_templates = []
+    for category in categories:
+        featured = ResumeTemplate.objects.filter(
+            category=category,
+            is_active=True
+        ).order_by('?').first()
+        if featured:
+            featured_templates.append(featured)
+
+    return render(request, 'templates_app/template_gallery.html', {
+        'categories': categories,
+        'selected_category': selected_category,
+        'search_query': search_query,
+        'templates': templates,
+        'featured_templates': featured_templates
+    })
+
+def home(request):
+    """Landing page view"""
+    # Count resumes created today
+    from django.utils import timezone
+    from django.db.models import Count
+    import random
+
+    today = timezone.now().date()
+    # For demo purposes, generate a random number or use actual count
+    resumes_today = Resume.objects.filter(created_at__date=today).count()
+    if resumes_today < 100:  # If it's a new site or few users
+        resumes_today = random.randint(1000, 50000)  # Show an impressive number
+
+    featured_templates = ResumeTemplate.objects.filter(is_featured=True)[:3]
+
+    return render(request, 'home/index.html', {
+        'resumes_today': resumes_today,
+        'featured_templates': featured_templates,
+    })
+
+
+@login_required
+def my_resumes(request):
+    """View for displaying user's resumes"""
+    resumes = Resume.objects.filter(user=request.user).order_by('-updated_at')
+
+    return render(request, 'dashboard/my_resumes.html', {
+        'resumes': resumes
+    })
+
+
+class ResumeTemplateListView(ListView):
+    """View for browsing resume templates"""
+    model = ResumeTemplate
+    template_name = 'dashboard/resume_list.html'
+    context_object_name = 'templates'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.GET.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = dict(ResumeTemplate.CATEGORY_CHOICES)
+        context['selected_category'] = self.request.GET.get('category', '')
+        return context
 
 
 def resume_download(request, resume_id):
@@ -613,7 +1199,7 @@ def select_template(request, slug):
     # Check if template is premium and user has access
     if template.is_premium and not request.user.profile.has_premium_access:
         messages.error(request, "This is a premium template. Please upgrade to access it.")
-        return redirect('template_list')
+        return redirect('templates_app:template_list')
 
     # Get color scheme if provided
     color_scheme = None
@@ -757,7 +1343,407 @@ def subscription_plans(request):
     })
 
 
+class ProfessionalTemplatesView(ListView):
+    """View for browsing professional resume templates"""
+    model = ResumeTemplate
+    template_name = 'templates_app/professional_templates/professional_template.html'
+    context_object_name = 'templates'
 
-# Add this to your templates_app/views.py if you don't already have a home view
-def home(request):
-    return render(request, 'templates_app/contemporary/home.html')
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(category='professional')
+
+        # Filter by style if provided
+        style = self.request.GET.get('style')
+        if style:
+            queryset = queryset.filter(style=style)
+
+        # Filter by color if provided
+        color = self.request.GET.get('color')
+        if color:
+            queryset = queryset.filter(color=color)
+
+        # Sort by popularity, newest, or name
+        sort = self.request.GET.get('sort', 'popular')
+        if sort == 'newest':
+            queryset = queryset.order_by('-created_at')
+        elif sort == 'name':
+            queryset = queryset.order_by('name')
+        else:  # Default to popular
+            queryset = queryset.order_by('-popularity')
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add filter options to context
+        context['styles'] = ResumeTemplate.objects.filter(category='professional').values_list('style',
+                                                                                               flat=True).distinct()
+        context['colors'] = ResumeTemplate.objects.filter(category='professional').values_list('color',
+                                                                                               flat=True).distinct()
+
+        # Add current filter selections
+        context['selected_style'] = self.request.GET.get('style', '')
+        context['selected_color'] = self.request.GET.get('color', '')
+        context['selected_sort'] = self.request.GET.get('sort', 'popular')
+
+        return context
+
+
+@login_required
+def create_resume(request, template_slug=None):
+    """Create a new resume, optionally based on a template"""
+    if template_slug:
+        template = get_object_or_404(ResumeTemplate, slug=template_slug)
+    else:
+        # If no template specified, use the first simple template
+        template = ResumeTemplate.objects.filter(category='simple').first()
+        if not template:
+            # Fallback to any template if no simple ones exist
+            template = ResumeTemplate.objects.first()
+
+    # Create a new resume with the selected template
+    resume = Resume.objects.create(
+        user=request.user,
+        template=template,
+        title=f"Untitled Resume - {template.name}",
+        content={
+            "personal_info": {
+                "first_name": "",
+                "last_name": "",
+                "email": request.user.email,
+                "phone": "",
+                "address": "",
+                "city": "",
+                "state": "",
+                "zip_code": "",
+                "country": "",
+                "linkedin": "",
+                "website": ""
+            }
+        }
+    )
+
+    # Create default sections
+    default_sections = [
+        {"type": "summary", "title": "Professional Summary", "order": 1},
+        {"type": "experience", "title": "Work Experience", "order": 2},
+        {"type": "education", "title": "Education", "order": 3},
+        {"type": "skills", "title": "Skills", "order": 4},
+    ]
+
+    for section in default_sections:
+        ResumeSection.objects.create(
+            resume=resume,
+            section_type=section["type"],
+            title=section["title"],
+            order=section["order"],
+            content={}
+        )
+
+    return redirect('dashboard:resume_edit', uuid=resume.uuid)
+
+
+@login_required
+def resume_edit(request, uuid):
+    """Edit a resume"""
+    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
+    sections = resume.sections.all().order_by('order')
+
+    if request.method == 'POST':
+        form = ResumeForm(request.POST, instance=resume)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Resume updated successfully!")
+            return redirect('dashboard:resume_edit', uuid=resume.uuid)
+    else:
+        form = ResumeForm(instance=resume)
+
+    return render(request, 'dashboard/resume_edit.html', {
+        'resume': resume,
+        'sections': sections,
+        'form': form,
+    })
+
+
+@login_required
+def resume_preview(request, uuid):
+    """Preview a resume"""
+    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
+    sections = resume.sections.all().order_by('order')
+
+    return render(request, 'dashboard/resume_preview.html', {
+        'resume': resume,
+        'sections': sections,
+    })
+
+
+@login_required
+def upload_resume(request):
+    """Upload an existing resume for parsing"""
+    if request.method == 'POST':
+        form = ResumeUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Here you would implement resume parsing logic
+            # For now, we'll just create a blank resume
+            template = ResumeTemplate.objects.filter(category='simple').first()
+
+            resume = Resume.objects.create(
+                user=request.user,
+                template=template,
+                title="Uploaded Resume",
+                content={"personal_info": {"email": request.user.email}}
+            )
+
+            # Create default sections
+            default_sections = [
+                {"type": "summary", "title": "Professional Summary", "order": 1},
+                {"type": "experience", "title": "Work Experience", "order": 2},
+                {"type": "education", "title": "Education", "order": 3},
+                {"type": "skills", "title": "Skills", "order": 4},
+            ]
+
+            for section in default_sections:
+                ResumeSection.objects.create(
+                    resume=resume,
+                    section_type=section["type"],
+                    title=section["title"],
+                    order=section["order"],
+                    content={}
+                )
+
+            messages.success(request, "Resume uploaded successfully! Please review and edit the extracted information.")
+            return redirect('dashboard:resume_edit', uuid=resume.uuid)
+    else:
+        form = ResumeUploadForm()
+
+    return render(request, 'dashboard/resume_upload.html', {'form': form})
+
+
+@login_required
+def add_section(request, resume_uuid):
+    """AJAX endpoint to add a new section to a resume"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            resume = get_object_or_404(Resume, uuid=resume_uuid, user=request.user)
+
+            # Get the highest order value and add 1
+            highest_order = ResumeSection.objects.filter(resume=resume).order_by('-order').first()
+            new_order = 1 if not highest_order else highest_order.order + 1
+
+            section = ResumeSection.objects.create(
+                resume=resume,
+                section_type=data.get('section_type', 'custom'),
+                title=data.get('title', 'New Section'),
+                order=new_order,
+                content={}
+            )
+
+            return JsonResponse({
+                'success': True,
+                'section_id': section.id,
+                'section_type': section.section_type,
+                'title': section.title
+            })
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@login_required
+def save_resume(request, uuid):
+    """AJAX endpoint to save resume data"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
+
+            # Update personal info
+            if 'personal_info' in data:
+                resume.content['personal_info'] = data['personal_info']
+
+            # Update sections
+            if 'sections' in data:
+                for section_data in data['sections']:
+                    section_id = section_data.get('id')
+                    section = get_object_or_404(ResumeSection, id=section_id, resume=resume)
+
+                    # Update section content
+                    section.content = section_data.get('content', {})
+                    section.save()
+
+            resume.save()
+
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@login_required
+def delete_resume(request, resume_id):
+    """Delete a resume"""
+    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+
+    if request.method == 'POST':
+        resume_title = resume.title
+        resume.delete()
+        messages.success(request, f"Resume '{resume_title}' has been deleted.")
+        return redirect('dashboard:my_resumes')
+
+    return redirect('dashboard:my_resumes')
+
+
+@login_required
+def download_resume(request, uuid, format):
+    """Download resume in various formats"""
+    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
+    sections = resume.sections.all().order_by('order')
+
+    if format == 'pdf':
+        # For PDF generation, you would typically use a library like WeasyPrint or xhtml2pdf
+        # This is a simplified example
+        from django.template.loader import render_to_string
+        from django.http import HttpResponse
+        from weasyprint import HTML, CSS
+        from django.conf import settings
+        import tempfile
+
+        # Render the resume to HTML
+        html_string = render_to_string('dashboard/resume_pdf.html', {
+            'resume': resume,
+            'sections': sections,
+            'base_url': request.build_absolute_uri('/'),
+        })
+
+        # Create HTTP response with PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="{resume.title}.pdf"'
+
+        # Generate PDF from HTML
+        HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf(
+            response,
+            stylesheets=[CSS(string=resume.template.css_styles)]
+        )
+
+        return response
+
+    elif format == 'docx':
+        # For DOCX generation, you would typically use a library like python-docx
+        # This is a simplified example
+        from django.http import HttpResponse
+        import docx
+        from docx.shared import Pt
+
+        # Create a new document
+        doc = docx.Document()
+
+        # Add title
+        doc.add_heading(
+            f"{resume.content.get('personal_info', {}).get('first_name', '')} {resume.content.get('personal_info', {}).get('last_name', '')}",
+            0)
+
+        # Add contact info
+        contact_info = resume.content.get('personal_info', {})
+        p = doc.add_paragraph()
+        p.add_run(f"Email: {contact_info.get('email', '')}\n")
+        p.add_run(f"Phone: {contact_info.get('phone', '')}\n")
+        p.add_run(
+            f"Address: {contact_info.get('address', '')}, {contact_info.get('city', '')}, {contact_info.get('state', '')} {contact_info.get('zip_code', '')}")
+
+        # Add sections
+        for section in sections:
+            doc.add_heading(section.title, 1)
+
+            if section.section_type == 'summary':
+                doc.add_paragraph(section.content.get('summary', ''))
+
+            elif section.section_type == 'experience':
+                for item in section.content.get('items', []):
+                    p = doc.add_paragraph()
+                    p.add_run(f"{item.get('job_title', '')} at {item.get('employer', '')}").bold = True
+                    p.add_run(
+                        f"\n{item.get('start_date', '')} - {item.get('end_date', 'Present') if not item.get('current_job', False) else 'Present'}")
+                    doc.add_paragraph(item.get('description', ''))
+
+            elif section.section_type == 'education':
+                for item in section.content.get('items', []):
+                    p = doc.add_paragraph()
+                    p.add_run(f"{item.get('degree', '')} - {item.get('institution', '')}").bold = True
+                    p.add_run(
+                        f"\n{item.get('start_date', '')} - {item.get('end_date', 'Present') if not item.get('current_education', False) else 'Present'}")
+                    doc.add_paragraph(item.get('description', ''))
+
+            elif section.section_type == 'skills':
+                skills = section.content.get('skills', [])
+                if skills:
+                    p = doc.add_paragraph(style='List Bullet')
+                    p.add_run(', '.join(skills))
+
+            else:
+                doc.add_paragraph(section.content.get('text', ''))
+
+        # Create response
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        response['Content-Disposition'] = f'attachment; filename="{resume.title}.docx"'
+
+        # Save document to response
+        doc.save(response)
+
+        return response
+
+    elif format == 'txt':
+        # For TXT generation
+        from django.http import HttpResponse
+
+        # Create response
+        response = HttpResponse(content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename="{resume.title}.txt"'
+
+        # Write personal info
+        personal_info = resume.content.get('personal_info', {})
+        response.write(f"{personal_info.get('first_name', '')} {personal_info.get('last_name', '')}\n")
+        response.write(f"Email: {personal_info.get('email', '')}\n")
+        response.write(f"Phone: {personal_info.get('phone', '')}\n")
+        response.write(
+            f"Address: {personal_info.get('address', '')}, {personal_info.get('city', '')}, {personal_info.get('state', '')} {personal_info.get('zip_code', '')}\n\n")
+
+        # Write sections
+        for section in sections:
+            response.write(f"{section.title.upper()}\n")
+            response.write("=" * len(section.title) + "\n\n")
+
+            if section.section_type == 'summary':
+                response.write(f"{section.content.get('summary', '')}\n\n")
+
+            elif section.section_type == 'experience':
+                for item in section.content.get('items', []):
+                    response.write(f"{item.get('job_title', '')} at {item.get('employer', '')}\n")
+                    response.write(
+                        f"{item.get('start_date', '')} - {item.get('end_date', 'Present') if not item.get('current_job', False) else 'Present'}\n")
+                    response.write(f"{item.get('description', '')}\n\n")
+
+            elif section.section_type == 'education':
+                for item in section.content.get('items', []):
+                    response.write(f"{item.get('degree', '')} - {item.get('institution', '')}\n")
+                    response.write(
+                        f"{item.get('start_date', '')} - {item.get('end_date', 'Present') if not item.get('current_education', False) else 'Present'}\n")
+                    response.write(f"{item.get('description', '')}\n\n")
+
+            elif section.section_type == 'skills':
+                skills = section.content.get('skills', [])
+                if skills:
+                    response.write(', '.join(skills) + "\n\n")
+
+            else:
+                response.write(f"{section.content.get('text', '')}\n\n")
+
+        return response
+
+    else:
+        # Invalid format
+        messages.error(request, f"Invalid download format: {format}")
+        return redirect('dashboard:resume_preview', uuid=uuid)

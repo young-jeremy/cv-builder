@@ -1,0 +1,299 @@
+{% load static %}
+
+{% block title %}Professional Resume Templates - ResumeMe{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/professional-templates.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Professional Resume Templates</h1>
+            <p class="hero-description">
+                Create a standout resume with our professionally designed templates. 
+                Perfect for corporate roles, executive positions, and traditional industries.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="filters-section">
+    <div class="container">
+        <div class="filters-wrapper">
+            <div class="filters-header">
+                <h2 class="filters-title">Filter Templates</h2>
+                <button id="clear-filters" class="btn-clear-filters">Clear All</button>
+            </div>
+            
+            <div class="filters-content">
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Style</h3>
+                    <div class="filter-options">
+                        <button class="filter-option {% if not selected_style %}active{% endif %}" data-filter="style" data-value="">All</button>
+                        {% for style in styles %}
+                        <button class="filter-option {% if selected_style == style %}active{% endif %}" data-filter="style" data-value="{{ style }}">
+                            {{ style|title }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Color</h3>
+                    <div class="filter-options">
+                        <button class="filter-option {% if not selected_color %}active{% endif %}" data-filter="color" data-value="">All</button>
+                        {% for color in colors %}
+                        <button class="filter-option {% if selected_color == color %}active{% endif %}" data-filter="color" data-value="{{ color }}">
+                            <span class="color-swatch color-{{ color }}"></span>
+                            {{ color|title }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <h3 class="filter-group-title">Difficulty</h3>
+                    <div class="filter-options">
+                        <button class="filter-option {% if not selected_difficulty %}active{% endif %}" data-filter="difficulty" data-value="">All</button>
+                        <button class="filter-option {% if selected_difficulty == 'beginner' %}active{% endif %}" data-filter="difficulty" data-value="beginner">
+                            Beginner
+                        </button>
+                        <button class="filter-option {% if selected_difficulty == 'intermediate' %}active{% endif %}" data-filter="difficulty" data-value="intermediate">
+                            Intermediate
+                        </button>
+                        <button class="filter-option {% if selected_difficulty == 'advanced' %}active{% endif %}" data-filter="difficulty" data-value="advanced">
+                            Advanced
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-group sort-group">
+                    <h3 class="filter-group-title">Sort By</h3>
+                    <select id="sort-select" class="sort-select">
+                        <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+                        <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Templates Grid Section -->
+<section class="templates-section">
+    <div class="container">
+        <div class="templates-count">
+            <p><span id="templates-count">{{ templates|length }}</span> templates found</p>
+        </div>
+        
+        <div class="templates-grid">
+            {% for template in templates %}
+            <div class="template-card" 
+                 data-style="{{ template.style }}" 
+                 data-color="{{ template.color }}" 
+                 data-difficulty="{{ template.difficulty_level }}">
+                <div class="template-preview">
+                    <img src="{% if template.preview_image %}{{ template.preview_image.url }}{% else %}{% static 'images/template-placeholder.jpg' %}{% endif %}" alt="{{ template.name }}">
+                    
+                    {% if template.is_premium %}
+                    <div class="template-badge premium">Premium</div>
+                    {% endif %}
+                    
+                    {% if template.is_featured %}
+                    <div class="template-badge popular">Popular</div>
+                    {% endif %}
+                    
+                    <div class="template-overlay">
+                        <div class="template-actions">
+                            <a href="{% url 'templates_app:template_preview' slug=template.slug %}" class="btn-preview" target="_blank">
+                                <i class="bi bi-eye"></i> Preview
+                            </a>
+                            <a href="{% url 'templates_app:create_resume_with_template' template_slug=template.slug %}" class="btn-use">
+                                Use This Template
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="template-info">
+                    <h3 class="template-name">{{ template.name }}</h3>
+                    <p class="template-description">{{ template.description|truncatechars:100 }}</p>
+                    
+                    <div class="template-meta">
+                        <div class="template-tags">
+                            <span class="template-tag style">{{ template.style|title }}</span>
+                            <span class="template-tag color">{{ template.color|title }}</span>
+                            <span class="template-tag difficulty">{{ template.difficulty_level|title }}</span>
+                        </div>
+                        
+                        <div class="template-features">
+                            {% if template.is_ats_friendly %}
+                            <span class="template-feature" title="ATS-Friendly">
+                                <i class="bi bi-check-circle"></i>
+                            </span>
+                            {% endif %}
+                            
+                            {% if template.has_photo %}
+                            <span class="template-feature" title="Photo Support">
+                                <i class="bi bi-camera"></i>
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-templates">
+                <div class="no-templates-content">
+                    <i class="bi bi-search"></i>
+                    <h3>No templates found</h3>
+                    <p>Try adjusting your filters to see more templates</p>
+                    <button id="reset-filters" class="btn-reset">Reset Filters</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Empty State (Hidden by default) -->
+        <div class="no-templates" style="display: none;">
+            <div class="no-templates-content">
+                <i class="bi bi-search"></i>
+                <h3>No templates found</h3>
+                <p>Try adjusting your filters to see more templates</p>
+                <button id="reset-filters" class="btn-reset">Reset Filters</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Our Professional Templates?</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <h3 class="feature-title">Industry-Approved Designs</h3>
+                <p class="feature-description">
+                    Our professional templates are designed by career experts and HR professionals to meet industry standards.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <h3 class="feature-title">ATS-Friendly</h3>
+                <p class="feature-description">
+                    All templates are optimized to pass through Applicant Tracking Systems with flying colors.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-sliders"></i>
+                </div>
+                <h3 class="feature-title">Fully Customizable</h3>
+                <p class="feature-description">
+                    Easily customize colors, fonts, and layouts while maintaining professional standards.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h3 class="feature-title">Proven Results</h3>
+                <p class="feature-description">
+                    Our users report 34% more interview callbacks when using our professional templates.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        
+        <div class="accordion" id="faqAccordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                        What makes a resume template "professional"?
+                    </button>
+                </h2>
+                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <p>Professional resume templates feature clean layouts, traditional formatting, and subtle design elements. They use conservative colors and focus on readability and content organization. These templates are ideal for corporate roles, executive positions, and industries that value tradition and formality.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                        Are these templates ATS-friendly?
+                    </button>
+                </h2>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <p>Yes, all our professional templates are designed to be ATS (Applicant Tracking System) friendly. They use standard sections, appropriate headings, and clean formatting that can be easily parsed by automated systems. This ensures your resume gets past the initial screening and into the hands of hiring managers.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                        Which industries are these templates best for?
+                    </button>
+                </h2>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <p>Our professional templates are ideal for traditional industries such as finance, banking, law, healthcare, government, consulting, and corporate roles. They're also excellent for executive positions across all industries where a polished, traditional presentation is valued.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                        Can I customize these templates?
+                    </button>
+                </h2>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">
+                        <p>While our templates provide a professional foundation, you can customize colors, fonts, spacing, and layout elements to match your personal style while maintaining professionalism. Our editor makes it easy to adjust these elements without compromising the template's effectiveness.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to create your professional resume?</h2>
+            <p class="cta-description">Choose from our collection of professional templates and land your dream job.</p>
+            <a href="#templates-section" class="btn-cta">Get Started</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/professional-templates.js' %}"></script>
+{% endblock %}
+

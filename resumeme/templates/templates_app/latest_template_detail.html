@@ -1,0 +1,617 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ template.name }} - Template Preview{% endblock %}
+
+{% block extra_css %}
+<style>
+    .preview-container {
+        position: relative;
+        height: 800px;
+        overflow: hidden;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .preview-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+    
+    .preview-controls {
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+    }
+    
+    .preview-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .preview-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .color-swatch {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    
+    .color-swatch.active {
+        border-color: #333;
+    }
+    
+    .template-features {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 30px;
+        margin-top: 40px;
+    }
+    
+    .feature-icon {
+        width: 50px;
+        height: 50px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+    
+    .zoom-controls {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background-color: white;
+        border-radius: 30px;
+        padding: 5px 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+    }
+    
+    .zoom-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 5px 10px;
+    }
+    
+    .zoom-level {
+        margin: 0 10px;
+        font-weight: 500;
+    }
+    
+    @media print {
+        .preview-controls, .zoom-controls, .navbar, .footer {
+            display: none !important;
+        }
+        
+        .preview-container {
+            height: auto;
+            box-shadow: none;
+        }
+    }
+</style>
+<!-- Include the template's CSS -->
+<style id="template-styles">
+    {{ template.css_styles|safe }}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="h2 mb-4">{{ template.name }}</h1>
+            
+            <div class="preview-container">
+                <iframe id="previewFrame" class="preview-iframe" title="Template Preview"></iframe>
+                
+                <div class="zoom-controls">
+                    <button class="zoom-btn" id="zoomOut">-</button>
+                    <span class="zoom-level" id="zoomLevel">100%</span>
+                    <button class="zoom-btn" id="zoomIn">+</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="preview-controls card shadow-sm">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Template Options</h3>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Color Scheme</label>
+                        <div class="d-flex flex-wrap">
+                            {% for scheme in color_schemes %}
+                            <div class="me-2 mb-2 text-center">
+                                <div class="color-swatch {% if forloop.first %}active{% endif %}" 
+                                     data-primary="{{ scheme.primary }}" 
+                                     data-secondary="{{ scheme.secondary }}" 
+                                     data-accent="{{ scheme.accent }}"
+                                     style="background-color: {{ scheme.primary }};"
+                                     title="{{ scheme.name }}"></div>
+                                <div class="small mt-1">{{ scheme.name }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Font Family</label>
+                        <select class="form-select" id="fontSelector">
+                            <option value="'Arial', sans-serif">Arial</option>
+                            <option value="'Helvetica', sans-serif">Helvetica</option>
+                            <option value="'Georgia', serif">Georgia</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Layout Style</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="layoutStyle" id="layoutCompact" value="compact" checked>
+                            <label class="btn btn-outline-primary" for="layoutCompact">Compact</label>
+                            
+                            <input type="radio" class="btn-check" name="layoutStyle" id="layoutStandard" value="standard">
+                            <label class="btn btn-outline-primary" for="layoutStandard">Standard</label>
+                            
+                            <input type="radio" class="btn-check" name="layoutStyle" id="layoutExpanded" value="expanded">
+                            <label class="btn btn-outline-primary" for="layoutExpanded">Expanded</label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">
+                            Use This Template
+                        </a>
+                        <button class="btn btn-outline-primary" id="printPreviewBtn">
+                            <i class="bi bi-printer"></i> Print Preview
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3">Template Details</h3>
+                    <p>{{ template.description }}</p>
+                    
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-primary me-2">{{ template.category.name }}</span>
+                        {% if template.is_premium %}
+                        <span class="badge bg-warning text-dark">Premium</span>
+                        {% else %}
+                        <span class="badge bg-success">Free</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="small text-muted">
+                        <i class="bi bi-calendar-check me-1"></i> Added: {{ template.created_at|date:"M d, Y" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="template-features">
+        <h2 class="h3 mb-4 text-center">Template Features</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-icon">
+                    <i class="bi bi-phone fs-4"></i>
+                </div>
+                <h3 class="h5">Responsive Design</h3>
+                <p>This template is designed to look great on all devices and screen sizes.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon">
+                    <i class="bi bi-palette fs-4"></i>
+                </div>
+                <h3 class="h5">Customizable Colors</h3>
+                <p>Easily change colors to match your personal brand or preferences.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon">
+                    <i class="bi bi-file-earmark-pdf fs-4"></i>
+                </div>
+                <h3 class="h5">PDF Export Ready</h3>
+                <p>Optimized for PDF export with perfect formatting and layout.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon">
+                    <i class="bi bi-search fs-4"></i>
+                </div>
+                <h3 class="h5">ATS Friendly</h3>
+                <p>Designed to pass through Applicant Tracking Systems with ease.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon">
+                    <i class="bi bi-type fs-4"></i>
+                </div>
+                <h3 class="h5">Typography Focused</h3>
+                <p>Carefully selected fonts and spacing for optimal readability.</p>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-icon">
+                    <i class="bi bi-layout-text-window fs-4"></i>
+                </div>
+                <h3 class="h5">Professional Layout</h3>
+                <p>Structured layout that highlights your skills and experience.</p>
+            </div>
+        </div>
+    </div>
+    
+    {% if related_templates %}
+    <div class="mt-5">
+        <h2 class="h3 mb-4">Related Templates</h2>
+        <div class="row g-4">
+            {% for related in related_templates %}
+            <div class="col-md-4">
+                <div class="preview-card">
+                    <img src="{{ related.preview_image.url }}" alt="{{ related.name }}" class="img-fluid">
+                    <div class="p-3">
+                        <h3 class="h5 mb-2">{{ related.name }}</h3>
+                        <p class="small text-muted mb-3">{{ related.category.name }}</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'template_detail' related.slug %}" class="btn btn-sm btn-outline-primary">Preview</a>
+                            <a href="{% url 'create_resume_with_template' related.slug %}" class="btn btn-sm btn-primary">Use Template</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const previewFrame = document.getElementById('previewFrame');
+        const templateStyles = document.getElementById('template-styles').textContent;
+        const colorSwatches = document.querySelectorAll('.color-swatch');
+        const fontSelector = document.getElementById('fontSelector');
+        const layoutRadios = document.querySelectorAll('input[name="layoutStyle"]');
+        const printPreviewBtn = document.getElementById('printPreviewBtn');
+        const zoomInBtn = document.getElementById('zoomIn');
+        const zoomOutBtn = document.getElementById('zoomOut');
+        const zoomLevelEl = document.getElementById('zoomLevel');
+        
+        // Sample data for the preview
+        const sampleData = {{ sample_data|safe }};
+        
+        // Current customization settings
+        let currentSettings = {
+            primaryColor: '{{ color_schemes.0.primary }}',
+            secondaryColor: '{{ color_schemes.0.secondary }}',
+            accentColor: '{{ color_schemes.0.accent }}',
+            fontFamily: "'Arial', sans-serif",
+            layoutStyle: 'compact',
+            zoomLevel: 100
+        };
+        
+        // Initialize preview
+        updatePreview();
+        
+        // Color scheme selection
+        colorSwatches.forEach(swatch => {
+            swatch.addEventListener('click', function() {
+                // Update active state
+                colorSwatches.forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update colors
+                currentSettings.primaryColor = this.dataset.primary;
+                currentSettings.secondaryColor = this.dataset.secondary;
+                currentSettings.accentColor = this.dataset.accent;
+                
+                updatePreview();
+            });
+        });
+        
+        // Font selection
+        fontSelector.addEventListener('change', function() {
+            currentSettings.fontFamily = this.value;
+            updatePreview();
+        });
+        
+        // Layout style selection
+        layoutRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                currentSettings.layoutStyle = this.value;
+                updatePreview();
+            });
+        });
+        
+        // Print preview
+        printPreviewBtn.addEventListener('click', function() {
+            previewFrame.contentWindow.print();
+        });
+        
+        // Zoom controls
+        zoomInBtn.addEventListener('click', function() {
+            if (currentSettings.zoomLevel < 200) {
+                currentSettings.zoomLevel += 10;
+                updateZoom();
+            }
+        });
+        
+        zoomOutBtn.addEventListener('click', function() {
+            if (currentSettings.zoomLevel > 50) {
+                currentSettings.zoomLevel -= 10;
+                updateZoom();
+            }
+        });
+        
+        function updateZoom() {
+            zoomLevelEl.textContent = `${currentSettings.zoomLevel}%`;
+            const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            const resumeContainer = doc.querySelector('.resume-container');
+            if (resumeContainer) {
+                resumeContainer.style.transform = `scale(${currentSettings.zoomLevel / 100})`;
+                resumeContainer.style.transformOrigin = 'top center';
+            }
+        }
+        
+        function updatePreview() {
+            // Generate customized CSS
+            let customizedStyles = templateStyles
+                .replace(/var$$--primary-color[^)]*$$/g, currentSettings.primaryColor)
+                .replace(/var$$--secondary-color[^)]*$$/g, currentSettings.secondaryColor)
+                .replace(/var$$--accent-color[^)]*$$/g, currentSettings.accentColor);
+            
+            // Add custom font and layout styles
+            const customCSS = `
+                .resume-container {
+                    font-family: ${currentSettings.fontFamily};
+                }
+                
+                ${currentSettings.layoutStyle === 'compact' ? `
+                    .resume-section {
+                        margin-bottom: 15px;
+                    }
+                    .item {
+                        margin-bottom: 10px;
+                    }
+                ` : currentSettings.layoutStyle === 'expanded' ? `
+                    .resume-section {
+                        margin-bottom: 30px;
+                    }
+                    .item {
+                        margin-bottom: 25px;
+                    }
+                    .resume-container {
+                        line-height: 1.8;
+                    }
+                ` : `
+                    .resume-section {
+                        margin-bottom: 20px;
+                    }
+                    .item {
+                        margin-bottom: 15px;
+                    }
+                `}
+            `;
+            
+            // Generate HTML content with sample data
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Template Preview</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            background-color: #f8f9fa;
+                            display: flex;
+                            justify-content: center;
+                            padding: 20px;
+                        }
+                        .resume-container {
+                            background-color: white;
+                            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                            width: 100%;
+                            max-width: 800px;
+                            transition: transform 0.3s;
+                        }
+                        ${customizedStyles}
+                        ${customCSS}
+                    </style>
+                </head>
+                <body>
+                    <div class="resume-container">
+                        ${generateResumeHTML(sampleData)}
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            // Update iframe content
+            const doc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            doc.open();
+            doc.write(htmlContent);
+            doc.close();
+            
+            // Apply zoom
+            updateZoom();
+        }
+        
+        function generateResumeHTML(data) {
+            // This function generates HTML based on the template structure and sample data
+            // This is a simplified version - in a real implementation, you would use the actual template HTML structure
+            
+            return `
+                <div class="resume {{ template.slug }}">
+                    <header class="resume-header">
+                        <h1 class="full-name">${data.personal_info.full_name}</h1>
+                        <p class="job-title">${data.personal_info.job_title}</p>
+                        <div class="contact-info">
+                            <span class="contact-item">${data.personal_info.email}</span>
+                            <span class="contact-item">${data.personal_info.phone}</span>
+                            <span class="contact-item">${data.personal_info.address}</span>
+                        </div>
+                    </header>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Summary</h2>
+                        <div class="section-content">
+                            <p>${data.personal_info.summary}</p>
+                        </div>
+                    </section>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Experience</h2>
+                        <div class="section-content">
+                            ${data.experiences.map(exp => `
+                                <div class="item">
+                                    <div class="item-header">
+                                        <h3 class="item-title">${exp.position}</h3>
+                                        <div class="item-subtitle">${exp.company} | ${exp.location}</div>
+                                        <div class="item-date">
+                                            ${formatDate(exp.start_date)} - 
+                                            ${exp.current ? 'Present' : formatDate(exp.end_date)}
+                                        </div>
+                                    </div>
+                                    <div class="item-description">
+                                        <p>${exp.description}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Education</h2>
+                        <div class="section-content">
+                            ${data.educations.map(edu => `
+                                <div class="item">
+                                    <div class="item-header">
+                                        <h3 class="item-title">${edu.degree} in ${edu.field_of_study}</h3>
+                                        <div class="item-subtitle">${edu.institution} | ${edu.location}</div>
+                                        <div class="item-date">
+                                            ${formatDate(edu.start_date)} - 
+                                            ${edu.current ? 'Present' : formatDate(edu.end_date)}
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Skills</h2>
+                        <div class="section-content">
+                            <div class="skills-list">
+                                ${data.skills.map(skill => `
+                                    <div class="skill-item">
+                                        <span class="skill-name">${skill.name}</span>
+                                        <div class="skill-level">
+                                            <div class="skill-progress" style="width: ${skill.level * 20}%;"></div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Languages</h2>
+                        <div class="section-content">
+                            <div class="languages-list">
+                                ${data.languages.map(lang => `
+                                    <div class="language-item">
+                                        <span class="language-name">${lang.name}</span>
+                                        <span class="language-proficiency">${formatProficiency(lang.proficiency)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Projects</h2>
+                        <div class="section-content">
+                            ${data.projects.map(project => `
+                                <div class="item">
+                                    <div class="item-header">
+                                        <h3 class="item-title">${project.title}</h3>
+                                        <div class="item-date">
+                                            ${formatDate(project.start_date)} - 
+                                            ${formatDate(project.end_date)}
+                                        </div>
+                                    </div>
+                                    <div class="item-description">
+                                        <p>${project.description}</p>
+                                    </div>
+                                    <div class="item-link">
+                                        <a href="${project.url}" target="_blank">${project.url}</a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                    
+                    <section class="resume-section">
+                        <h2 class="section-title">Certifications</h2>
+                        <div class="section-content">
+                            ${data.certifications.map(cert => `
+                                <div class="item">
+                                    <div class="item-header">
+                                        <h3 class="item-title">${cert.name}</h3>
+                                        <div class="item-subtitle">${cert.issuing_organization}</div>
+                                        <div class="item-date">
+                                            Issued: ${formatDate(cert.issue_date)}
+                                            ${cert.expiration_date ? ` | Expires: ${formatDate(cert.expiration_date)}` : ''}
+                                        </div>
+                                    </div>
+                                    <div class="item-link">
+                                        <a href="${cert.credential_url}" target="_blank">View Credential</a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </section>
+                </div>
+            `;
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        }
+        
+        function formatProficiency(proficiency) {
+            const proficiencyMap = {
+                'elementary': 'Elementary',
+                'limited': 'Limited Working',
+                'professional': 'Professional Working',
+                'full_professional': 'Full Professional',
+                'native': 'Native/Bilingual'
+            };
+            return proficiencyMap[proficiency] || proficiency;
+        }
+    });
+</script>
+{% endblock %}

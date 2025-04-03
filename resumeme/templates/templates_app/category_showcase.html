@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} Resume Templates{% endblock %}
+
+{% block extra_css %}
+<style>
+    .category-header {
+        background-color: #f8f9fa;
+        padding: 60px 0;
+        margin-bottom: 40px;
+        border-radius: 10px;
+    }
+    
+    .template-card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }
+    
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .template-preview {
+        height: 300px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .template-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+    
+    .template-card:hover .template-preview img {
+        transform: scale(1.05);
+    }
+    
+    .template-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .template-card:hover .template-overlay {
+        opacity: 1;
+    }
+    
+    .template-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+    
+    .template-actions {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .category-features {
+        margin-top: 60px;
+        margin-bottom: 60px;
+    }
+    
+    .feature-card {
+        height: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background-color: #e9ecef;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="category-header text-center">
+        <h1 class="display-5 fw-bold mb-3">{{ category.name }} Resume Templates</h1>
+        <p class="lead mb-0 mx-auto" style="max-width: 700px;">{{ category.description }}</p>
+    </div>
+    
+    <div class="row g-4">
+        {% for template in templates %}
+        <div class="col-md-4">
+            <div class="template-card card border-0 shadow-sm">
+                <div class="template-preview">
+                    <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="card-img-top">
+                    <div class="template-overlay">
+                        <div class="template-actions">
+                            <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                            <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                        </div>
+                    </div>
+                    {% if template.is_premium %}
+                    <div class="template-badge">
+                        <span class="badge bg-warning text-dark">Premium</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ template.name }}</h5>
+                    <p class="card-text">{{ template.description|truncatechars:100 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No templates found in this category. Please check back later.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="category-features">
+        <h2 class="h3 text-center mb-5">{{ category.name }} Template Features</h2>
+        
+        <div class="row g-4">
+            {% if category.slug == 'simple' %}
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-eye fs-3"></i>
+                    </div>
+                    <h3 class="h5">Clean & Minimal</h3>
+                    <p>Simple templates focus on content with clean layouts and minimal distractions.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-search fs-3"></i>
+                    </div>
+                    <h3 class="h5">ATS Optimized</h3>
+                    <p>Designed to pass through Applicant Tracking Systems with ease.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-file-earmark-text fs-3"></i>
+                    </div>
+                    <h3 class="h5">Traditional Format</h3>
+                    <p>Follows traditional resume formats that are widely accepted across industries.</p>
+                </div>
+            </div>
+            {% elif category.slug == 'modern' %}
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-layout-text-window fs-3"></i>
+                    </div>
+                    <h3 class="h5">Contemporary Design</h3>
+                    <p>Modern templates feature contemporary layouts with creative styling.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-palette fs-3"></i>
+                    </div>
+                    <h3 class="h5">Color Accents</h3>
+                    <p>Strategic use of color to highlight important sections and create visual interest.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-columns-gap fs-3"></i>
+                    </div>
+                    <h3 class="h5">Balanced Layout</h3>
+                    <p>Well-balanced layouts that combine creativity with professional presentation.</p>
+                </div>
+            </div>
+            {% elif category.slug == 'creative' %}
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-brush fs-3"></i>
+                    </div>
+                    <h3 class="h5">Unique Design</h3>
+                    <p>Creative templates stand out with unique designs and bold styling elements.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-grid-3x3-gap fs-3"></i>
+                    </div>
+                    <h3 class="h5">Innovative Layouts</h3>
+                    <p>Innovative layouts that break traditional resume conventions while remaining professional.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-person-badge fs-3"></i>
+                    </div>
+                    <h3 class="h5">Personal Branding</h3>
+                    <p>Designed to showcase your personal brand and make a memorable impression.</p>
+                </div>
+            </div>
+            {% elif category.slug == 'classical' %}
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-award fs-3"></i>
+                    </div>
+                    <h3 class="h5">Timeless Design</h3>
+                    <p>Classical templates feature timeless designs that never go out of style.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-briefcase fs-3"></i>
+                    </div>
+                    <h3 class="h5">Professional Focus</h3>
+                    <p>Strong focus on professional presentation with elegant typography and layout.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-building fs-3"></i>
+                    </div>
+                    <h3 class="h5">Industry Standard</h3>
+                    <p>Follows industry standards and expectations for traditional professional fields.</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-star fs-3"></i>
+                    </div>
+                    <h3 class="h5">Professional Quality</h3>
+                    <p>All templates are designed to professional standards with attention to detail.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-laptop fs-3"></i>
+                    </div>
+                    <h3 class="h5">Responsive Design</h3>
+                    <p>Templates look great on all devices and are optimized for digital and print formats.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card p-4">
+                    <div class="feature-icon">
+                        <i class="bi bi-tools fs-3"></i>
+                    </div>
+                    <h3 class="h5">Customizable</h3>
+                    <p>Easily customize colors, fonts, and layouts to match your personal style.</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="text-center mt-5">
+        <a href="{% url 'template_gallery' %}" class="btn btn-outline-primary me-3">View All Templates</a>
+        <a href="{% url 'compare_templates' %}" class="btn btn-primary">Compare Templates</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,938 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Resume - {{ resume.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/classic.min.css">
+<style>
+    .section-card {
+        margin-bottom: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .section-header {
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .section-body {
+        padding: 1rem;
+    }
+    
+    .item-card {
+        margin-bottom: 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+        border-radius: 0.25rem;
+    }
+    
+    .item-header {
+        padding: 0.75rem 1rem;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .item-body {
+        padding: 1rem;
+    }
+    
+    .sortable-handle {
+        cursor: move;
+        color: #6c757d;
+    }
+    
+    .resume-preview {
+        position: sticky;
+        top: 2rem;
+    }
+    
+    .color-picker-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .color-picker {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.25rem;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3">Edit Resume: {{ resume.title }}</h1>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'preview_resume' resume.uuid %}" class="btn btn-outline-primary" target="_blank">
+                        <i class="bi bi-eye"></i> Preview
+                    </a>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Personal Information -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="h5 mb-0">Personal Information</h2>
+                </div>
+                <div class="section-body">
+                    <form method="post" action="{% url 'update_personal_info' resume.uuid %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ personal_info_form.full_name.id_for_label }}" class="form-label">Full Name</label>
+                                {{ personal_info_form.full_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ personal_info_form.job_title.id_for_label }}" class="form-label">Job Title</label>
+                                {{ personal_info_form.job_title }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ personal_info_form.email.id_for_label }}" class="form-label">Email</label>
+                                {{ personal_info_form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ personal_info_form.phone.id_for_label }}" class="form-label">Phone</label>
+                                {{ personal_info_form.phone }}
+                            </div>
+                            <div class="col-12">
+                                <label for="{{ personal_info_form.address.id_for_label }}" class="form-label">Address</label>
+                                {{ personal_info_form.address }}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ personal_info_form.website.id_for_label }}" class="form-label">Website</label>
+                                {{ personal_info_form.website }}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ personal_info_form.linkedin.id_for_label }}" class="form-label">LinkedIn</label>
+                                {{ personal_info_form.linkedin }}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ personal_info_form.github.id_for_label }}" class="form-label">GitHub</label>
+                                {{ personal_info_form.github }}
+                            </div>
+                            <div class="col-md-8">
+                                <label for="{{ personal_info_form.summary.id_for_label }}" class="form-label">Professional Summary</label>
+                                {{ personal_info_form.summary }}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ personal_info_form.profile_image.id_for_label }}" class="form-label">Profile Image</label>
+                                {{ personal_info_form.profile_image }}
+                                {% if personal_info_form.instance.profile_image %}
+                                    <div class="mt-2">
+                                        <img src="{{ personal_info_form.instance.profile_image.url }}" alt="Profile" class="img-thumbnail" style="max-height: 100px;">
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Save Personal Information</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Experience -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="h5 mb-0">Experience</h2>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addExperienceModal">
+                        <i class="bi bi-plus"></i> Add Experience
+                    </button>
+                </div>
+                <div class="section-body">
+                    <div id="experienceList" class="sortable-list">
+                        {% for experience in experiences %}
+                            <div class="item-card" data-id="{{ experience.id }}">
+                                <div class="item-header">
+                                    <div class="d-flex align-items-center">
+                                        <span class="sortable-handle me-2"><i class="bi bi-grip-vertical"></i></span>
+                                        <h3 class="h6 mb-0">{{ experience.position }} at {{ experience.company }}</h3>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editExperienceModal{{ experience.id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteExperienceModal{{ experience.id }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="item-body">
+                                    <div class="mb-2">
+                                        <strong>{{ experience.start_date|date:"M Y" }} - 
+                                        {% if experience.current %}
+                                            Present
+                                        {% else %}
+                                            {{ experience.end_date|date:"M Y" }}
+                                        {% endif %}
+                                        </strong>
+                                        {% if experience.location %}
+                                            <span class="text-muted ms-2">{{ experience.location }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% if experience.description %}
+                                        <p class="mb-0">{{ experience.description|linebreaks }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Edit Experience Modal -->
+                            <div class="modal fade" id="editExperienceModal{{ experience.id }}" tabindex="-1" aria-labelledby="editExperienceModalLabel{{ experience.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editExperienceModalLabel{{ experience.id }}">Edit Experience</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{% url 'update_experience' resume.uuid experience.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="company{{ experience.id }}" class="form-label">Company</label>
+                                                    <input type="text" class="form-control" id="company{{ experience.id }}" name="company" value="{{ experience.company }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="position{{ experience.id }}" class="form-label">Position</label>
+                                                    <input type="text" class="form-control" id="position{{ experience.id }}" name="position" value="{{ experience.position }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="location{{ experience.id }}" class="form-label">Location</label>
+                                                    <input type="text" class="form-control" id="location{{ experience.id }}" name="location" value="{{ experience.location }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="start_date{{ experience.id }}" class="form-label">Start Date</label>
+                                                    <input type="date" class="form-control" id="start_date{{ experience.id }}" name="start_date" value="{{ experience.start_date|date:'Y-m-d' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="current{{ experience.id }}" name="current" {% if experience.current %}checked{% endif %}>
+                                                        <label class="form-check-label" for="current{{ experience.id }}">
+                                                            I currently work here
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 end-date-field" {% if experience.current %}style="display: none;"{% endif %}>
+                                                    <label for="end_date{{ experience.id }}" class="form-label">End Date</label>
+                                                    <input type="date" class="form-control" id="end_date{{ experience.id }}" name="end_date" value="{% if experience.end_date %}{{ experience.end_date|date:'Y-m-d' }}{% endif %}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="description{{ experience.id }}" class="form-label">Description</label>
+                                                    <textarea class="form-control" id="description{{ experience.id }}" name="description" rows="3">{{ experience.description }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Experience Modal -->
+                            <div class="modal fade" id="deleteExperienceModal{{ experience.id }}" tabindex="-1" aria-labelledby="deleteExperienceModalLabel{{ experience.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteExperienceModalLabel{{ experience.id }}">Delete Experience</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete this experience?</p>
+                                            <p><strong>{{ experience.position }} at {{ experience.company }}</strong></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form method="post" action="{% url 'delete_experience' resume.uuid experience.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="alert alert-info">
+                                No experience added yet. Click the "Add Experience" button to add your work history.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Education -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="h5 mb-0">Education</h2>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addEducationModal">
+                        <i class="bi bi-plus"></i> Add Education
+                    </button>
+                </div>
+                <div class="section-body">
+                    <div id="educationList" class="sortable-list">
+                        {% for education in educations %}
+                            <div class="item-card" data-id="{{ education.id }}">
+                                <div class="item-header">
+                                    <div class="d-flex align-items-center">
+                                        <span class="sortable-handle me-2"><i class="bi bi-grip-vertical"></i></span>
+                                        <h3 class="h6 mb-0">{{ education.degree }}{% if education.field_of_study %} in {{ education.field_of_study }}{% endif %}</h3>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editEducationModal{{ education.id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteEducationModal{{ education.id }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="item-body">
+                                    <div class="mb-2">
+                                        <strong>{{ education.institution }}</strong>
+                                        {% if education.location %}
+                                            <span class="text-muted ms-2">{{ education.location }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="mb-2">
+                                        {{ education.start_date|date:"M Y" }} - 
+                                        {% if education.current %}
+                                            Present
+                                        {% else %}
+                                            {{ education.end_date|date:"M Y" }}
+                                        {% endif %}
+                                    </div>
+                                    {% if education.description %}
+                                        <p class="mb-0">{{ education.description|linebreaks }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Edit Education Modal -->
+                            <div class="modal fade" id="editEducationModal{{ education.id }}" tabindex="-1" aria-labelledby="editEducationModalLabel{{ education.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editEducationModalLabel{{ education.id }}">Edit Education</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{% url 'update_education' resume.uuid education.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="institution{{ education.id }}" class="form-label">Institution</label>
+                                                    <input type="text" class="form-control" id="institution{{ education.id }}" name="institution" value="{{ education.institution }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="degree{{ education.id }}" class="form-label">Degree</label>
+                                                    <input type="text" class="form-control" id="degree{{ education.id }}" name="degree" value="{{ education.degree }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="field_of_study{{ education.id }}" class="form-label">Field of Study</label>
+                                                    <input type="text" class="form-control" id="field_of_study{{ education.id }}" name="field_of_study" value="{{ education.field_of_study }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="location{{ education.id }}" class="form-label">Location</label>
+                                                    <input type="text" class="form-control" id="location{{ education.id }}" name="location" value="{{ education.location }}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="start_date{{ education.id }}" class="form-label">Start Date</label>
+                                                    <input type="date" class="form-control" id="start_date{{ education.id }}" name="start_date" value="{{ education.start_date|date:'Y-m-d' }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="current{{ education.id }}" name="current" {% if education.current %}checked{% endif %}>
+                                                        <label class="form-check-label" for="current{{ education.id }}">
+                                                            I am currently studying here
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 end-date-field" {% if education.current %}style="display: none;"{% endif %}>
+                                                    <label for="end_date{{ education.id }}" class="form-label">End Date</label>
+                                                    <input type="date" class="form-control" id="end_date{{ education.id }}" name="end_date" value="{% if education.end_date %}{{ education.end_date|date:'Y-m-d' }}{% endif %}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="description{{ education.id }}" class="form-label">Description</label>
+                                                    <textarea class="form-control" id="description{{ education.id }}" name="description" rows="3">{{ education.description }}</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Education Modal -->
+                            <div class="modal fade" id="deleteEducationModal{{ education.id }}" tabindex="-1" aria-labelledby="deleteEducationModalLabel{{ education.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteEducationModalLabel{{ education.id }}">Delete Education</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete this education?</p>
+                                            <p><strong>{{ education.degree }} at {{ education.institution }}</strong></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form method="post" action="{% url 'delete_education' resume.uuid education.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="alert alert-info">
+                                No education added yet. Click the "Add Education" button to add your educational background.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Skills -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="h5 mb-0">Skills</h2>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addSkillModal">
+                        <i class="bi bi-plus"></i> Add Skill
+                    </button>
+                </div>
+                <div class="section-body">
+                    <div id="skillList" class="sortable-list">
+                        {% for skill in skills %}
+                            <div class="item-card" data-id="{{ skill.id }}">
+                                <div class="item-header">
+                                    <div class="d-flex align-items-center">
+                                        <span class="sortable-handle me-2"><i class="bi bi-grip-vertical"></i></span>
+                                        <h3 class="h6 mb-0">{{ skill.name }}</h3>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editSkillModal{{ skill.id }}">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteSkillModal{{ skill.id }}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="item-body">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ skill.level|multiply:20 }}%;" aria-valuenow="{{ skill.level }}" aria-valuemin="0" aria-valuemax="5">
+                                            {{ skill.get_level_display }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Edit Skill Modal -->
+                            <div class="modal fade" id="editSkillModal{{ skill.id }}" tabindex="-1" aria-labelledby="editSkillModalLabel{{ skill.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editSkillModalLabel{{ skill.id }}">Edit Skill</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{% url 'update_skill' resume.uuid skill.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="name{{ skill.id }}" class="form-label">Skill Name</label>
+                                                    <input type="text" class="form-control" id="name{{ skill.id }}" name="name" value="{{ skill.name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="level{{ skill.id }}" class="form-label">Proficiency Level</label>
+                                                    <select class="form-select" id="level{{ skill.id }}" name="level">
+                                                        <option value="1" {% if skill.level == 1 %}selected{% endif %}>Beginner</option>
+                                                        <option value="2" {% if skill.level == 2 %}selected{% endif %}>Intermediate</option>
+                                                        <option value="3" {% if skill.level == 3 %}selected{% endif %}>Advanced</option>
+                                                        <option value="4" {% if skill.level == 4 %}selected{% endif %}>Expert</option>
+                                                        <option value="5" {% if skill.level == 5 %}selected{% endif %}>Master</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Skill Modal -->
+                            <div class="modal fade" id="deleteSkillModal{{ skill.id }}" tabindex="-1" aria-labelledby="deleteSkillModalLabel{{ skill.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteSkillModalLabel{{ skill.id }}">Delete Skill</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete this skill?</p>
+                                            <p><strong>{{ skill.name }}</strong></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form method="post" action="{% url 'delete_skill' resume.uuid skill.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="alert alert-info">
+                                No skills added yet. Click the "Add Skill" button to add your skills.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Template Colors -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="h5 mb-0">Template Colors</h2>
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addColorModal">
+                        <i class="bi bi-plus"></i> Add Color
+                    </button>
+                </div>
+                <div class="section-body">
+                    <div class="row g-3">
+                        {% for color in colors %}
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h5 class="card-title mb-0">{{ color.name }}</h5>
+                                            <div class="d-flex gap-2">
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editColorModal{{ color.id }}">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteColorModal{{ color.id }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="color-preview" style="width: 100%; height: 50px; background-color: {{ color.color_code }}; border-radius: 0.25rem;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Edit Color Modal -->
+                            <div class="modal fade" id="editColorModal{{ color.id }}" tabindex="-1" aria-labelledby="editColorModalLabel{{ color.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editColorModalLabel{{ color.id }}">Edit Color</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form method="post" action="{% url 'update_color' resume.uuid color.id %}">
+                                            {% csrf_token %}
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="name{{ color.id }}" class="form-label">Color Name</label>
+                                                    <input type="text" class="form-control" id="name{{ color.id }}" name="name" value="{{ color.name }}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="color_code{{ color.id }}" class="form-label">Color</label>
+                                                    <div class="color-picker-wrapper">
+                                                        <input type="text" class="form-control" id="color_code{{ color.id }}" name="color_code" value="{{ color.color_code }}" required>
+                                                        <div class="color-picker" id="color-picker-{{ color.id }}" style="background-color: {{ color.color_code }};"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Delete Color Modal -->
+                            <div class="modal fade" id="deleteColorModal{{ color.id }}" tabindex="-1" aria-labelledby="deleteColorModalLabel{{ color.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteColorModalLabel{{ color.id }}">Delete Color</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete this color?</p>
+                                            <p><strong>{{ color.name }}</strong></p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form method="post" action="{% url 'delete_color' resume.uuid color.id %}">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    No custom colors added yet. Click the "Add Color" button to customize your template colors.
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="resume-preview">
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0">Resume Preview</h2>
+                    </div>
+                    <div class="card-body p-0">
+                        <iframe src="{% url 'preview_resume' resume.uuid %}" style="width: 100%; height: 600px; border: none;"></iframe>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'preview_resume' resume.uuid %}" class="btn btn-primary" target="_blank">
+                                <i class="bi bi-arrows-fullscreen"></i> Full Preview
+                            </a>
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
+                                <i class="bi bi-download"></i> Export Resume
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Experience Modal -->
+<div class="modal fade" id="addExperienceModal" tabindex="-1" aria-labelledby="addExperienceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addExperienceModalLabel">Add Experience</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'add_experience' resume.uuid %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="company" class="form-label">Company</label>
+                        {{ experience_form.company }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        {{ experience_form.position }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        {{ experience_form.location }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        {{ experience_form.start_date }}
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ experience_form.current }}
+                            <label class="form-check-label" for="{{ experience_form.current.id_for_label }}">
+                                I currently work here
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3 end-date-field">
+                        <label for="end_date" class="form-label">End Date</label>
+                        {{ experience_form.end_date }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        {{ experience_form.description }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Experience</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Education Modal -->
+<div class="modal fade" id="addEducationModal" tabindex="-1" aria-labelledby="addEducationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEducationModalLabel">Add Education</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'add_education' resume.uuid %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="institution" class="form-label">Institution</label>
+                        {{ education_form.institution }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="degree" class="form-label">Degree</label>
+                        {{ education_form.degree }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="field_of_study" class="form-label">Field of Study</label>
+                        {{ education_form.field_of_study }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        {{ education_form.location }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        {{ education_form.start_date }}
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ education_form.current }}
+                            <label class="form-check-label" for="{{ education_form.current.id_for_label }}">
+                                I am currently studying here
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3 end-date-field">
+                        <label for="end_date" class="form-label">End Date</label>
+                        {{ education_form.end_date }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        {{ education_form.description }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Education</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Skill Modal -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'add_skill' resume.uuid %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Skill Name</label>
+                        {{ skill_form.name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="level" class="form-label">Proficiency Level</label>
+                        {{ skill_form.level }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Color Modal -->
+<div class="modal fade" id="addColorModal" tabindex="-1" aria-labelledby="addColorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addColorModalLabel">Add Color</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'add_color' resume.uuid %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Color Name</label>
+                        {{ color_form.name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="color_code" class="form-label">Color</label>
+                        <div class="color-picker-wrapper">
+                            {{ color_form.color_code }}
+                            <div class="color-picker" id="color-picker-new" style="background-color: #3b82f6;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Color</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">Export Resume</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'export_resume' resume.uuid %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Export Format</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="export_format" id="exportFormatPdf" value="pdf" checked>
+                            <label class="form-check-label" for="exportFormatPdf">
+                                PDF
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="export_format" id="exportFormatDocx" value="docx">
+                            <label class="form-check-label" for="exportFormatDocx">
+                                Word Document (DOCX)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="export_format" id="exportFormatTxt" value="txt">
+                            <label class="form-check-label" for="exportFormatTxt">
+                                Plain Text (TXT)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Export</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize sortable lists
+        const sortableLists = document.querySelectorAll('.sortable-list');
+        sortableLists.forEach(function(list) {
+            new Sortable(list, {
+                handle: '.sortable-handle',
+                animation: 150,
+                onEnd: function(evt) {
+                    const itemType = list.id.replace('List', '');
+                    const items = Array.from(list.querySelectorAll('.item-card')).map((item, index) => {
+                        return {
+                            id: item.dataset.id,
+                            order: index
+                        };
+                    });
+                    
+                    // Send reorder request
+                    fetch(`{% url 'reorder_items' resume.uuid %}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify({
+                            item_type: itemType,
+                            items: items
+                        })
+                    });
+                }
+            });
+        });
+        
+        // Toggle end date field based on current checkbox
+        const currentCheckboxes = document.querySelectorAll('input[name="current"]');
+        currentCheckboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const endDateField = this.closest('form').querySelector('.end-date-field');
+                if (this.checked) {
+                    endDateField.style.display = 'none';
+                } else {
+                    endDateField.style.display = 'block';
+                }
+            });
+        });
+        
+        // Initialize color pickers
+        const colorPickers = document.querySelectorAll('.color-picker');
+        colorPickers.forEach(function(element) {
+            const inputField = element.previousElementSibling;
+            
+            const pickr = Pickr.create({
+                el: element,
+                theme: 'classic',
+                default: inputField.value || '#3b82f6',
+                components: {
+                    preview: true,
+                    opacity: true,
+                    hue: true,
+                    interaction: {
+                        hex: true,
+                        rgba: true,
+                        hsla: false,
+                        hsva: false,
+                        cmyk: false,
+                        input: true,
+                        clear: false,
+                        save: true
+                    }
+                }
+            });
+            
+            pickr.on('save', (color, instance) => {
+                const hexColor = color.toHEXA().toString();
+                inputField.value = hexColor;
+                element.style.backgroundColor = hexColor;
+                instance.hide();
+            });
+        });
+    });
+</script>
+{% endblock %}
+

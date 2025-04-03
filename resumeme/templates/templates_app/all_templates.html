@@ -1,0 +1,602 @@
+<!-- templates_app/all_templates.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Resume Templates{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero section */
+    .templates-hero {
+        background-color: #f8f9fa;
+        padding: 80px 0 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .templates-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        z-index: 1;
+    }
+
+    .templates-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .templates-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, #3b82f6, #10b981, #8b5cf6, #ef4444);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .templates-description {
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        color: #6b7280;
+    }
+
+    /* Filters section */
+    .filters-section {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-option {
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        background-color: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .filter-option:hover {
+        background-color: #e5e7eb;
+    }
+
+    .filter-option.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .sort-select {
+        border: none;
+        background-color: #f3f4f6;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.875rem;
+        color: #4b5563;
+        cursor: pointer;
+    }
+
+    /* Templates grid */
+    .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .template-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+    }
+
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .template-preview {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+    }
+
+    .template-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .template-card:hover .template-preview img {
+        transform: scale(1.05);
+    }
+
+    .template-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .template-card:hover .template-overlay {
+        opacity: 1;
+    }
+
+    .template-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .template-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+
+    .template-info {
+        padding: 20px;
+    }
+
+    .template-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1f2937;
+    }
+
+    .template-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .template-category {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .template-popularity {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    /* Category sections */
+    .category-section {
+        margin-bottom: 60px;
+    }
+
+    .category-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .category-link {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #3b82f6;
+        text-decoration: none;
+    }
+
+    .category-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Pagination */
+    .pagination {
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .page-item {
+        margin: 0 5px;
+    }
+
+    .page-link {
+        padding: 8px 16px;
+        border-radius: 5px;
+        color: #3b82f6;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s;
+    }
+
+    .page-link:hover {
+        background-color: #f3f4f6;
+    }
+
+    .page-item.active .page-link {
+        background-color: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .templates-title {
+            font-size: 2.5rem;
+        }
+
+        .templates-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .template-preview {
+            height: 350px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .templates-title {
+            font-size: 2rem;
+        }
+
+        .templates-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="templates-hero">
+    <div class="container templates-hero-content">
+        <h1 class="templates-title">Resume Templates</h1>
+        <p class="templates-description">Choose from our collection of professionally designed resume templates to create a standout resume that gets you hired.</p>
+        <a href="{% url 'create_resume' %}" class="btn btn-primary btn-lg px-5">Create My Resume</a>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <form method="get" id="filterForm">
+            <div class="row g-4">
+                {% if categories %}
+                <div class="col-md-3">
+                    <div class="filter-label">Category</div>
+                    <div class="filter-options">
+                        <a href="?{% if selected_style %}style={{ selected_style }}&{% endif %}{% if selected_color %}color={{ selected_color }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="filter-option {% if not selected_category %}active{% endif %}">
+                            All
+                        </a>
+                        {% for category in categories %}
+                        <a href="?category={{ category }}{% if selected_style %}&style={{ selected_style }}{% endif %}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="filter-option {% if selected_category == category %}active{% endif %}">
+                            {{ category|title }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if styles %}
+                <div class="col-md-3">
+                    <div class="filter-label">Style</div>
+                    <div class="filter-options">
+                        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_color %}color={{ selected_color }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="filter-option {% if not selected_style %}active{% endif %}">
+                            All
+                        </a>
+                        {% for style in styles %}
+                        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}style={{ style }}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="filter-option {% if selected_style == style %}active{% endif %}">
+                            {{ style|title }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if colors %}
+                <div class="col-md-3">
+                    <div class="filter-label">Color</div>
+                    <div class="filter-options">
+                        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_style %}style={{ selected_style }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="filter-option {% if not selected_color %}active{% endif %}">
+                            All
+                        </a>
+                        {% for color in colors %}
+                        <a href="?{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_style %}style={{ selected_style }}&{% endif %}color={{ color }}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="filter-option {% if selected_color == color %}active{% endif %}">
+                            {{ color|title }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="col-md-3">
+                    <div class="filter-label">Sort By</div>
+                    <select name="sort" class="sort-select" onchange="document.getElementById('filterForm').submit()">
+                        <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+                        <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Search templates..." value="{{ search_query }}">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Templates Grid -->
+    <div class="templates-grid">
+        {% for template in templates %}
+        <div class="template-card">
+            <div class="template-preview">
+                <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-img">
+                <div class="template-overlay">
+                    <div class="template-actions">
+                        <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                        <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                    </div>
+                </div>
+                {% if template.is_premium %}
+                <div class="template-badge">
+                    <span class="badge bg-warning text-dark">Premium</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="template-info">
+                <h3 class="template-name">{{ template.name }}</h3>
+                <div class="template-meta">
+                    <div class="template-category">{{ template.category|title }}</div>
+                    <div class="template-popularity">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span>{{ template.popularity|default:"4.8" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No templates found matching your criteria. Please try different filters.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_style %}&style={{ selected_style }}{% endif %}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_style %}&style={{ selected_style }}{% endif %}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <a class="page-link" href="#">{{ num }}</a>
+                </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_style %}&style={{ selected_style }}{% endif %}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_style %}&style={{ selected_style }}{% endif %}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if selected_style %}&style={{ selected_style }}{% endif %}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Category Sections -->
+    <div class="mt-5">
+        <div class="category-section">
+            <h2 class="category-title">
+                Simple Resume Templates
+                <a href="{% url 'simple_templates' %}" class="category-link">View All <i class="bi bi-arrow-right"></i></a>
+            </h2>
+            <div class="templates-grid">
+                {% for template in simple_templates|slice:":3" %}
+                <div class="template-card">
+                    <div class="template-preview">
+                        <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-img">
+                        <div class="template-overlay">
+                            <div class="template-actions">
+                                <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                                <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                            </div>
+                        </div>
+                        {% if template.is_premium %}
+                        <div class="template-badge">
+                            <span class="badge bg-warning text-dark">Premium</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="template-info">
+                        <h3 class="template-name">{{ template.name }}</h3>
+                        <div class="template-meta">
+                            <div class="template-category">{{ template.category|title }}</div>
+                            <div class="template-popularity">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span>{{ template.popularity|default:"4.8" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">
+                Modern Resume Templates
+                <a href="{% url 'modern_templates' %}" class="category-link">View All <i class="bi bi-arrow-right"></i></a>
+            </h2>
+            <div class="templates-grid">
+                {% for template in modern_templates|slice:":3" %}
+                <div class="template-card">
+                    <div class="template-preview">
+                        <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-img">
+                        <div class="template-overlay">
+                            <div class="template-actions">
+                                <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                                <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                            </div>
+                        </div>
+                        {% if template.is_premium %}
+                        <div class="template-badge">
+                            <span class="badge bg-warning text-dark">Premium</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="template-info">
+                        <h3 class="template-name">{{ template.name }}</h3>
+                        <div class="template-meta">
+                            <div class="template-category">{{ template.category|title }}</div>
+                            <div class="template-popularity">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span>{{ template.popularity|default:"4.8" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="category-section">
+            <h2 class="category-title">
+                Creative Resume Templates
+                <a href="{% url 'creative_templates' %}" class="category-link">View All <i class="bi bi-arrow-right"></i></a>
+            </h2>
+            <div class="templates-grid">
+                {% for template in creative_templates|slice:":3" %}
+                <div class="template-card">
+                    <div class="template-preview">
+                        <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-img">
+                        <div class="template-overlay">
+                            <div class="template-actions">
+                                <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                                <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                            </div>
+                        </div>
+                        {% if template.is_premium %}
+                        <div class="template-badge">
+                            <span class="badge bg-warning text-dark">Premium</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="template-info">
+                        <h3 class="template-name">{{ template.name }}</h3>
+                        <div class="template-meta">
+                            <div class="template-category">{{ template.category|title }}</div>
+                            <div class="template-popularity">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <span>{{ template.popularity|default:"4.8" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any JavaScript functionality here
+
+        // Example: Lazy loading for template images
+        const lazyLoadTemplates = function() {
+            const templateImages = document.querySelectorAll('.template-preview img[data-src]');
+            templateImages.forEach(img => {
+                if (isElementInViewport(img)) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+            });
+        };
+
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Initialize lazy loading
+        window.addEventListener('scroll', lazyLoadTemplates);
+        window.addEventListener('resize', lazyLoadTemplates);
+        lazyLoadTemplates();
+    });
+</script>
+{% endblock %}

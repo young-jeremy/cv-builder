@@ -1,0 +1,450 @@
+<!-- templates_app/base_category_template.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category_title }} - Resume Builder{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero section */
+    .category-hero {
+        background-color: #f8f9fa;
+        padding: 80px 0 60px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .category-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        z-index: 1;
+    }
+
+    .category-hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .category-title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, #3b82f6, #10b981);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .category-description {
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        color: #6b7280;
+    }
+
+    /* Filters section */
+    .filters-section {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+    .filter-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #374151;
+    }
+
+    .filter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .filter-option {
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        background-color: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .filter-option:hover {
+        background-color: #e5e7eb;
+    }
+
+    .filter-option.active {
+        background-color: #3b82f6;
+        color: white;
+    }
+
+    .sort-select {
+        border: none;
+        background-color: #f3f4f6;
+        padding: 8px 16px;
+        border-radius: 30px;
+        font-size: 0.875rem;
+        color: #4b5563;
+        cursor: pointer;
+    }
+
+    /* Templates grid */
+    .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .template-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+        background-color: white;
+    }
+
+    .template-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .template-preview {
+        position: relative;
+        height: 400px;
+        overflow: hidden;
+    }
+
+    .template-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s;
+    }
+
+    .template-card:hover .template-preview img {
+        transform: scale(1.05);
+    }
+
+    .template-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .template-card:hover .template-overlay {
+        opacity: 1;
+    }
+
+    .template-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .template-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+    }
+
+    .template-info {
+        padding: 20px;
+    }
+
+    .template-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #1f2937;
+    }
+
+    .template-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .template-style {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .template-popularity {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    /* Features section */
+    .features-section {
+        margin: 80px 0;
+    }
+
+    .features-title {
+        text-align: center;
+        margin-bottom: 50px;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .feature-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        padding: 30px;
+        height: 100%;
+        transition: transform 0.3s;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        background-color: #f3f4f6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #1f2937;
+    }
+
+    .feature-description {
+        color: #6b7280;
+    }
+
+    /* CTA section */
+    .cta-section {
+        background-color: #f8f9fa;
+        padding: 80px 0;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 50px;
+    }
+
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #1f2937;
+    }
+
+    .cta-description {
+        font-size: 1.25rem;
+        max-width: 700px;
+        margin: 0 auto 2rem;
+        color: #6b7280;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .category-title {
+            font-size: 2.5rem;
+        }
+
+        .templates-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .template-preview {
+            height: 350px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .category-title {
+            font-size: 2rem;
+        }
+
+        .templates-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% block category_css %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="category-hero">
+    <div class="container category-hero-content">
+        <h1 class="category-title">{{ category_title }}</h1>
+        <p class="category-description">{{ category_description }}</p>
+        <a href="{% url 'create_resume' %}" class="btn btn-primary btn-lg px-5">Create My Resume</a>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <form method="get" id="filterForm">
+            <div class="row g-4">
+                {% if styles %}
+                <div class="col-md-4">
+                    <div class="filter-label">Style</div>
+                    <div class="filter-options">
+                        <a href="?{% if selected_color %}color={{ selected_color }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}{% endif %}"
+                           class="filter-option {% if not selected_style %}active{% endif %}">
+                            All
+                        </a>
+                        {% for style in styles %}
+                        <a href="?style={{ style }}{% if selected_color %}&color={{ selected_color }}{% endif %}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}"
+                           class="filter-option {% if selected_style == style %}active{% endif %}">
+                            {{ style|title }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if colors %}
+                <div class="col-md-4">
+                    <div class="filter-label">Color</div>
+                    <div class="filter-options">
+                        <a href="?{% if selected_style %}style={{ selected_style }}&{% endif %}{% if selected_sort %}sort={{ selected_sort }}{% endif %}"
+                           class="filter-option {% if not selected_color %}active{% endif %}">
+                            All
+                        </a>
+                        {% for color in colors %}
+                        <a href="?{% if selected_style %}style={{ selected_style }}&{% endif %}color={{ color }}{% if selected_sort %}&sort={{ selected_sort }}{% endif %}"
+                           class="filter-option {% if selected_color == color %}active{% endif %}">
+                            {{ color|title }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="col-md-4">
+                    <div class="filter-label">Sort By</div>
+                    <select name="sort" class="sort-select" onchange="document.getElementById('filterForm').submit()">
+                        <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+                        <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Templates Grid -->
+    <div class="templates-grid">
+        {% for template in templates %}
+        <div class="template-card">
+            <div class="template-preview">
+                <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-preview-img">
+                <div class="template-overlay">
+                    <div class="template-actions">
+                        <a href="{% url 'template_detail' template.slug %}" class="btn btn-light">Preview</a>
+                        <a href="{% url 'create_resume_with_template' template.slug %}" class="btn btn-primary">Use Template</a>
+                    </div>
+                </div>
+                {% if template.is_premium %}
+                <div class="template-badge">
+                    <span class="badge bg-warning text-dark">Premium</span>
+                </div>
+                {% endif %}
+            </div>
+            <div class="template-info">
+                <h3 class="template-name">{{ template.name }}</h3>
+                <div class="template-meta">
+                    <div class="template-style">{{ template.style|default:"Standard"|title }} Style</div>
+                    <div class="template-popularity">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <span>{{ template.popularity|default:"4.8" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No templates found matching your criteria. Please try different filters.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="features-title">Why Choose Our {{ category_title }}</h2>
+        <div class="row g-4">
+            {% block category_features %}
+            <!-- This block will be overridden by each category template -->
+            {% endblock %}
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <h2 class="cta-title">Ready to Create Your Professional Resume?</h2>
+        <p class="cta-description">Choose from our collection of {{ category_title|lower }} and start building your career today.</p>
+        <a href="{% url 'create_resume' %}" class="btn btn-primary btn-lg px-5">Create My Resume Now</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize any JavaScript functionality here
+
+        // Example: Lazy loading for template images
+        const lazyLoadTemplates = function() {
+            const templateImages = document.querySelectorAll('.template-preview img[data-src]');
+            templateImages.forEach(img => {
+                if (isElementInViewport(img)) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                }
+            });
+        };
+
+        function isElementInViewport(el) {
+            const rect = el.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        // Initialize lazy loading
+        window.addEventListener('scroll', lazyLoadTemplates);
+        window.addEventListener('resize', lazyLoadTemplates);
+        lazyLoadTemplates();
+    });
+</script>
+{% block category_js %}{% endblock %}
+{% endblock %}
