@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ResumeTemplate, UserTemplateSelection
 from resume.models import  Resume
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_POST
 import json
 from home.models import Resume  # Assuming you have a Resume model
@@ -319,6 +319,18 @@ def template_detail(request, template_slug):
             }
         ]
     }
+    try:
+        template = get_object_or_404(ResumeTemplate, slug=template_slug)
+        return render(request, 'templates_app/template_detail.html', {
+            'template': template,
+        })
+    except Http404:
+        # Get all available templates to suggest alternatives
+        available_templates = ResumeTemplate.objects.all()[:5]  # Get first 5 templates
+        return render(request, 'templates_app/template_not_found.html', {
+            'requested_slug': template_slug,
+            'available_templates': available_templates,
+        })
 
     # Get related templates (same category)
     related_templates = ResumeTemplate.objects.filter(
@@ -908,7 +920,6 @@ def preview_resume(request, resume_id):
     return render(request, 'templates_app/resume_preview.html', {
         'resume': resume,
         'template': resume.template,
-        'color_scheme': resume.color_scheme,
         'sections': sections,
     })
 
@@ -1096,7 +1107,7 @@ def resume_editor(request):
     experience_entries = resume.experience_entries.all() if hasattr(resume, 'experience_entries') else []
     skill_entries = resume.skill_entries.all() if hasattr(resume, 'skill_entries') else []
 
-    return render(request, 'resume_editor.html', {
+    return render(request, 'template_list/resume_editor.html', {
         'resume': resume,
         'template': template,
         'education_entries': education_entries,

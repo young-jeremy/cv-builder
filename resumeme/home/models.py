@@ -12,6 +12,8 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from phonenumber_field.modelfields import PhoneNumberField
+
 # from .models import CVTemplate, Resume
 from .forms import CVTemplateSelectForm
 from django.db import models
@@ -20,7 +22,49 @@ from django.urls import reverse
 from django.db import models
 from django.urls import reverse
 import uuid
+from django.db import models
+from django.utils.text import slugify
 
+
+class FAQCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    icon = models.CharField(max_length=50, blank=True, help_text="CSS class for the icon")
+    order = models.PositiveIntegerField(default=0, help_text="Order of display")
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "FAQ Category"
+        verbose_name_plural = "FAQ Categories"
+        ordering = ['order']
+
+
+class FAQArticle(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    content = models.TextField()
+    category = models.ForeignKey(FAQCategory, on_delete=models.CASCADE, related_name='articles')
+    is_popular = models.BooleanField(default=False, help_text="Show in popular articles section")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-is_popular', 'title']
 
 
 class CoverLetterTemplate(models.Model):
@@ -388,6 +432,11 @@ class Resume(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     primary_color = ColorField(default='#1a91f0')
     is_public = models.BooleanField(default=False, help_text="Make this resume visible to others")
+    email= models.EmailField(blank=True, null=True)
+    phone = PhoneNumberField(null=True, blank=True, unique=True)
+    location= models.CharField(max_length=100, blank=True, null=True)
+    headline= models.TextField(blank=True, null=True)
+    summary= models.CharField(max_length=1000, blank=True, null=True)
 
     font_family = models.CharField(
         max_length=50,

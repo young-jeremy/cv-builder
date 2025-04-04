@@ -1,8 +1,11 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Professional Resume Builder</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -456,141 +459,379 @@
         .ai-icon {
             color: #7950f2;
         }
+        /* FAQ Styles */
+    .faq-header {
+        background-color: #7dd3fc;
+        padding: 2rem 0;
+    }
+    .faq-search {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .faq-search input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 4px 0 0 4px;
+    }
+    .faq-search button {
+        background-color: #0ea5e9;
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+    .faq-search button:hover {
+        background-color: #0284c7;
+    }
+    .faq-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    .faq-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .faq-category-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    .faq-category-card:hover {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .faq-article-link {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        color: #333;
+        text-decoration: none;
+    }
+    .faq-article-link:hover {
+        color: #0ea5e9;
+    }
+    .faq-article-icon {
+        margin-right: 0.5rem;
+        color: #64748b;
+    }
+
+    /* Footer Styles */
+    .footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        padding: 3rem 0;
+    }
+    .footer-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    .footer-column {
+        flex: 1;
+        min-width: 200px;
+        margin-bottom: 2rem;
+    }
+    .footer-title {
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+    }
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
+    .footer-link {
+        margin-bottom: 0.8rem;
+    }
+    .footer-link a {
+        color: #666;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+    }
+    .footer-link a:hover {
+        color: #1a91f0;
+    }
+    .footer-bottom {
+        border-top: 1px solid #e9ecef;
+        padding-top: 2rem;
+        margin-top: 1rem;
+        text-align: center;
+        color: #666;
+        font-size: 0.9rem;
+    }
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .social-link {
+        color: #666;
+        font-size: 1.2rem;
+        transition: color 0.2s;
+    }
+    .social-link:hover {
+        color: #1a91f0;
+    }
+
+    @media (max-width: 768px) {
+        .footer-container {
+            flex-direction: column;
+        }
+        .footer-column {
+            margin-bottom: 2rem;
+        }
+    }
+        .cookie-consent {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          display: none;
+        }
+
+        .company-logo {
+          opacity: 0.7;
+          transition: opacity 0.3s;
+        }
+
+        .company-logo:hover {
+          opacity: 1;
+        }
+
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <a href="{% url 'home:landing' %}" class="logo">
-                <i class="fas fa-file-alt" style="color: var(--primary-color);"></i>
-                <span>ResumeBuilder</span>
-            </a>
-            <ul class="nav-menu">
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Resume Templates <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
-                    <div class="dropdown-content">
-                        <a href="{% url 'templates_app:professional_templates' %}" class="dropdown-item">Professional</a>
-                        <a href="{% url 'templates_app:creative_templates' %}" class="dropdown-item">Creative</a>
-                        <a href="{% url 'templates_app:simple_templates' %}" class="dropdown-item">Simple</a>
-                        <a href="{% url 'templates_app:modern_templates' %}" class="dropdown-item">Modern</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Resume Examples <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
-                    <div class="dropdown-content">
-                        <a href="#" class="dropdown-item">By Industry</a>
-                        <a href="#" class="dropdown-item">By Job Title</a>
-                        <a href="#" class="dropdown-item">By Level</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">Cover Letter <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
-                    <div class="dropdown-content">
-                        <a href="#" class="dropdown-item">Templates</a>
-                        <a href="#" class="dropdown-item">Examples</a>
-                        <a href="#" class="dropdown-item">Writing Guide</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Resources</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">FAQ</a>
-                </li>
-            </ul>
-            <div>
+    <div class="container header-container">
+        <a href="{% url 'home:landing' %}" class="logo">
+            <i class="fas fa-file-alt" style="color: var(--primary-color);"></i>
+            <span>ResumeBuilder</span>
+        </a>
+        <ul class="nav-menu">
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link">Resume Templates <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="{% url 'templates_app:professional_templates' %}" class="dropdown-item">Professional</a>
+                    <a href="{% url 'templates_app:creative_templates' %}" class="dropdown-item">Creative</a>
+                    <a href="{% url 'templates_app:simple_templates' %}" class="dropdown-item">Simple</a>
+                    <a href="{% url 'templates_app:modern_templates' %}" class="dropdown-item">Modern</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link">Resume Examples <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="#" class="dropdown-item">By Industry</a>
+                    <a href="#" class="dropdown-item">By Job Title</a>
+                    <a href="#" class="dropdown-item">By Level</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link">Cover Letter <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
+                <div class="dropdown-content">
+                    <a href="#" class="dropdown-item">Templates</a>
+                    <a href="#" class="dropdown-item">Examples</a>
+                    <a href="#" class="dropdown-item">Writing Guide</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">Resources</a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'home:home' %}" class="nav-link">FAQ</a>
+            </li>
+        </ul>
+        <div>
+            {% if user.is_authenticated %}
                 <a href="{% url 'accounts:profile' %}" class="btn btn-outline">My Account</a>
-                <a href="{% url 'resume:create_resume' %}" class="btn btn-primary">Build my resume</a>
+            {% else %}
+                <a href="{% url 'account_login' %}" class="btn btn-outline">Login</a>
+                <a href="{% url 'account_signup' %}" class="btn btn-outline">Sign Up</a>
+            {% endif %}
+            <a href="{% url 'resume:create_resume' %}" class="btn btn-primary">Build my resume</a>
+        </div>
+    </div>
+</header>
+    {% block content %}
+
+    {% endblock content %}
+
+
+
+<!-- Statistics Counter Section -->
+<div class="statistics-section py-4 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="d-flex align-items-center">
+                    <img src="{% static 'images/document-icon.svg' %}" alt="Document icon" class="me-3" width="50">
+                    <h2 class="statistics-counter mb-0 text-primary">
+                        <span id="resume-counter">45,586</span>
+                        <span class="text-dark fs-5 ms-2">resumes created today</span>
+                    </h2>
+                </div>
             </div>
         </div>
-    </header>
+    </div>
+</div>
 
-    <main>
-        <section class="hero container">
-            <div class="hero-content">
-                <div class="stats-counter">
-                    <i class="fas fa-chart-line"></i> {{ resumes_created|default:"43,711" }} resumes created today
-                </div>
-                <h1>The professional resume builder</h1>
-                <p class="subtitle">Only 2% of resumes win. Yours will be one of them. Let's build you a resume that works.</p>
-
-                <div class="cta-buttons">
-                    <a href="{% url 'resume:create_resume' %}" class="btn btn-primary">Create my resume</a>
-                    <a href="{% url 'templates_app:upload_resume' %}" class="btn btn-outline">Upload my resume</a>
-                </div>
-
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-number">39%</div>
-                        <div class="stat-text">more likely to get hired</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">8%</div>
-                        <div class="stat-text">better pay with your next job</div>
-                    </div>
+<!-- Trusted By Section -->
+<div class="trusted-by-section py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-3">
+                <h5 class="text-muted">Trusted by professionals from</h5>
+            </div>
+            <div class="col-12">
+                <div class="d-flex justify-content-center align-items-center flex-wrap">
+                    <img src="{% static 'images/booking-logo.png' %}" alt="Booking.com" class="company-logo mx-4 my-2" height="30">
+                    <img src="{% static 'images/kpmg-logo.png' %}" alt="KPMG" class="company-logo mx-4 my-2" height="30">
+                    <!-- Add more company logos as needed -->
                 </div>
             </div>
-            <div class="hero-image">
-                <div class="resume-preview">
-                    <img src="/placeholder.svg?height=500&width=350" alt="Resume Preview">
+        </div>
+    </div>
+</div>
 
-                    <div class="export-options">
-                        <div class="export-option">
-                            <i class="fas fa-file-word export-icon"></i> Export to DOCX
-                        </div>
-                        <div class="export-option">
-                            <i class="fas fa-file-alt export-icon"></i> Export to TXT
-                        </div>
-                        <div class="export-option">
-                            <i class="fas fa-link export-icon"></i> Share a link
-                        </div>
-                    </div>
+<!-- Footer Links -->
+<footer class="main-footer py-5 bg-white border-top">
+    <div class="container">
+        <div class="row">
+            <!-- Product Column -->
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h5 class="mb-3 fw-bold">Product</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Resume Builder</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Resume Templates</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Cover Letter Builder</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">CV Maker</a></li>
+                </ul>
+            </div>
 
-                    <div class="ai-writer">
-                        <i class="fas fa-robot ai-icon"></i> AI Writer
-                    </div>
+            <!-- Resources Column -->
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h5 class="mb-3 fw-bold">Resources</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Resume Examples</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Career Blog</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">How to Write a Resume</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Company Column -->
+            <div class="col-md-3 mb-4 mb-md-0">
+                <h5 class="mb-3 fw-bold">Company</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">About Us</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Careers</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Contact Us</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Legal Column -->
+            <div class="col-md-3">
+                <h5 class="mb-3 fw-bold">Legal</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Terms of Service</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Privacy Policy</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="row mt-4 pt-3 border-top">
+            <div class="col-md-6">
+                <p class="text-muted">© {% now "Y" %} Resume.io. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="social-links">
+                    <a href="#" class="text-decoration-none text-secondary me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-decoration-none text-secondary me-3"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-decoration-none text-secondary me-3"><i class="bi bi-linkedin"></i></a>
+                    <a href="#" class="text-decoration-none text-secondary"><i class="bi bi-instagram"></i></a>
                 </div>
-                <div class="decoration decoration-1">✦</div>
-                <div class="decoration decoration-2">✦</div>
-                <div class="decoration decoration-3">✧</div>
             </div>
-        </section>
+        </div>
+    </div>
+</footer>
 
-        <section class="counter-section container">
-            <div class="counter-container">
-                <div class="counter-icon">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="counter-number">{{ resumes_created|default:"43,711" }}</div>
-                <div class="counter-text">resumes created today</div>
+<!-- Cookie Consent -->
+<div id="cookie-consent" class="cookie-consent p-3 bg-white border shadow-sm">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-9">
+                <h5 class="mb-2">Protect your data</h5>
+                <p class="mb-0">
+                    We use cookies to make our website work better. They improve your experience and help with our advertising and analysis.
+                    By agreeing, you accept that your data may be shared with our colleagues in the USA. You can
+                    <a href="#" class="text-primary">reject</a> cookie permission at any time, just send an email to
+                    <a href="mailto:privacy@resume.io" class="text-primary">privacy@resume.io</a>.
+                    Please see our <a href="#" class="text-primary">Cookie</a> policy for more detail.
+                </p>
             </div>
-        </section>
+            <div class="col-lg-3 mt-3 mt-lg-0 text-lg-end">
+                <button id="accept-all-cookies" class="btn btn-success me-2">Accept All</button>
+                <button id="cookie-preferences" class="btn btn-outline-secondary">Preferences</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <section class="companies-section container">
-            <h2 class="companies-title">Our candidates have been hired at:</h2>
-            <div class="companies-logos">
-                <img src="/placeholder.svg?height=50&width=120" alt="Booking.com" class="company-logo">
-                <img src="/placeholder.svg?height=50&width=120" alt="Apple" class="company-logo">
-                <img src="/placeholder.svg?height=50&width=120" alt="DHL" class="company-logo">
-                <img src="/placeholder.svg?height=50&width=120" alt="Amazon" class="company-logo">
-                <img src="/placeholder.svg?height=50&width=120" alt="American Express" class="company-logo">
-                <img src="/placeholder.svg?height=50&width=120" alt="Accenture" class="company-logo">
-            </div>
-        </section>
+<!-- JavaScript for cookie consent and counter animation -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Cookie consent functionality
+        const cookieConsent = document.getElementById('cookie-consent');
+        const acceptAllBtn = document.getElementById('accept-all-cookies');
+        const preferencesBtn = document.getElementById('cookie-preferences');
 
-        <section class="editor-section container" style="display: none;">
-            <div class="editor-tools">
-                <button class="tool-button"><i class="fas fa-bold"></i></button>
-                <button class="tool-button"><i class="fas fa-italic"></i></button>
-                <button class="tool-button"><i class="fas fa-underline"></i></button>
-                <button class="tool-button"><i class="fas fa-strikethrough"></i></button>
-                <button class="tool-button"><i class="fas fa-list-ul"></i></button>
-                <button class="tool-button"><i class="fas fa-list-ol"></i></button>
-                <button class="tool-button"><i class="fas fa-link"></i></button>
-                <button class="tool-button"><i class="fas fa-palette"></i></button>
-            </div>
-        </section>
-    </main>
+        // Check if user has already accepted cookies
+        if (!localStorage.getItem('cookiesAccepted')) {
+            cookieConsent.style.display = 'block';
+        } else {
+            cookieConsent.style.display = 'none';
+        }
+
+        acceptAllBtn.addEventListener('click', function() {
+            localStorage.setItem('cookiesAccepted', 'true');
+            cookieConsent.style.display = 'none';
+        });
+
+        preferencesBtn.addEventListener('click', function() {
+            // Show cookie preferences modal (not implemented in this example)
+            alert('Cookie preferences would open here');
+        });
+
+        // Counter animation
+        const counterElement = document.getElementById('resume-counter');
+        const finalCount = parseInt(counterElement.textContent.replace(/,/g, ''));
+        let startCount = finalCount - 100;
+
+        const interval = setInterval(function() {
+            startCount += 1;
+            counterElement.textContent = startCount.toLocaleString();
+
+            if (startCount >= finalCount) {
+                clearInterval(interval);
+            }
+        }, 50);
+    });
+</script>
 
     <script>
         // Display the current count of resumes created

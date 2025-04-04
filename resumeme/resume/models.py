@@ -1,8 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
+
+from django.conf import settings
 from django.utils.text import slugify
 from colorfield.fields import ColorField
 import uuid
+
+from phonenumber_field.formfields import PhoneNumberField
 
 
 class TemplateCategory(models.Model):
@@ -57,7 +60,7 @@ class Resume(models.Model):
     )
 
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resumes')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='resumes')
     template = models.ForeignKey(ResumeTemplate, on_delete=models.SET_NULL, null=True, related_name='resumes')
     title = models.CharField(max_length=100)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
@@ -65,6 +68,11 @@ class Resume(models.Model):
     custom_css = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    email= models.EmailField(blank=True, null=True)
+    phone = PhoneNumberField()
+    location= models.CharField(max_length=100, blank=True, null=True)
+    headline= models.TextField(blank=True, null=True)
+    summary= models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} - {self.user.username}"
@@ -200,7 +208,7 @@ class Certification(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_profile')
     is_premium = models.BooleanField(default=False)
     subscription_expires = models.DateTimeField(null=True, blank=True)
 

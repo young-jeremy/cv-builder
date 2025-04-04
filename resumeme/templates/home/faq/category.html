@@ -1,0 +1,42 @@
+{% extends "faq/base.html" %}
+{% load static %}
+
+{% block title %}{{ category.name }} - CD Builder Help Center{% endblock %}
+
+{% block content %}
+<div class="faq-header">
+    <div class="container">
+        <h1 class="text-center text-white text-3xl font-bold mb-6">{{ category.name }}</h1>
+        <form action="{% url 'faq:search' %}" method="GET" class="faq-search">
+            <div class="flex">
+                <input type="text" name="q" placeholder="Search the knowledge base" required>
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="faq-container">
+    <div class="mb-4">
+        <a href="{% url 'faq:home' %}" class="text-sky-500 hover:underline">
+            <i class="fas fa-arrow-left mr-1"></i> Back to Help Center
+        </a>
+    </div>
+    
+    <div class="faq-card">
+        <h2 class="text-xl font-bold mb-4">{{ category.name }} ({{ articles.count }} articles)</h2>
+        
+        <div class="space-y-4">
+            {% for article in articles %}
+            <a href="{% url 'faq:article' article.slug %}" class="block p-4 border rounded hover:bg-gray-50">
+                <h3 class="font-medium">{{ article.title }}</h3>
+            </a>
+            {% empty %}
+            <p>No articles found in this category.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

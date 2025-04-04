@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 SECURE_SSL_REDIRECT = False  # Redirect HTTP to HTTPS
 
 # Custom user model
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 
 MIDDLEWARE = [

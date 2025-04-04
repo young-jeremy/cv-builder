@@ -1,1299 +1,1331 @@
-{% extends "base.html" %}
 {% load static %}
-
-{% block title %}Edit Resume - {{ resume.title }}{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/resume_editor.css' %}">
-<style>
-    :root {
-        --primary-color: #1a91f0;
-        --primary-hover: #0d7dd9;
-        --secondary-color: #f5f9fc;
-        --text-dark: #2d3748;
-        --text-light: #718096;
-        --success-color: #38b2ac;
-        --danger-color: #e53e3e;
-        --border-color: #e2e8f0;
-        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    }
-
-    body {
-        background-color: #f8fafc;
-        color: var(--text-dark);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-
-    .resume-editor-container {
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 1.5rem;
-    }
-
-    .resume-sidebar {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: var(--card-shadow);
-        overflow: hidden;
-        height: calc(100vh - 3rem);
-        position: sticky;
-        top: 1.5rem;
-    }
-
-    .sidebar-header {
-        background-color: var(--primary-color);
-        color: white;
-        padding: 1.25rem;
-        font-weight: 600;
-    }
-
-    .sidebar-nav {
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .sidebar-nav-item {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem 1.25rem;
-        color: var(--text-dark);
-        border-left: 3px solid transparent;
-        transition: all 0.2s;
-    }
-
-    .sidebar-nav-item:hover {
-        background-color: var(--secondary-color);
-        text-decoration: none;
-        color: var(--primary-color);
-    }
-
-    .sidebar-nav-item.active {
-        background-color: var(--secondary-color);
-        border-left: 3px solid var(--primary-color);
-        color: var(--primary-color);
-        font-weight: 600;
-    }
-
-    .sidebar-nav-item i {
-        margin-right: 0.75rem;
-        width: 20px;
-        text-align: center;
-    }
-
-    .sections-list {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-    }
-
-    .section-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.75rem 1.25rem;
-        border-bottom: 1px solid var(--border-color);
-        transition: all 0.2s;
-    }
-
-    .section-item:hover {
-        background-color: var(--secondary-color);
-    }
-
-    .section-item-title {
-        font-weight: 500;
-    }
-
-    .section-actions {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .btn-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: 4px;
-        border: 1px solid var(--border-color);
-        background-color: white;
-        color: var(--text-light);
-        transition: all 0.2s;
-    }
-
-    .btn-icon:hover {
-        background-color: var(--secondary-color);
-        color: var(--text-dark);
-    }
-
-    .btn-icon-danger:hover {
-        background-color: #fff5f5;
-        color: var(--danger-color);
-        border-color: #fed7d7;
-    }
-
-    .add-section-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 1rem;
-        padding: 0.75rem;
-        border-radius: 6px;
-        background-color: var(--primary-color);
-        color: white;
-        font-weight: 500;
-        border: none;
-        transition: all 0.2s;
-    }
-
-    .add-section-btn:hover {
-        background-color: var(--primary-hover);
-    }
-
-    .add-section-btn i {
-        margin-right: 0.5rem;
-    }
-
-    .content-area {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: var(--card-shadow);
-        margin-bottom: 1.5rem;
-    }
-
-    .content-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1.25rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .content-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--text-dark);
-        margin: 0;
-    }
-
-    .content-actions {
-        display: flex;
-        gap: 0.75rem;
-    }
-
-    .content-body {
-        padding: 1.5rem;
-    }
-
-    .form-section {
-        margin-bottom: 2rem;
-    }
-
-    .form-section-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: var(--text-dark);
-        margin-bottom: 1.25rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .form-group {
-        margin-bottom: 1.25rem;
-    }
-
-    .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: var(--text-dark);
-    }
-
-    .form-control {
-        display: block;
-        width: 100%;
-        padding: 0.75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        color: var(--text-dark);
-        background-color: #fff;
-        background-clip: padding-box;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        transition: border-color 0.15s ease-in-out;
-    }
-
-    .form-control:focus {
-        border-color: var(--primary-color);
-        outline: 0;
-        box-shadow: 0 0 0 3px rgba(26, 145, 240, 0.1);
-    }
-
-    .form-text {
-        display: block;
-        margin-top: 0.25rem;
-        font-size: 0.875rem;
-        color: var(--text-light);
-    }
-
-    .btn {
-        display: inline-block;
-        font-weight: 500;
-        text-align: center;
-        vertical-align: middle;
-        user-select: none;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        border-radius: 6px;
-        transition: all 0.2s;
-    }
-
-    .btn-primary {
-        color: #fff;
-        background-color: var(--primary-color);
-        border: 1px solid var(--primary-color);
-    }
-
-    .btn-primary:hover {
-        background-color: var(--primary-hover);
-        border-color: var(--primary-hover);
-    }
-
-    .btn-outline-primary {
-        color: var(--primary-color);
-        background-color: transparent;
-        border: 1px solid var(--primary-color);
-    }
-
-    .btn-outline-primary:hover {
-        color: #fff;
-        background-color: var(--primary-color);
-    }
-
-    .btn-success {
-        color: #fff;
-        background-color: var(--success-color);
-        border: 1px solid var(--success-color);
-    }
-
-    .btn-success:hover {
-        background-color: #2c9a9a;
-        border-color: #2c9a9a;
-    }
-
-    .btn-light {
-        color: var(--text-dark);
-        background-color: #fff;
-        border: 1px solid var(--border-color);
-    }
-
-    .btn-light:hover {
-        background-color: var(--secondary-color);
-    }
-
-    .btn-sm {
-        padding: 0.5rem 1rem;
-        font-size: 0.875rem;
-    }
-
-    .item-card {
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        margin-bottom: 1rem;
-        transition: all 0.2s;
-    }
-
-    .item-card:hover {
-        box-shadow: var(--card-shadow);
-        border-color: #cbd5e0;
-    }
-
-    .item-card-body {
-        padding: 1.25rem;
-    }
-
-    .item-card-title {
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .item-card-subtitle {
-        color: var(--text-light);
-        font-size: 0.875rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .item-card-text {
-        color: var(--text-dark);
-    }
-
-    .item-card-actions {
-        display: flex;
-        gap: 0.5rem;
-    }
-
-    .skill-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.5rem 0.75rem;
-        margin: 0.25rem;
-        background-color: var(--secondary-color);
-        color: var(--primary-color);
-        border-radius: 4px;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
-
-    .skill-badge i {
-        margin-left: 0.5rem;
-        cursor: pointer;
-    }
-
-    .skill-badge i:hover {
-        color: var(--danger-color);
-    }
-
-    .modal-content {
-        border: none;
-        border-radius: 8px;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    }
-
-    .modal-header {
-        border-bottom: 1px solid var(--border-color);
-        padding: 1.25rem;
-    }
-
-    .modal-title {
-        font-weight: 600;
-    }
-
-    .modal-body {
-        padding: 1.5rem;
-    }
-
-    .modal-footer {
-        border-top: 1px solid var(--border-color);
-        padding: 1.25rem;
-    }
-
-    .toast-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1050;
-    }
-
-    .toast {
-        max-width: 350px;
-        background-color: white;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        overflow: hidden;
-    }
-
-    .toast-header {
-        display: flex;
-        align-items: center;
-        padding: 0.75rem 1rem;
-        color: white;
-        background-color: var(--primary-color);
-    }
-
-    .toast-header.bg-success {
-        background-color: var(--success-color);
-    }
-
-    .toast-header.bg-danger {
-        background-color: var(--danger-color);
-    }
-
-    .toast-body {
-        padding: 1rem;
-    }
-
-    /* Stats section */
-    .stats-container {
-        display: flex;
-        margin-bottom: 1.5rem;
-        gap: 1.5rem;
-    }
-
-    .stat-card {
-        flex: 1;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: var(--card-shadow);
-        padding: 1.5rem;
-        text-align: center;
-    }
-
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--primary-color);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        color: var(--text-light);
-        font-size: 0.875rem;
-    }
-
-    /* Resume preview */
-    .resume-preview {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: var(--card-shadow);
-        overflow: hidden;
-        height: calc(100vh - 3rem);
-        position: sticky;
-        top: 1.5rem;
-    }
-
-    .preview-header {
-        background-color: var(--secondary-color);
-        padding: 1rem;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .preview-title {
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .preview-body {
-        padding: 1rem;
-        overflow-y: auto;
-        height: calc(100% - 60px);
-    }
-
-    .preview-placeholder {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-light);
-        font-size: 0.875rem;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 991.98px) {
-        .resume-sidebar, .resume-preview {
-            position: static;
-            height: auto;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Resume Editor{% endblock %} | ResumeBuilder</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/resume_editor.css' %}">
+
+    <style>
+        :root {
+            --primary-color: #1a91f0;
+            --primary-hover: #0d7dd9;
+            --secondary-color: #f5f9fc;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --success-color: #38b2ac;
+            --danger-color: #e53e3e;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-dark);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        /* Header styles */
+        .site-header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            height: 32px;
+        }
+
+        .nav-link {
+            color: var(--text-dark);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        /* Stats section */
+        .stats-container {
+            display: flex;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            flex: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Editor layout */
+        .editor-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Sidebar */
+        .resume-sidebar {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            height: calc(100vh - 7rem);
+            position: sticky;
+            top: 5rem;
+        }
+
+        .sidebar-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.25rem;
+            font-weight: 600;
+        }
+
+        .sidebar-nav {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            color: var(--text-dark);
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .sidebar-nav-item:hover {
+            background-color: var(--secondary-color);
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+
+        .sidebar-nav-item.active {
+            background-color: var(--secondary-color);
+            border-left: 3px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .sidebar-nav-item i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sections list */
+        .sections-list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .section-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .section-item:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .section-item-title {
+            font-weight: 500;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--text-light);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .btn-icon:hover {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+        }
+
+        .btn-icon-danger:hover {
+            background-color: #fff5f5;
+            color: var(--danger-color);
+            border-color: #fed7d7;
+        }
+
+        .add-section-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            border: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            width: calc(100% - 2rem);
+        }
+
+        .add-section-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .add-section-btn i {
+            margin-right: 0.5rem;
+        }
+
+        /* Content area */
+        .content-area {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
             margin-bottom: 1.5rem;
         }
-    }
-</style>
-{% endblock %}
 
-{% block content %}
-<div class="resume-editor-container">
-    <div class="row">
-        <!-- Stats section -->
-        <div class="col-12 mb-4">
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-value">39%</div>
-                    <div class="stat-label">more likely to get hired</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">8%</div>
-                    <div class="stat-label">better pay with your next job</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">{{ resume_count|default:"0" }}</div>
-                    <div class="stat-label">resumes created today</div>
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .content-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .content-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .content-body {
+            padding: 1.5rem;
+        }
+
+        /* Form elements */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-dark);
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 3px rgba(26, 145, 240, 0.1);
+        }
+
+        .form-text {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            vertical-align: middle;
+            user-select: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-light {
+            color: var(--text-dark);
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-light:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            color: #fff;
+            background-color: var(--primary-color);
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #2c9a9a;
+            border-color: #2c9a9a;
+        }
+
+        /* Item cards */
+        .item-card {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .item-card:hover {
+            box-shadow: var(--card-shadow);
+            border-color: #cbd5e0;
+        }
+
+        .item-card-body {
+            padding: 1.25rem;
+        }
+
+        .item-card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-card-subtitle {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .item-card-text {
+            color: var(--text-dark);
+        }
+
+        .item-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Skills */
+        .skill-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            margin: 0.25rem;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border-radius: 4px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .skill-badge i {
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+
+        .skill-badge i:hover {
+            color: var(--danger-color);
+        }
+
+        /* Resume preview */
+        .resume-preview {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            height: calc(100vh - 7rem);
+            position: sticky;
+            top: 5rem;
+        }
+
+        .preview-header {
+            background-color: var(--secondary-color);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .preview-body {
+            padding: 1rem;
+            overflow-y: auto;
+            height: calc(100% - 60px);
+        }
+
+        .preview-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Modals */
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.25rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.25rem;
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .toast {
+            max-width: 350px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .toast-header {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: white;
+            background-color: var(--primary-color);
+        }
+
+        .toast-header.bg-success {
+            background-color: var(--success-color);
+        }
+
+        .toast-header.bg-danger {
+            background-color: var(--danger-color);
+        }
+
+        .toast-body {
+            padding: 1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .resume-sidebar, .resume-preview {
+                position: static;
+                height: auto;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        /* Toolbar styles (like resume.io) */
+        .editor-toolbar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toolbar-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            border: none;
+            background-color: transparent;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .toolbar-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .toolbar-divider {
+            width: 1px;
+            height: 24px;
+            background-color: var(--border-color);
+            margin: 0 0.5rem;
+        }
+
+        /* AI Writer section */
+        .ai-writer {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #cce5ff;
+        }
+
+        .ai-writer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .ai-writer-icon {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .ai-writer-title {
+            font-weight: 600;
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .ai-writer-content {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        .ai-writer-btn {
+            background-color: white;
+            color: var(--primary-color);
+            border: 1px solid #cce5ff;
+            border-radius: 4px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-writer-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url 'templates_app:template_list' %}" class="d-flex align-items-center text-decoration-none">
+                    <img src="{% static 'images/logo.svg' %}" alt="ResumeBuilder" class="logo">
+                </a>
+
+                <nav class="d-none d-md-flex">
+                    <div class="dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Resume Templates
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Professional</a></li>
+                            <li><a class="dropdown-item" href="#">Creative</a></li>
+                            <li><a class="dropdown-item" href="#">Simple</a></li>
+                            <li><a class="dropdown-item" href="#">Modern</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Resume Examples
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">By Industry</a></li>
+                            <li><a class="dropdown-item" href="#">By Job Title</a></li>
+                            <li><a class="dropdown-item" href="#">By Level</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Cover Letter
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Templates</a></li>
+                            <li><a class="dropdown-item" href="#">Examples</a></li>
+                            <li><a class="dropdown-item" href="#">Builder</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown me-3">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Resources
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Blog</a></li>
+                            <li><a class="dropdown-item" href="#">Career Advice</a></li>
+                            <li><a class="dropdown-item" href="#">Resume Tips</a></li>
+                        </ul>
+                    </div>
+
+                    <a class="nav-link me-3" href="#">FAQ</a>
+                </nav>
+
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'accounts:profile' %}" class="nav-link me-3">My Account</a>
+                    <a href="{% url 'templates_app:create_resume' %}" class="btn btn-primary">Build my resume</a>
                 </div>
             </div>
         </div>
+    </header>
 
-        <!-- Sidebar -->
-        <div class="col-md-3">
-            <div class="resume-sidebar">
-                <div class="sidebar-header">
-                    <h5 class="mb-0">Resume Builder</h5>
-                </div>
-
-                <div class="sidebar-nav">
-                    <a href="{% url 'home:edit_resume' resume_id=resume.id %}" class="sidebar-nav-item {% if active_tab == 'edit' %}active{% endif %}">
-                        <i class="fas fa-edit"></i> Edit Content
-                    </a>
-                    <a href="{% url 'templates_app:resume_design' resume_id=resume.id %}" class="sidebar-nav-item {% if active_tab == 'design' %}active{% endif %}">
-                        <i class="fas fa-palette"></i> Design
-                    </a>
-                    <a href="{% url 'templates_app:preview_resume' resume_id=resume.id %}" class="sidebar-nav-item {% if active_tab == 'preview' %}active{% endif %}">
-                        <i class="fas fa-eye"></i> Preview
-                    </a>
-                    <a href="{% url 'templates_app:resume_download' resume_id=resume.id %}" class="sidebar-nav-item {% if active_tab == 'download' %}active{% endif %}">
-                        <i class="fas fa-download"></i> Download
-                    </a>
-                </div>
-
-                <div class="p-3">
-                    <h6 class="text-uppercase text-muted font-weight-bold mb-3" style="font-size: 0.75rem; letter-spacing: 0.05em;">Resume Sections</h6>
-                    <ul class="sections-list">
-                        {% for section in sections %}
-                        <li class="section-item" data-section-id="{{ section.id }}">
-                            <span class="section-item-title">{{ section.title }}</span>
-                            <div class="section-actions">
-                                <button class="btn-icon edit-section-btn" data-section-id="{{ section.id }}" title="Edit section">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn-icon btn-icon-danger delete-section-btn" data-section-id="{{ section.id }}" title="Delete section">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    <button class="add-section-btn btn-block" id="add-section-btn">
-                        <i class="fas fa-plus"></i> Add Section
-                    </button>
+    <!-- Main content -->
+    <main class="editor-container">
+        <div class="row">
+            <!-- Stats section -->
+            <div class="col-12 mb-4">
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">39%</div>
+                        <div class="stat-label">more likely to get hired</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8%</div>
+                        <div class="stat-label">better pay with your next job</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">{{ resume_count|default:"45,586" }}</div>
+                        <div class="stat-label">resumes created today</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Main content area -->
-        <div class="col-md-6">
-            <div class="content-area">
-                <div class="content-header">
-                    <h4 class="content-title">{{ resume.title }}</h4>
-                    <div class="content-actions">
-                        <button class="btn btn-light btn-sm" id="preview-btn">
-                            <i class="fas fa-eye mr-1"></i> Preview
-                        </button>
-                        <button class="btn btn-success btn-sm" id="save-resume-btn">
-                            <i class="fas fa-save mr-1"></i> Save
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="resume-sidebar">
+                    <div class="sidebar-header">
+                        <h5 class="mb-0">Resume Builder</h5>
+                    </div>
+
+                    <div class="sidebar-nav">
+                        <a href="{% url 'home:edit_resume' resume.id %}" class="sidebar-nav-item {% if active_tab == 'edit' %}active{% endif %}">
+                            <i class="fas fa-edit"></i> Edit Content
+                        </a>
+                        <a href="{% url 'templates_app:resume_design' resume.id %}" class="sidebar-nav-item {% if active_tab == 'design' %}active{% endif %}">
+                            <i class="fas fa-palette"></i> Design
+                        </a>
+                        <a href="{% url 'templates_app:preview_resume' resume.id %}" class="sidebar-nav-item {% if active_tab == 'preview' %}active{% endif %}">
+                            <i class="fas fa-eye"></i> Preview
+                        </a>
+                        <a href="{% url 'templates_app:resume_download' resume.id %}" class="sidebar-nav-item {% if active_tab == 'download' %}active{% endif %}">
+                            <i class="fas fa-download"></i> Download
+                        </a>
+                    </div>
+
+                    <div class="p-3">
+                        <h6 class="text-uppercase text-muted fw-bold mb-3" style="font-size: 0.75rem; letter-spacing: 0.05em;">Resume Sections</h6>
+                        <ul class="sections-list">
+                            {% for section in sections %}
+                            <li class="section-item" data-section-id="{{ section.id }}">
+                                <span class="section-item-title">{{ section.title }}</span>
+                                <div class="section-actions">
+                                    <button class="btn-icon edit-section-btn" data-section-id="{{ section.id }}" title="Edit section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon btn-icon-danger delete-section-btn" data-section-id="{{ section.id }}" title="Delete section">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            {% empty %}
+                            <li class="section-item">
+                                <span class="section-item-title">Professional Summary</span>
+                                <div class="section-actions">
+                                    <button class="btn-icon edit-section-btn" data-section-id="1" title="Edit section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="section-item">
+                                <span class="section-item-title">Work Experience</span>
+                                <div class="section-actions">
+                                    <button class="btn-icon edit-section-btn" data-section-id="2" title="Edit section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="section-item">
+                                <span class="section-item-title">Education</span>
+                                <div class="section-actions">
+                                    <button class="btn-icon edit-section-btn" data-section-id="3" title="Edit section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="section-item">
+                                <span class="section-item-title">Skills</span>
+                                <div class="section-actions">
+                                    <button class="btn-icon edit-section-btn" data-section-id="4" title="Edit section">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        <button class="add-section-btn" id="add-section-btn">
+                            <i class="fas fa-plus"></i> Add Section
                         </button>
                     </div>
                 </div>
-                <div class="content-body">
-                    <form id="resume-form" method="post" action="{% url 'home:edit_resume' resume_id=resume.id %}">
+            </div>
+
+            <!-- Main content area -->
+            <div class="col-md-6">
+                <!-- Formatting toolbar (like resume.io) -->
+                <div class="editor-toolbar mb-4">
+                    <button class="toolbar-btn" title="Bold">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button class="toolbar-btn" title="Italic">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button class="toolbar-btn" title="Underline">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                    <button class="toolbar-btn" title="Strikethrough">
+                        <i class="fas fa-strikethrough"></i>
+                    </button>
+
+                    <div class="toolbar-divider"></div>
+
+                    <button class="toolbar-btn" title="Bullet List">
+                        <i class="fas fa-list-ul"></i>
+                    </button>
+                    <button class="toolbar-btn" title="Numbered List">
+                        <i class="fas fa-list-ol"></i>
+                    </button>
+
+                    <div class="toolbar-divider"></div>
+
+                    <button class="toolbar-btn" title="Insert Link">
+                        <i class="fas fa-link"></i>
+                    </button>
+
+                    <div class="toolbar-divider"></div>
+
+                    <button class="toolbar-btn" title="Clear Formatting">
+                        <i class="fas fa-eraser"></i>
+                    </button>
+                </div>
+
+                <!-- AI Writer section (like resume.io) -->
+                <div class="ai-writer mb-4">
+                    <div class="ai-writer-header">
+                        <i class="fas fa-magic ai-writer-icon"></i>
+                        <h6 class="ai-writer-title">AI's Perfect</h6>
+                    </div>
+                    <p class="ai-writer-content">
+                        Add or edit your place of work experience to produce a profile summary.
+                    </p>
+                    <button class="ai-writer-btn">Generate</button>
+                </div>
+
+                <div class="content-area">
+                    <div class="content-header">
+                        <h4 class="content-title">{{ resume.title|default:"My Professional Resume" }}</h4>
+                        <div class="content-actions">
+                            <button class="btn btn-light btn-sm" id="preview-btn">
+                                <i class="fas fa-eye me-1"></i> Preview
+                            </button>
+                            <button class="btn btn-success btn-sm" id="save-resume-btn">
+                                <i class="fas fa-save me-1"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <form id="resume-form" method="post" action="{% url 'home:edit_resume' resume.id %}">
+                            {% csrf_token %}
+
+                            <!-- Basic Information -->
+                            <div class="form-section">
+                                <h5 class="form-section-title">Basic Information</h5>
+                                <div class="form-group">
+                                    <label class="form-label" for="title">Resume Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" value="{{ resume.title|default:'My Professional Resume' }}" required>
+                                    <small class="form-text">This is for your reference only and won't appear on your resume.</small>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="full_name">Full Name</label>
+                                            <input type="text" class="form-control" id="full_name" name="full_name" value="{{ resume.full_name|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="email">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" value="{{ resume.email|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="phone">Phone</label>
+                                            <input type="text" class="form-control" id="phone" name="phone" value="{{ resume.phone|default:'' }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="form-label" for="location">Location</label>
+                                            <input type="text" class="form-control" id="location" name="location" value="{{ resume.location|default:'' }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="headline">Professional Headline</label>
+                                    <input type="text" class="form-control" id="headline" name="headline" value="{{ resume.headline|default:'' }}">
+                                    <small class="form-text">A brief title that describes your professional role (e.g., "Senior Software Engineer")</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="summary">Professional Summary</label>
+                                    <textarea class="form-control" id="summary" name="summary" rows="4">{{ resume.summary|default:'' }}</textarea>
+                                    <small class="form-text">A brief overview of your professional background and key qualifications</small>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Skills Section -->
+                <div class="content-area">
+                    <div class="content-header">
+                        <h5 class="content-title">Skills</h5>
+                        <div>
+                            <button class="btn btn-light btn-sm edit-section-btn" data-section-id="4">
+                                <i class="fas fa-edit me-1"></i> Edit Section
+                            </button>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div class="form-group">
+                            <label class="form-label" for="skills-input">Add your skills (comma separated)</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="skills-input" placeholder="e.g., Python, JavaScript, Project Management">
+                                <button class="btn btn-primary" id="add-skill-btn" type="button">Add</button>
+                            </div>
+                            <small class="form-text">Press Enter or click Add to add skills</small>
+                        </div>
+                        <div id="skills-container" class="mb-3">
+                            {% for skill in resume.skills.all %}
+                            <span class="skill-badge" data-skill-id="{{ skill.id }}">
+                                {{ skill.name }}
+                                <i class="fas fa-times remove-skill" data-skill-id="{{ skill.id }}"></i>
+                            </span>
+                            {% empty %}
+                            <p class="text-muted">No skills added yet.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Experience Section -->
+                <div class="content-area">
+                    <div class="content-header">
+                        <h5 class="content-title">Work Experience</h5>
+                        <div>
+                            <button class="btn btn-light btn-sm edit-section-btn" data-section-id="2">
+                                <i class="fas fa-edit me-1"></i> Edit Section
+                            </button>
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div id="experience-items">
+                            {% for exp in resume.work_experiences.all %}
+                            <div class="item-card experience-item" data-item-id="{{ exp.id }}">
+                                <div class="item-card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="item-card-title">{{ exp.job_title }} at {{ exp.company }}</h6>
+                                            <p class="item-card-subtitle">{{ exp.start_date|date:"M Y" }} - {% if exp.current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</p>
+                                        </div>
+                                        <div class="item-card-actions">
+                                            <button class="btn-icon edit-experience-btn" data-item-id="{{ exp.id }}" title="Edit experience">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon btn-icon-danger delete-experience-btn" data-item-id="{{ exp.id }}" title="Delete experience">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p class="item-card-text">{{ exp.description }}</p>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center py-4">
+                                <p class="text-muted">No work experience added yet.</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="btn btn-outline-primary add-experience-btn">
+                            <i class="fas fa-plus me-1"></i> Add Work Experience
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resume preview -->
+            <div class="col-md-3">
+                <div class="resume-preview">
+                    <div class="preview-header">
+                        <h6 class="preview-title">Resume Preview</h6>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-download me-1"></i> Export
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown">
+                                <a class="dropdown-item" href="#"><i class="far fa-file-pdf me-2"></i> Export to PDF</a>
+                                <a class="dropdown-item" href="#"><i class="far fa-file-word me-2"></i> Export to DOCX</a>
+                                <a class="dropdown-item" href="#"><i class="far fa-file-alt me-2"></i> Export to TXT</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="preview-body">
+                        <div class="preview-placeholder">
+                            <div class="text-center">
+                                <i class="far fa-file-alt fa-3x mb-3"></i>
+                                <p>Your resume preview will appear here</p>
+                                <button class="btn btn-sm btn-primary mt-2" id="generate-preview-btn">
+                                    <i class="fas fa-sync-alt me-1"></i> Generate Preview
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- Section Edit Modal -->
+    <div class="modal fade" id="section-modal" tabindex="-1" aria-labelledby="section-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="section-modal-label">Edit Section</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="section-form">
                         {% csrf_token %}
-
-                        <!-- Basic Information -->
-                        <div class="form-section">
-                            <h5 class="form-section-title">Basic Information</h5>
-                            <div class="form-group">
-                                <label class="form-label" for="title">Resume Title</label>
-                                <input type="text" class="form-control" id="title" name="title" value="{{ resume.title }}" required>
-                                <small class="form-text">This is for your reference only and won't appear on your resume.</small>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label" for="full_name">Full Name</label>
-                                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ resume.full_name|default:'' }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label" for="email">Email</label>
-                                        <input type="email" class="form-control" id="email" name="email" value="{{ resume.email|default:'' }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label" for="phone">Phone</label>
-                                        <input type="text" class="form-control" id="phone" name="phone" value="{{ resume.phone|default:'' }}">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="form-label" for="location">Location</label>
-                                        <input type="text" class="form-control" id="location" name="location" value="{{ resume.location|default:'' }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="headline">Professional Headline</label>
-                                <input type="text" class="form-control" id="headline" name="headline" value="{{ resume.headline|default:'' }}">
-                                <small class="form-text">A brief title that describes your professional role (e.g., "Senior Software Engineer")</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label" for="summary">Professional Summary</label>
-                                <textarea class="form-control" id="summary" name="summary" rows="4">{{ resume.summary|default:'' }}</textarea>
-                                <small class="form-text">A brief overview of your professional background and key qualifications</small>
-                            </div>
-
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-primary">Save Basic Information</button>
-                            </div>
+                        <input type="hidden" id="section-id" name="section_id">
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="section-title">Section Title</label>
+                            <input type="text" class="form-control" id="section-title" name="title" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="section-order">Order</label>
+                            <input type="number" class="form-control" id="section-order" name="order" min="1" value="1">
                         </div>
                     </form>
                 </div>
-            </div>
-
-            <!-- Section content -->
-            {% for section in sections %}
-            <div class="content-area section-card" id="section-{{ section.id }}-card">
-                <div class="content-header">
-                    <h5 class="content-title">{{ section.title }}</h5>
-                    <div>
-                        <button class="btn btn-light btn-sm edit-section-btn" data-section-id="{{ section.id }}">
-                            <i class="fas fa-edit mr-1"></i> Edit Section
-                        </button>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="save-section-btn">Save</button>
                 </div>
-                <div class="content-body">
-                    <div class="section-content" id="section-content-{{ section.id }}">
-                        {% if section.title == "Professional Summary" %}
-                            <div class="form-group">
-                                <textarea class="form-control section-summary" data-section-id="{{ section.id }}" rows="4">{{ resume.summary|default:'' }}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience Modal -->
+    <div class="modal fade" id="experience-modal" tabindex="-1" aria-labelledby="experience-modal-label" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="experience-modal-label">Add Work Experience</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="experience-form">
+                        {% csrf_token %}
+                        <input type="hidden" id="experience-id" name="experience_id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="job-title">Job Title</label>
+                                    <input type="text" class="form-control" id="job-title" name="job_title" required>
+                                </div>
                             </div>
-                        {% elif section.title == "Work Experience" %}
-                            <div id="experience-items">
-                                {% for exp in resume.work_experiences.all %}
-                                <div class="item-card experience-item" data-item-id="{{ exp.id }}">
-                                    <div class="item-card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <h6 class="item-card-title">{{ exp.job_title }} at {{ exp.company }}</h6>
-                                                <p class="item-card-subtitle">{{ exp.start_date|date:"M Y" }} - {% if exp.current %}Present{% else %}{{ exp.end_date|date:"M Y" }}{% endif %}</p>
-                                            </div>
-                                            <div class="item-card-actions">
-                                                <button class="btn-icon edit-experience-btn" data-item-id="{{ exp.id }}" title="Edit experience">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="btn-icon btn-icon-danger delete-experience-btn" data-item-id="{{ exp.id }}" title="Delete experience">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="company">Company</label>
+                                    <input type="text" class="form-control" id="company" name="company" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label" for="start-date">Start Date</label>
+                                    <input type="month" class="form-control" id="start-date" name="start_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label class="form-label" for="end-date">End Date</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="current-job" name="current">
+                                            <label class="form-check-label" for="current-job">
+                                                Current Job
+                                            </label>
                                         </div>
-                                        <p class="item-card-text">{{ exp.description }}</p>
                                     </div>
+                                    <input type="month" class="form-control" id="end-date" name="end_date">
                                 </div>
-                                {% empty %}
-                                <div class="text-center py-4">
-                                    <p class="text-muted">No work experience added yet.</p>
-                                </div>
-                                {% endfor %}
                             </div>
-                            <button class="btn btn-outline-primary add-experience-btn">
-                                <i class="fas fa-plus mr-1"></i> Add Work Experience
-                            </button>
-                        {% elif section.title == "Education" %}
-                            <div id="education-items">
-                                {% for edu in resume.education.all %}
-                                <div class="item-card education-item" data-item-id="{{ edu.id }}">
-                                    <div class="item-card-body">
-                                        <div class="d-flex justify-content-between">
-                                            <div>
-                                                <h6 class="item-card-title">{{ edu.degree }} in {{ edu.field_of_study }}</h6>
-                                                <p class="item-card-subtitle">{{ edu.institution }}</p>
-                                                <p class="item-card-subtitle">{{ edu.start_date|date:"Y" }} - {% if edu.current %}Present{% else %}{{ edu.end_date|date:"Y" }}{% endif %}</p>
-                                            </div>
-                                            <div class="item-card-actions">
-                                                <button class="btn-icon edit-education-btn" data-item-id="{{ edu.id }}" title="Edit education">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button class="btn-icon btn-icon-danger delete-education-btn" data-item-id="{{ edu.id }}" title="Delete education">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {% if edu.description %}
-                                        <p class="item-card-text">{{ edu.description }}</p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% empty %}
-                                <div class="text-center py-4">
-                                    <p class="text-muted">No education added yet.</p>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <button class="btn btn-outline-primary add-education-btn">
-                                <i class="fas fa-plus mr-1"></i> Add Education
-                            </button>
-                        {% elif section.title == "Skills" %}
-                            <div class="form-group">
-                                <label class="form-label" for="skills-input">Add your skills (comma separated)</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="skills-input" placeholder="e.g., Python, JavaScript, Project Management">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" id="add-skill-btn">Add</button>
-                                    </div>
-                                </div>
-                                <small class="form-text">Press Enter or click Add to add skills</small>
-                            </div>
-                            <div id="skills-container" class="mb-3">
-                                {% for skill in resume.skills.all %}
-                                <span class="skill-badge" data-skill-id="{{ skill.id }}">
-                                    {{ skill.name }}
-                                    <i class="fas fa-times remove-skill" data-skill-id="{{ skill.id }}"></i>
-                                </span>
-                                {% empty %}
-                                <p class="text-muted">No skills added yet.</p>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <!-- Generic section content -->
-                            <div class="form-group">
-                                <textarea class="form-control section-content-editor" data-section-id="{{ section.id }}" rows="4" placeholder="Add content for this section..."></textarea>
-                            </div>
-                            <button class="btn btn-primary save-section-content-btn" data-section-id="{{ section.id }}">
-                                <i class="fas fa-save mr-1"></i> Save Content
-                            </button>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-        <!-- Resume preview -->
-        <div class="col-md-3">
-            <div class="resume-preview">
-                <div class="preview-header">
-                    <h6 class="preview-title">Resume Preview</h6>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-light dropdown-toggle" type="button" id="exportDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-download mr-1"></i> Export
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="exportDropdown">
-                            <a class="dropdown-item" href="#"><i class="far fa-file-pdf mr-2"></i> Export to PDF</a>
-                            <a class="dropdown-item" href="#"><i class="far fa-file-word mr-2"></i> Export to DOCX</a>
-                            <a class="dropdown-item" href="#"><i class="far fa-file-alt mr-2"></i> Export to TXT</a>
                         </div>
-                    </div>
-                </div>
-                <div class="preview-body">
-                    <div class="preview-placeholder">
-                        <div class="text-center">
-                            <i class="far fa-file-alt fa-3x mb-3"></i>
-                            <p>Your resume preview will appear here</p>
-                            <button class="btn btn-sm btn-primary mt-2" id="generate-preview-btn">
-                                <i class="fas fa-sync-alt mr-1"></i> Generate Preview
-                            </button>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="job-description">Description</label>
+                            <textarea class="form-control" id="job-description" name="description" rows="4" placeholder="Describe your responsibilities and achievements..."></textarea>
                         </div>
-                    </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="save-experience-btn">Save</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Section Edit Modal -->
-<div class="modal fade" id="section-modal" tabindex="-1" role="dialog" aria-labelledby="section-modal-label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="section-modal-label">Edit Section</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="section-form">
-                    {% csrf_token %}
-                    <input type="hidden" id="section-id" name="section_id">
-                    <div class="form-group">
-                        <label class="form-label" for="section-title">Section Title</label>
-                        <input type="text" class="form-control" id="section-title" name="title" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="section-order">Order</label>
-                        <input type="number" class="form-control" id="section-order" name="order" min="1" value="1">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-section-btn">Save</button>
-            </div>
-        </div>
+    <!-- Toast container for notifications -->
+    <div aria-live="polite" aria-atomic="true" class="toast-container">
+        <div id="toast-container"></div>
     </div>
-</div>
 
-<!-- Experience Modal -->
-<div class="modal fade" id="experience-modal" tabindex="-1" role="dialog" aria-labelledby="experience-modal-label" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="experience-modal-label">Add Work Experience</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="experience-form">
-                    {% csrf_token %}
-                    <input type="hidden" id="experience-id" name="experience_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="job-title">Job Title</label>
-                                <input type="text" class="form-control" id="job-title" name="job_title" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="company">Company</label>
-                                <input type="text" class="form-control" id="company" name="company" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="start-date">Start Date</label>
-                                <input type="month" class="form-control" id="start-date" name="start_date" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <label class="form-label" for="end-date">End Date</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="current-job" name="current">
-                                        <label class="form-check-label" for="current-job">
-                                            Current Job
-                                        </label>
-                                    </div>
-                                </div>
-                                <input type="month" class="form-control" id="end-date" name="end_date">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="job-description">Description</label>
-                        <textarea class="form-control" id="job-description" name="description" rows="4" placeholder="Describe your responsibilities and achievements..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-experience-btn">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const resumeId = {{ resume.id|default:1 }};
+            const csrfToken = '{{ csrf_token }}';
 
-<!-- Education Modal -->
-<div class="modal fade" id="education-modal" tabindex="-1" role="dialog" aria-labelledby="education-modal-label" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="education-modal-label">Add Education</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="education-form">
-                    {% csrf_token %}
-                    <input type="hidden" id="education-id" name="education_id">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="institution">Institution</label>
-                                <input type="text" class="form-control" id="institution" name="institution" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="degree">Degree</label>
-                                <input type="text" class="form-control" id="degree" name="degree" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="field-of-study">Field of Study</label>
-                        <input type="text" class="form-control" id="field-of-study" name="field_of_study">
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="edu-start-date">Start Year</label>
-                                <input type="number" class="form-control" id="edu-start-date" name="start_date" min="1900" max="2099" step="1" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <label class="form-label" for="edu-end-date">End Year</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="current-education" name="current">
-                                        <label class="form-check-label" for="current-education">
-                                            Current Education
-                                        </label>
-                                    </div>
-                                </div>
-                                <input type="number" class="form-control" id="edu-end-date" name="end_date" min="1900" max="2099" step="1">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="education-description">Description (Optional)</label>
-                        <textarea class="form-control" id="education-description" name="description" rows="3" placeholder="Describe your studies, achievements, etc..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-education-btn">Save</button>
-            </div>
-        </div>
-    </div>
-</div>
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
 
-<!-- Toast container for notifications -->
-<div aria-live="polite" aria-atomic="true" class="toast-container">
-    <div id="toast-container"></div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/resume_editor.js' %}"></script>
-<script>
-    $(document).ready(function() {
-        const resumeId = {{ resume.id }};
-        const csrfToken = '{{ csrf_token }}';
-
-        // Initialize tooltips
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // Handle current job checkbox
-        $('#current-job').change(function() {
-            if($(this).is(':checked')) {
-                $('#end-date').prop('disabled', true).val('');
-            } else {
-                $('#end-date').prop('disabled', false);
-            }
-        });
-
-        // Handle current education checkbox
-        $('#current-education').change(function() {
-            if($(this).is(':checked')) {
-                $('#edu-end-date').prop('disabled', true).val('');
-            } else {
-                $('#edu-end-date').prop('disabled', false);
-            }
-        });
-
-        // Add Section button
-        $('#add-section-btn').click(function() {
-            // Reset the form
-            $('#section-form')[0].reset();
-            $('#section-id').val('');
-            $('#section-modal-label').text('Add Section');
-
-            // Show the modal
-            $('#section-modal').modal('show');
-        });
-
-        // Edit Section button
-        $('.edit-section-btn').click(function() {
-            const sectionId = $(this).data('section-id');
-            const sectionTitle = $(this).closest('li, .content-header').find('.section-item-title, .content-title').text().trim();
-            const sectionOrder = $(this).closest('li').index() + 1 || 1;
-
-            // Fill the form
-            $('#section-id').val(sectionId);
-            $('#section-title').val(sectionTitle);
-            $('#section-order').val(sectionOrder);
-            $('#section-modal-label').text('Edit Section');
-
-            // Show the modal
-            $('#section-modal').modal('show');
-        });
-
-        // Save Section button
-        $('#save-section-btn').click(function() {
-            const sectionId = $('#section-id').val();
-            const title = $('#section-title').val();
-            const order = $('#section-order').val();
-
-            if(!title) {
-                alert('Section title is required');
-                return;
-            }
-
-            if(sectionId) {
-                // Update existing section
-                $.ajax({
-                    url: `/api/resumes/${resumeId}/sections/${sectionId}/`,
-                    method: 'PATCH',
-                    data: {
-                        title: title,
-                        order: order,
-                    },
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: function(data) {
-                        // Update the section in the UI
-                        const sectionItem = $(`li[data-section-id="${sectionId}"]`);
-                        sectionItem.find('.section-item-title').text(title);
-
-                        // Show success message
-                        showToast('Section updated successfully', 'success');
-
-                        // Close the modal
-                        $('#section-modal').modal('hide');
-
-                        // Reload the page to reflect changes
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        console.error('Error updating section:', xhr);
-                        showToast('Error updating section', 'danger');
-                    }
-                });
-            } else {
-                // Create new section
-                $.ajax({
-                    url: `/api/resumes/${resumeId}/sections/`,
-                    method: 'POST',
-                    data: {
-                        title: title,
-                        order: order,
-                    },
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: function(data) {
-                        // Show success message
-                        showToast('Section created successfully', 'success');
-
-                        // Close the modal
-                        $('#section-modal').modal('hide');
-
-                        // Reload the page to show the new section
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        console.error('Error creating section:', xhr);
-                        showToast('Error creating section', 'danger');
-                    }
-                });
-            }
-        });
-
-        // Delete Section button
-        $('.delete-section-btn').click(function() {
-            const sectionId = $(this).data('section-id');
-
-            if(confirm('Are you sure you want to delete this section? This action cannot be undone.')) {
-                $.ajax({
-                    url: `/api/resumes/${resumeId}/sections/${sectionId}/`,
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: function() {
-                        // Remove the section from the UI
-                        $(`li[data-section-id="${sectionId}"]`).remove();
-                        $(`#section-${sectionId}-card`).remove();
-
-                        // Show success message
-                        showToast('Section deleted successfully', 'success');
-                    },
-                    error: function(xhr) {
-                        console.error('Error deleting section:', xhr);
-                        showToast('Error deleting section', 'danger');
-                    }
-                });
-            }
-        });
-
-        // Add Work Experience button
-        $('.add-experience-btn').click(function() {
-            // Reset the form
-            $('#experience-form')[0].reset();
-            $('#experience-id').val('');
-            $('#experience-modal-label').text('Add Work Experience');
-            $('#current-job').prop('checked', false).trigger('change');
-
-            // Show the modal
-            $('#experience-modal').modal('show');
-        });
-
-        // Save Work Experience button
-        $('#save-experience-btn').click(function() {
-            const experienceId = $('#experience-id').val();
-            const formData = $('#experience-form').serialize();
-
-            if(!$('#job-title').val() || !$('#company').val() || !$('#start-date').val()) {
-                alert('Please fill in all required fields');
-                return;
-            }
-
-            if(experienceId) {
-                // Update existing experience
-                $.ajax({
-                    url: `/api/resumes/${resumeId}/experiences/${experienceId}/`,
-                    method: 'PATCH',
-                    data: formData,
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: function(data) {
-                        // Show success message
-                        showToast('Experience updated successfully', 'success');
-
-                        // Close the modal
-                        $('#experience-modal').modal('hide');
-
-                        // Reload the page to reflect changes
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        console.error('Error updating experience:', xhr);
-                        showToast('Error updating experience', 'danger');
-                    }
-                });
-            } else {
-                // Create new experience
-                $.ajax({
-                    url: `/api/resumes/${resumeId}/experiences/`,
-                    method: 'POST',
-                    data: formData,
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: function(data) {
-                        // Show success message
-                        showToast('Experience added successfully', 'success');
-
-                        // Close the modal
-                        $('#experience-modal').modal('hide');
-
-                        // Reload the page to show the new experience
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        console.error('Error adding experience:', xhr);
-                        showToast('Error adding experience', 'danger');
-                    }
-                });
-            }
-        });
-
-        // Skills input handling
-        $('#skills-input').keypress(function(e) {
-            if(e.which == 13) {
-                e.preventDefault();
-                addSkill();
-            }
-        });
-
-        $('#add-skill-btn').click(function() {
-            addSkill();
-        });
-
-        function addSkill() {
-            const skillName = $('#skills-input').val().trim();
-            if(skillName) {
-                $.ajax({
-                    url: `/api/resumes/${resumeId}/skills/`,
-                    method: 'POST',
-                    data: {
-                        name: skillName
-                    },
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: function(data) {
-                        // Add the skill to the UI
-                        const skillHtml = `
-                            <span class="skill-badge" data-skill-id="${data.id}">
-                                ${data.name}
-                                <i class="fas fa-times remove-skill" data-skill-id="${data.id}"></i>
-                            </span>
-                        `;
-                        $('#skills-container').append(skillHtml);
-
-                        // Clear the input
-                        $('#skills-input').val('');
-
-                        // Remove the "No skills" message if it exists
-                        $('#skills-container p.text-muted').remove();
-                    },
-                    error: function(xhr) {
-                        console.error('Error adding skill:', xhr);
-                        showToast('Error adding skill', 'danger');
-                    }
-                });
-            }
-        }
-
-        // Remove skill
-        $(document).on('click', '.remove-skill', function() {
-            const skillId = $(this).data('skill-id');
-            const skillBadge = $(this).closest('.skill-badge');
-
-            $.ajax({
-                url: `/api/resumes/${resumeId}/skills/${skillId}/`,
-                method: 'DELETE',
-                headers: {
-                    'X-CSRFToken': csrfToken
-                },
-                success: function() {
-                    // Remove the skill from the UI
-                    skillBadge.remove();
-
-                    // If no skills left, show the "No skills" message
-                    if($('#skills-container .skill-badge').length === 0) {
-                        $('#skills-container').html('<p class="text-muted">No skills added yet.</p>');
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Error removing skill:', xhr);
-                    showToast('Error removing skill', 'danger');
+            // Handle current job checkbox
+            $('#current-job').change(function() {
+                if($(this).is(':checked')) {
+                    $('#end-date').prop('disabled', true).val('');
+                } else {
+                    $('#end-date').prop('disabled', false);
                 }
             });
-        });
 
-        // Generate preview button
-        $('#generate-preview-btn').click(function() {
-            // This would normally call an API to generate a preview
-            // For now, just show a message
-            showToast('Preview generation is not implemented in this demo', 'info');
-        });
+            // Add Section button
+            $('#add-section-btn').click(function() {
+                // Reset the form
+                $('#section-form')[0].reset();
+                $('#section-id').val('');
+                $('#section-modal-label').text('Add Section');
 
-        // Helper function to show toast notifications
-        function showToast(message, type) {
-            const toast = `
-                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="3000">
-                    <div class="toast-header bg-${type} text-white">
-                        <strong class="mr-auto">Resume Builder</strong>
-                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                </div>
-            `;
-
-            $('#toast-container').append(toast);
-            $('.toast').toast('show');
-
-            // Remove toast after it's hidden
-            $('.toast').on('hidden.bs.toast', function() {
-                $(this).remove();
+                // Show the modal
+                const sectionModal = new bootstrap.Modal(document.getElementById('section-modal'));
+                sectionModal.show();
             });
-        }
 
-        // Initialize the page
-        $('#current-job').trigger('change');
-        $('#current-education').trigger('change');
-    });
-</script>
-{% endblock %}
+            // Edit Section button
+            $('.edit-section-btn').click(function() {
+                const sectionId = $(this).data('section-id');
+                const sectionTitle = $(this).closest('li, .content-header').find('.section-item-title, .content-title').text().trim();
+                const sectionOrder = $(this).closest('li').index() + 1 || 1;
+
+                // Fill the form
+                $('#section-id').val(sectionId);
+                $('#section-title').val(sectionTitle);
+                $('#section-order').val(sectionOrder);
+                $('#section-modal-label').text('Edit Section');
+
+                // Show the modal
+                const sectionModal = new bootstrap.Modal(document.getElementById('section-modal'));
+                sectionModal.show();
+            });
+
+            // Add Work Experience button
+            $('.add-experience-btn').click(function() {
+                // Reset the form
+                $('#experience-form')[0].reset();
+                $('#experience-id').val('');
+                $('#experience-modal-label').text('Add Work Experience');
+                $('#current-job').prop('checked', false).trigger('change');
+
+                // Show the modal
+                const experienceModal = new bootstrap.Modal(document.getElementById('experience-modal'));
+                experienceModal.show();
+            });
+
+            // Skills input handling
+            $('#skills-input').keypress(function(e) {
+                if(e.which == 13) {
+                    e.preventDefault();
+                    addSkill();
+                }
+            });
+
+            $('#add-skill-btn').click(function() {
+                addSkill();
+            });
+
+            function addSkill() {
+                const skillName = $('#skills-input').val().trim();
+                if(skillName) {
+                    // In a real app, this would be an AJAX call to save the skill
+                    // For demo purposes, we'll just add it to the UI
+                    const skillId = Date.now(); // Generate a temporary ID
+                    const skillHtml = `
+                        <span class="skill-badge" data-skill-id="${skillId}">
+                            ${skillName}
+                            <i class="fas fa-times remove-skill" data-skill-id="${skillId}"></i>
+                        </span>
+                    `;
+                    $('#skills-container').append(skillHtml);
+
+                    // Remove the "No skills" message if it exists
+                    $('#skills-container p.text-muted').remove();
+
+                    // Clear the input
+                    $('#skills-input').val('');
+
+                    // Show success message
+                    showToast('Skill added successfully', 'success');
+                }
+            }
+
+            // Remove skill
+            $(document).on('click', '.remove-skill', function() {
+                const skillId = $(this).data('skill-id');
+                const skillBadge = $(this).closest('.skill-badge');
+
+                // In a real app, this would be an AJAX call to delete the skill
+                // For demo purposes, we'll just remove it from the UI
+                skillBadge.remove();
+
+                // If no skills left, show the "No skills" message
+                if($('#skills-container .skill-badge').length === 0) {
+                    $('#skills-container').html('<p class="text-muted">No skills added yet.</p>');
+                }
+
+                // Show success message
+                showToast('Skill removed successfully', 'success');
+            });
+
+            // Generate preview button
+            $('#generate-preview-btn').click(function() {
+                // This would normally call an API to generate a preview
+                // For demo purposes, just show a message
+                showToast('Preview generation started', 'info');
+
+                // Simulate loading
+                setTimeout(function() {
+                    $('.preview-placeholder').html(`
+                        <div class="resume-preview-content">
+                            <div class="text-center mb-4">
+                                <h3>${$('#full_name').val() || 'Your Name'}</h3>
+                                <p>${$('#headline').val() || 'Professional Title'}</p>
+                                <p>${$('#email').val() || 'email@example.com'} | ${$('#phone').val() || '(123) 456-7890'} | ${$('#location').val() || 'City, State'}</p>
+                            </div>
+                            <div class="mb-4">
+                                <h5>Professional Summary</h5>
+                                <p>${$('#summary').val() || 'Your professional summary will appear here.'}</p>
+                            </div>
+                            <div class="mb-4">
+                                <h5>Skills</h5>
+                                <div>
+                                    ${$('#skills-container .skill-badge').length > 0 ?
+                                        Array.from($('#skills-container .skill-badge')).map(badge => badge.innerText.trim()).join(' • ') :
+                                        'Your skills will appear here.'}
+                                </div>
+                            </div>
+                            <div>
+                                <h5>Work Experience</h5>
+                                <p class="text-muted">Your work experience will appear here.</p>
+                            </div>
+                        </div>
+                    `);
+                    showToast('Preview generated successfully', 'success');
+                }, 1000);
+            });
+
+            // Save resume button
+            $('#save-resume-btn').click(function() {
+                // Submit the form
+                $('#resume-form').submit();
+            });
+
+            // Helper function to show toast notifications
+            function showToast(message, type) {
+                const toastHtml = `
+                    <div class="toast align-items-center text-white bg-${type}" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+
+                $('#toast-container').append(toastHtml);
+                const toastElement = document.querySelector('#toast-container .toast:last-child');
+                const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                toast.show();
+
+                // Remove toast after it's hidden
+                toastElement.addEventListener('hidden.bs.toast', function() {
+                    toastElement.remove();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

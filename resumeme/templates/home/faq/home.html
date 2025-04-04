@@ -1,0 +1,66 @@
+{% extends "home/faq/base.html" %}
+{% load static %}
+
+{% block title %}CD Builder Help Center{% endblock %}
+
+{% block content %}
+<div class="faq-header">
+    <div class="container">
+        <h1 class="text-center text-white text-3xl font-bold mb-6">How can we help you?</h1>
+        <form action="{% url 'home:search' %}" method="GET" class="faq-search">
+            <div class="flex">
+                <input type="text" name="q" placeholder="Search the knowledge base" required>
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="faq-container">
+    <!-- Popular Articles -->
+    <div class="faq-card">
+        <h2 class="text-xl font-bold mb-4">Most popular Articles</h2>
+        
+        <div class="grid md:grid-cols-2 gap-4">
+            <div>
+                {% for article in popular_articles|slice:":5" %}
+                <a href="{% url 'faq:article' article.slug %}" class="faq-article-link">
+                    <span class="faq-article-icon">
+                        <i class="far fa-file-alt"></i>
+                    </span>
+                    <span>{{ article.title }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            
+            <div>
+                {% for article in popular_articles|slice:"5:" %}
+                <a href="{% url 'faq:article' article.slug %}" class="faq-article-link">
+                    <span class="faq-article-icon">
+                        <i class="far fa-file-alt"></i>
+                    </span>
+                    <span>{{ article.title }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Categories -->
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+        {% for category in categories %}
+        <a href="{% url 'faq:category' category.slug %}" class="faq-category-card">
+            {% if category.icon %}
+            <i class="{{ category.icon }} text-3xl text-sky-500 mb-2"></i>
+            {% else %}
+            <i class="fas fa-folder text-3xl text-sky-500 mb-2"></i>
+            {% endif %}
+            <h3 class="text-lg font-bold">{{ category.name }}</h3>
+            <p class="text-gray-500 text-sm">{{ category.article_count }} articles</p>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

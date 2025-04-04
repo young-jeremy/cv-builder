@@ -3,10 +3,22 @@ from .models import (
     Testimonial, Feature, Pricing, FAQ,
     Contact, TeamMember, CompanyStats
 )
-
-
-
 from django.contrib import admin
+from .models import FAQCategory, FAQArticle
+
+@admin.register(FAQCategory)
+class FAQCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order')
+    prepopulated_fields = {'slug': ('name',)}
+
+@admin.register(FAQArticle)
+class FAQArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'is_popular', 'updated_at')
+    list_filter = ('category', 'is_popular')
+    search_fields = ('title', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+
+
 from .models import (
     ResumeTemplate, Resume, ResumeSection, WorkExperience,
     Education, Skill, Language, Certification, Project, SavedSection

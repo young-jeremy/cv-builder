@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .faq-header {
+        background-color: #7dd3fc;
+        padding: 2rem 0;
+    }
+    .faq-search {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .faq-search input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 4px 0 0 4px;
+    }
+    .faq-search button {
+        background-color: #0ea5e9;
+        color: white;
+        border: none;
+        padding: 0.75rem 1rem;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+    .faq-search button:hover {
+        background-color: #0284c7;
+    }
+    .faq-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    .faq-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .faq-category-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.2s;
+    }
+    .faq-category-card:hover {
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .faq-article-link {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        color: #333;
+        text-decoration: none;
+    }
+    .faq-article-link:hover {
+        color: #0ea5e9;
+    }
+    .faq-article-icon {
+        margin-right: 0.5rem;
+        color: #64748b;
+    }
+</style>
+{% endblock %}

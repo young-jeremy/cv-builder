@@ -1,4 +1,3 @@
-{% extends "base.html" %}
 {% load static %}
 
 {% block title %}{{ resume.title }} - Preview{% endblock %}
@@ -7,8 +6,627 @@
 <link rel="stylesheet" href="{% static 'css/resume-preview.css' %}">
 <style>
     :root {
-        --primary-color: {{ color_scheme.primary_color }};
-        --secondary-color: {{ color_scheme.secondary_color }};
+        --primary-color: {{ color_scheme.primary_color|default:"#1a91f0" }};
+        --secondary-color: {{ color_scheme.secondary_color|default:"#f5f9fc" }};
+        --accent-color: {{ color_scheme.accent_color|default:"#38b2ac" }};
+        --text-dark: #2d3748;
+        --text-light: #718096;
+        --border-color: #e2e8f0;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        --font-primary: {{ template.font_primary|default:"'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" }};
+        --font-secondary: {{ template.font_secondary|default:"'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" }};
+    }
+
+    /* Custom styles for this specific template */
+    body {
+        background-color: #f8fafc;
+        color: var(--text-dark);
+        font-family: var(--font-primary);
+        line-height: 1.5;
+    }
+
+    .preview-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem;
+    }
+
+    .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .preview-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .preview-actions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .btn i {
+        margin-right: 0.5rem;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0d7dd9;
+    }
+
+    .btn-outline {
+        background-color: transparent;
+        color: var(--text-dark);
+        border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+        background-color: var(--secondary-color);
+    }
+
+    /* Preview toolbar */
+    .preview-toolbar {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: var(--card-shadow);
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .toolbar-section {
+        display: flex;
+        align-items: center;
+    }
+
+    .toolbar-section:not(:last-child) {
+        margin-right: 1.5rem;
+        padding-right: 1.5rem;
+        border-right: 1px solid var(--border-color);
+    }
+
+    .toolbar-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-right: 0.75rem;
+    }
+
+    .color-picker {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .color-option {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .color-option:hover, .color-option.active {
+        transform: scale(1.1);
+        border-color: white;
+        box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .font-selector {
+        position: relative;
+    }
+
+    .font-selector select {
+        appearance: none;
+        background-color: var(--secondary-color);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        padding: 0.5rem 2rem 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232d3748' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.5rem center;
+        background-size: 16px;
+    }
+
+    .zoom-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .zoom-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 4px;
+        background-color: var(--secondary-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .zoom-btn:hover {
+        background-color: #e2e8f0;
+    }
+
+    .zoom-level {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        min-width: 40px;
+        text-align: center;
+    }
+
+    /* Resume preview area */
+    .resume-preview-wrapper {
+        background-color: #e5e7eb;
+        border-radius: 8px;
+        padding: 2rem;
+        display: flex;
+        justify-content: center;
+        min-height: 800px;
+        position: relative;
+    }
+
+    .resume-preview {
+        background-color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        min-height: 1100px;
+        padding: 0;
+        position: relative;
+        transition: transform 0.3s;
+    }
+
+    .resume-container {
+        padding: 2rem;
+        font-family: var(--font-primary);
+    }
+
+    /* Resume sections */
+    .resume-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .resume-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .resume-title {
+        font-size: 1.25rem;
+        color: var(--text-dark);
+        margin-bottom: 1rem;
+    }
+
+    .contact-info {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+    }
+
+    .contact-item i {
+        color: var(--primary-color);
+        margin-right: 0.5rem;
+    }
+
+    .resume-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary {
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    /* Experience section */
+    .job-entry {
+        margin-bottom: 1.5rem;
+        padding-left: 1rem;
+        border-left: 2px solid var(--primary-color);
+    }
+
+    .job-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .job-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .job-company {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .job-date {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .job-description {
+        font-size: 0.9375rem;
+        line-height: 1.6;
+    }
+
+    /* Education section */
+    .education-entry {
+        margin-bottom: 1.5rem;
+    }
+
+    .education-degree {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .education-institution {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .education-date {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin: 0 0 0.5rem 0;
+    }
+
+    /* Skills section */
+    .skills-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .skill-item {
+        background-color: var(--secondary-color);
+        color: var(--primary-color);
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    /* Placeholder styles */
+    .placeholder {
+        color: #a0aec0;
+        font-style: italic;
+    }
+
+    /* Export options panel */
+    .export-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 320px;
+        height: 100vh;
+        background-color: white;
+        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        transform: translateX(100%);
+        transition: transform 0.3s ease-in-out;
+        padding: 2rem 1.5rem;
+        overflow-y: auto;
+    }
+
+    .export-panel.active {
+        transform: translateX(0);
+    }
+
+    .export-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .export-panel-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .close-panel {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.25rem;
+        color: var(--text-light);
+    }
+
+    .export-option {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .export-option:hover {
+        border-color: var(--primary-color);
+        background-color: var(--secondary-color);
+    }
+
+    .export-option-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--secondary-color);
+        border-radius: 6px;
+        margin-right: 1rem;
+        color: var(--primary-color);
+        font-size: 1.25rem;
+    }
+
+    .export-option-info {
+        flex: 1;
+    }
+
+    .export-option-title {
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .export-option-desc {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin: 0;
+    }
+
+    /* Overlay */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+    }
+
+    .overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    /* Loading indicator */
+    .loading-indicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1001;
+        display: none;
+        text-align: center;
+    }
+
+    .loading-indicator.active {
+        display: block;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        margin: 0 auto 1rem;
+        border: 4px solid var(--secondary-color);
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Print styles */
+    @media print {
+        body {
+            background-color: white;
+        }
+
+        .preview-header, .preview-toolbar, .export-panel, .overlay, .loading-indicator {
+            display: none !important;
+        }
+
+        .preview-container {
+            padding: 0;
+            max-width: 100%;
+        }
+
+        .resume-preview-wrapper {
+            padding: 0;
+            background-color: white;
+        }
+
+        .resume-preview {
+            box-shadow: none;
+            max-width: 100%;
+        }
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+        .preview-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .preview-toolbar {
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .toolbar-section {
+            margin-right: 0;
+            padding-right: 0;
+            border-right: none;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .resume-preview-wrapper {
+            padding: 1rem;
+        }
+
+        .export-panel {
+            width: 100%;
+        }
+    }
+
+    /* Template-specific styles */
+    .modern-template .resume-header {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modern-template .resume-name {
+        font-size: 2.5rem;
+    }
+
+    .modern-template .contact-info {
+        justify-content: flex-start;
+    }
+
+    .modern-template .section-title {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 1rem;
+    }
+
+    .classic-template .resume-header {
+        text-align: center;
+    }
+
+    .classic-template .section-title {
+        text-align: center;
+        border-bottom: none;
+        position: relative;
+    }
+
+    .classic-template .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 2px;
+        background-color: var(--primary-color);
+    }
+
+    .minimal-template .resume-header {
+        border-bottom: none;
+    }
+
+    .minimal-template .section-title {
+        border-bottom: none;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .minimal-template .job-entry {
+        border-left: none;
+        padding-left: 0;
+    }
+
+    .creative-template .resume-header {
+        position: relative;
+        padding-left: 2rem;
+        text-align: left;
+        border-bottom: none;
+    }
+
+    .creative-template .resume-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background-color: var(--primary-color);
+    }
+
+    .creative-template .section-title {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 4px;
+        border-bottom: none;
     }
 </style>
 {% endblock %}
@@ -18,99 +636,560 @@
     <div class="preview-header">
         <h1>{{ resume.title }}</h1>
         <div class="preview-actions">
-            <a href="{% url 'resume_editor' %}?template={{ template.slug }}" class="btn btn-outline">Back to Editor</a>
-            <button id="print-resume" class="btn btn-primary">Print / Save PDF</button>
+            <a href="{% url 'home:edit_resume' resume.id %}" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Back to Editor
+            </a>
+            <button id="export-resume" class="btn btn-primary">
+                <i class="fas fa-download"></i> Export Resume
+            </button>
         </div>
     </div>
-    
-    <div class="resume-preview">
-        <div class="resume-container {{ template.slug }}-template">
-            {% for section in sections %}
-            <div class="resume-section">
-                <h3 class="section-title">{{ section.name }}</h3>
-                <div class="section-content">
-                    {% if section.content %}
-                        <!-- Render section content based on section type -->
-                        {% if section.name == 'Contact Information' %}
-                            <div class="contact-info">
-                                <p>{{ section.content.name|default:"Your Name" }}</p>
-                                <p>{{ section.content.email|default:"email@example.com" }}</p>
-                                <p>{{ section.content.phone|default:"(123) 456-7890" }}</p>
-                                <p>{{ section.content.location|default:"City, State" }}</p>
-                            </div>
-                        {% elif section.name == 'Professional Summary' %}
-                            <div class="summary">
-                                <p>{{ section.content.summary|default:"Write a professional summary that highlights your experience and skills." }}</p>
-                            </div>
-                        {% elif section.name == 'Work Experience' %}
-                            <div class="experience">
-                                {% for job in section.content.jobs|default:[] %}
-                                <div class="job-entry">
-                                    <div class="job-header">
-                                        <h4>{{ job.title }}</h4>
-                                        <p>{{ job.company }} | {{ job.dates }}</p>
-                                    </div>
-                                    <p>{{ job.description }}</p>
-                                </div>
-                                {% empty %}
-                                <div class="job-entry placeholder">
-                                    <div class="job-header">
-                                        <h4>Job Title</h4>
-                                        <p>Company Name | Start Date - End Date</p>
-                                    </div>
-                                    <p>Describe your responsibilities and achievements</p>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        {% elif section.name == 'Education' %}
-                            <div class="education">
-                                {% for edu in section.content.education|default:[] %}
-                                <div class="education-entry">
-                                    <h4>{{ edu.degree }}</h4>
-                                    <p>{{ edu.institution }} | {{ edu.dates }}</p>
-                                    {% if edu.description %}
-                                    <p>{{ edu.description }}</p>
-                                    {% endif %}
-                                </div>
-                                {% empty %}
-                                <div class="education-entry placeholder">
-                                    <h4>Degree Name</h4>
-                                    <p>Institution | Graduation Year</p>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        {% elif section.name == 'Skills' %}
-                            <div class="skills">
-                                <ul>
-                                    {% for skill in section.content.skills|default:[] %}
-                                    <li>{{ skill }}</li>
-                                    {% empty %}
-                                    <li>Skill 1</li>
-                                    <li>Skill 2</li>
-                                    <li>Skill 3</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        {% else %}
-                            <div class="generic-section">
-                                <p>{{ section.content.text|default:"This section is empty." }}</p>
-                            </div>
+
+    <div class="preview-toolbar">
+        <div class="toolbar-section">
+            <span class="toolbar-label">Color:</span>
+            <div class="color-picker">
+                <div class="color-option active" style="background-color: #1a91f0;" data-color="#1a91f0"></div>
+                <div class="color-option" style="background-color: #38b2ac;" data-color="#38b2ac"></div>
+                <div class="color-option" style="background-color: #805ad5;" data-color="#805ad5"></div>
+                <div class="color-option" style="background-color: #dd6b20;" data-color="#dd6b20"></div>
+                <div class="color-option" style="background-color: #3182ce;" data-color="#3182ce"></div>
+            </div>
+        </div>
+
+        <div class="toolbar-section">
+            <span class="toolbar-label">Font:</span>
+            <div class="font-selector">
+                <select id="font-selector">
+                    <option value="Inter">Inter</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Open Sans">Open Sans</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Lato">Lato</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="toolbar-section">
+            <span class="toolbar-label">Template:</span>
+            <div class="font-selector">
+                <select id="template-selector">
+                    <option value="modern-template" {% if template.slug == 'modern' %}selected{% endif %}>Modern</option>
+                    <option value="classic-template" {% if template.slug == 'classic' %}selected{% endif %}>Classic</option>
+                    <option value="minimal-template" {% if template.slug == 'minimal' %}selected{% endif %}>Minimal</option>
+                    <option value="creative-template" {% if template.slug == 'creative' %}selected{% endif %}>Creative</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="toolbar-section">
+            <div class="zoom-controls">
+                <button class="zoom-btn" id="zoom-out">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <span class="zoom-level">100%</span>
+                <button class="zoom-btn" id="zoom-in">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="resume-preview-wrapper">
+        <div class="resume-preview">
+            <div class="resume-container {{ template.slug|default:'modern' }}-template">
+                <!-- Resume Header / Contact Information -->
+                <div class="resume-header">
+                    <h1 class="resume-name">{{ resume.contact_info.name|default:"John Doe" }}</h1>
+                    <p class="resume-title">{{ resume.contact_info.title|default:"Professional Title" }}</p>
+                    <div class="contact-info">
+                        {% if resume.contact_info.email %}
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>{{ resume.contact_info.email }}</span>
+                        </div>
                         {% endif %}
+
+                        {% if resume.contact_info.phone %}
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <span>{{ resume.contact_info.phone }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if resume.contact_info.location %}
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ resume.contact_info.location }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if resume.contact_info.linkedin %}
+                        <div class="contact-item">
+                            <i class="fab fa-linkedin"></i>
+                            <span>{{ resume.contact_info.linkedin }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if resume.contact_info.website %}
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <span>{{ resume.contact_info.website }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Resume Sections -->
+                {% for section in sections %}
+                <div class="resume-section">
+                    <h3 class="section-title">{{ section.name }}</h3>
+
+                    {% if section.name == 'Professional Summary' %}
+                    <div class="summary">
+                        <p>{{ section.content.summary|default:"Experienced professional with a proven track record of success in developing innovative solutions. Skilled in project management, team leadership, and strategic planning. Adept at identifying opportunities for improvement and implementing effective strategies to achieve organizational goals." }}</p>
+                    </div>
+
+                    {% elif section.name == 'Work Experience' %}
+                    <div class="experience">
+                        {% if section.content.jobs %}
+                        {% for job in section.content.jobs %}
+                        <div class="job-entry">
+                            <div class="job-header">
+                                <h4 class="job-title">{{ job.title }}</h4>
+                                <p class="job-company">{{ job.company }}</p>
+                                <p class="job-date">{{ job.start_date }} - {{ job.end_date|default:"Present" }}</p>
+                            </div>
+                            <div class="job-description">
+                                <p>{{ job.description }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="job-entry placeholder">
+                            <div class="job-header">
+                                <h4 class="job-title">Senior Developer</h4>
+                                <p class="job-company">Tech Solutions Inc.</p>
+                                <p class="job-date">January 2020 - Present</p>
+                            </div>
+                            <div class="job-description">
+                                <p>Led development of key features for the company's flagship product, resulting in a 30% increase in user engagement. Managed a team of 5 developers, implementing agile methodologies that improved project delivery times by 25%.</p>
+                            </div>
+                        </div>
+                        <div class="job-entry placeholder">
+                            <div class="job-header">
+                                <h4 class="job-title">Web Developer</h4>
+                                <p class="job-company">Digital Creations</p>
+                                <p class="job-date">March 2017 - December 2019</p>
+                            </div>
+                            <div class="job-description">
+                                <p>Developed responsive websites for clients across various industries. Collaborated with design team to implement user-friendly interfaces that increased client satisfaction ratings by 40%.</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% elif section.name == 'Education' %}
+                    <div class="education">
+                        {% if section.content.education %}
+                        {% for edu in section.content.education %}
+                        <div class="education-entry">
+                            <h4 class="education-degree">{{ edu.degree }}</h4>
+                            <p class="education-institution">{{ edu.institution }}</p>
+                            <p class="education-date">{{ edu.start_date }} - {{ edu.end_date|default:"Present" }}</p>
+                            {% if edu.description %}
+                            <p>{{ edu.description }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="education-entry placeholder">
+                            <h4 class="education-degree">Bachelor of Science in Computer Science</h4>
+                            <p class="education-institution">University of Technology</p>
+                            <p class="education-date">2013 - 2017</p>
+                            <p>Graduated with honors. Specialized in software development and data structures.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% elif section.name == 'Skills' %}
+                    <div class="skills">
+                        <ul class="skills-list">
+                            {% if section.content.skills %}
+                            {% for skill in section.content.skills %}
+                            <li class="skill-item">{{ skill }}</li>
+                            {% endfor %}
+                            {% else %}
+                            <li class="skill-item">JavaScript</li>
+                            <li class="skill-item">Python</li>
+                            <li class="skill-item">React</li>
+                            <li class="skill-item">Node.js</li>
+                            <li class="skill-item">HTML/CSS</li>
+                            <li class="skill-item">SQL</li>
+                            <li class="skill-item">Git</li>
+                            <li class="skill-item">Agile Methodologies</li>
+                            <li class="skill-item">Project Management</li>
+                            <li class="skill-item">Problem Solving</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
                     {% else %}
-                        <p class="placeholder-text">This section is empty.</p>
+                    <div class="generic-section">
+                        {% if section.content.text %}
+                        <p>{{ section.content.text }}</p>
+                        {% else %}
+                        <p class="placeholder">This section is empty. Add content in the resume editor.</p>
+                        {% endif %}
+                    </div>
                     {% endif %}
                 </div>
+                {% empty %}
+                <!-- Default sections if none are provided -->
+                <div class="resume-section">
+                    <h3 class="section-title">Professional Summary</h3>
+                    <div class="summary">
+                        <p class="placeholder">Experienced professional with a proven track record of success in developing innovative solutions. Skilled in project management, team leadership, and strategic planning. Adept at identifying opportunities for improvement and implementing effective strategies to achieve organizational goals.</p>
+                    </div>
+                </div>
+
+                <div class="resume-section">
+                    <h3 class="section-title">Work Experience</h3>
+                    <div class="experience">
+                        <div class="job-entry placeholder">
+                            <div class="job-header">
+                                <h4 class="job-title">Senior Developer</h4>
+                                <p class="job-company">Tech Solutions Inc.</p>
+                                <p class="job-date">January 2020 - Present</p>
+                            </div>
+                            <div class="job-description">
+                                <p>Led development of key features for the company's flagship product, resulting in a 30% increase in user engagement. Managed a team of 5 developers, implementing agile methodologies that improved project delivery times by 25%.</p>
+                            </div>
+                        </div>
+                        <div class="job-entry placeholder">
+                            <div class="job-header">
+                                <h4 class="job-title">Web Developer</h4>
+                                <p class="job-company">Digital Creations</p>
+                                <p class="job-date">March 2017 - December 2019</p>
+                            </div>
+                            <div class="job-description">
+                                <p>Developed responsive websites for clients across various industries. Collaborated with design team to implement user-friendly interfaces that increased client satisfaction ratings by 40%.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume-section">
+                    <h3 class="section-title">Education</h3>
+                    <div class="education">
+                        <div class="education-entry placeholder">
+                            <h4 class="education-degree">Bachelor of Science in Computer Science</h4>
+                            <p class="education-institution">University of Technology</p>
+                            <p class="education-date">2013 - 2017</p>
+                            <p>Graduated with honors. Specialized in software development and data structures.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resume-section">
+                    <h3 class="section-title">Skills</h3>
+                    <div class="skills">
+                        <ul class="skills-list">
+                            <li class="skill-item">JavaScript</li>
+                            <li class="skill-item">Python</li>
+                            <li class="skill-item">React</li>
+                            <li class="skill-item">Node.js</li>
+                            <li class="skill-item">HTML/CSS</li>
+                            <li class="skill-item">SQL</li>
+                            <li class="skill-item">Git</li>
+                            <li class="skill-item">Agile Methodologies</li>
+                            <li class="skill-item">Project Management</li>
+                            <li class="skill-item">Problem Solving</li>
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </div>
+</div>
+
+<!-- Export options panel -->
+<div class="export-panel" id="export-panel">
+    <div class="export-panel-header">
+        <h3 class="export-panel-title">Export Options</h3>
+        <button class="close-panel" id="close-panel">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="export-option" id="export-pdf">
+        <div class="export-option-icon">
+            <i class="far fa-file-pdf"></i>
+        </div>
+        <div class="export-option-info">
+            <h4 class="export-option-title">PDF</h4>
+            <p class="export-option-desc">Best for job applications and printing</p>
+        </div>
+    </div>
+
+    <div class="export-option" id="export-docx">
+        <div class="export-option-icon">
+            <i class="far fa-file-word"></i>
+        </div>
+        <div class="export-option-info">
+            <h4 class="export-option-title">Word (DOCX)</h4>
+            <p class="export-option-desc">Editable in Microsoft Word</p>
+        </div>
+    </div>
+
+    <div class="export-option" id="export-txt">
+        <div class="export-option-icon">
+            <i class="far fa-file-alt"></i>
+        </div>
+        <div class="export-option-info">
+            <h4 class="export-option-title">Plain Text</h4>
+            <p class="export-option-desc">For ATS systems and online applications</p>
+        </div>
+    </div>
+
+    <div class="export-option" id="export-print">
+        <div class="export-option-icon">
+            <i class="fas fa-print"></i>
+        </div>
+        <div class="export-option-info">
+            <h4 class="export-option-title">Print</h4>
+            <p class="export-option-desc">Print directly from browser</p>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+
+<!-- Loading indicator -->
+<div class="loading-indicator" id="loading-indicator">
+    <div class="spinner"></div>
+    <p>Preparing your resume...</p>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.getElementById('print-resume').addEventListener('click', function() {
-        window.print();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Variables
+        const exportBtn = document.getElementById('export-resume');
+        const exportPanel = document.getElementById('export-panel');
+        const closePanel = document.getElementById('close-panel');
+        const overlay = document.getElementById('overlay');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const colorOptions = document.querySelectorAll('.color-option');
+        const fontSelector = document.getElementById('font-selector');
+        const templateSelector = document.getElementById('template-selector');
+        const zoomIn = document.getElementById('zoom-in');
+        const zoomOut = document.getElementById('zoom-out');
+        const zoomLevel = document.querySelector('.zoom-level');
+        const resumePreview = document.querySelector('.resume-preview');
+
+        let currentZoom = 100;
+
+        // Export panel toggle
+        exportBtn.addEventListener('click', function() {
+            exportPanel.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        closePanel.addEventListener('click', function() {
+            exportPanel.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        overlay.addEventListener('click', function() {
+            exportPanel.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Color picker
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove active class from all options
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+
+                // Add active class to clicked option
+                this.classList.add('active');
+
+                // Get selected color
+                const color = this.getAttribute('data-color');
+
+                // Update CSS variable
+                document.documentElement.style.setProperty('--primary-color', color);
+
+                // Save preference (could be done via AJAX to save to user profile)
+                localStorage.setItem('resume-color', color);
+            });
+        });
+
+        // Font selector
+        fontSelector.addEventListener('change', function() {
+            const font = this.value;
+            document.documentElement.style.setProperty('--font-primary', `'${font}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`);
+
+            // Save preference
+            localStorage.setItem('resume-font', font);
+        });
+
+        // Template selector
+        templateSelector.addEventListener('change', function() {
+            const template = this.value;
+            const resumeContainer = document.querySelector('.resume-container');
+
+            // Remove all template classes
+            resumeContainer.classList.remove('modern-template', 'classic-template', 'minimal-template', 'creative-template');
+
+            // Add selected template class
+            resumeContainer.classList.add(template);
+
+            // Save preference
+            localStorage.setItem('resume-template', template);
+        });
+
+        // Zoom controls
+        zoomIn.addEventListener('click', function() {
+            if (currentZoom < 150) {
+                currentZoom += 10;
+                updateZoom();
+            }
+        });
+
+        zoomOut.addEventListener('click', function() {
+            if (currentZoom > 50) {
+                currentZoom -= 10;
+                updateZoom();
+            }
+        });
+
+        function updateZoom() {
+            zoomLevel.textContent = `${currentZoom}%`;
+            resumePreview.style.transform = `scale(${currentZoom / 100})`;
+            resumePreview.style.transformOrigin = 'top center';
+
+            // Save preference
+            localStorage.setItem('resume-zoom', currentZoom);
+        }
+
+        // Export options
+        document.getElementById('export-pdf').addEventListener('click', function() {
+            showLoading();
+
+            // In a real implementation, this would call an API endpoint to generate the PDF
+            // For demo purposes, we'll simulate a delay and then use the browser's print functionality
+            setTimeout(function() {
+                hideLoading();
+
+                // In a real app, this would trigger a download
+                alert('In a real implementation, this would download a PDF file.');
+
+                // Close the panel
+                exportPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            }, 2000);
+        });
+
+        document.getElementById('export-docx').addEventListener('click', function() {
+            showLoading();
+
+            // Simulate DOCX export
+            setTimeout(function() {
+                hideLoading();
+                alert('In a real implementation, this would download a DOCX file.');
+                exportPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            }, 2000);
+        });
+
+        document.getElementById('export-txt').addEventListener('click', function() {
+            showLoading();
+
+            // Simulate TXT export
+            setTimeout(function() {
+                hideLoading();
+                alert('In a real implementation, this would download a TXT file.');
+                exportPanel.classList.remove('active');
+                overlay.classList.remove('active');
+            }, 1000);
+        });
+
+        document.getElementById('export-print').addEventListener('click', function() {
+            // Close the panel
+            exportPanel.classList.remove('active');
+            overlay.classList.remove('active');
+
+            // Reset zoom for printing
+            const originalZoom = currentZoom;
+            currentZoom = 100;
+            updateZoom();
+
+            // Print
+            window.print();
+
+            // Restore zoom
+            currentZoom = originalZoom;
+            updateZoom();
+        });
+
+        // Helper functions
+        function showLoading() {
+            loadingIndicator.classList.add('active');
+        }
+
+        function hideLoading() {
+            loadingIndicator.classList.remove('active');
+        }
+
+        // Load saved preferences
+        function loadSavedPreferences() {
+            // Load color
+            const savedColor = localStorage.getItem('resume-color');
+            if (savedColor) {
+                document.documentElement.style.setProperty('--primary-color', savedColor);
+
+                // Find and activate the matching color option
+                colorOptions.forEach(option => {
+                    if (option.getAttribute('data-color') === savedColor) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                });
+            }
+
+            // Load font
+            const savedFont = localStorage.getItem('resume-font');
+            if (savedFont) {
+                fontSelector.value = savedFont;
+                document.documentElement.style.setProperty('--font-primary', `'${savedFont}', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif`);
+            }
+
+            // Load template
+            const savedTemplate = localStorage.getItem('resume-template');
+            if (savedTemplate) {
+                templateSelector.value = savedTemplate;
+
+                const resumeContainer = document.querySelector('.resume-container');
+                resumeContainer.classList.remove('modern-template', 'classic-template', 'minimal-template', 'creative-template');
+                resumeContainer.classList.add(savedTemplate);
+            }
+
+            // Load zoom
+            const savedZoom = localStorage.getItem('resume-zoom');
+            if (savedZoom) {
+                currentZoom = parseInt(savedZoom);
+                updateZoom();
+            }
+        }
+
+        // Load preferences on page load
+        loadSavedPreferences();
     });
 </script>
 {% endblock %}

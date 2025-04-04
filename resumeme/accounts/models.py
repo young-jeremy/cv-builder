@@ -121,17 +121,7 @@ class UserProfile(models.Model):
     email_notifications = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"{self.user.email}'s profile"
-
-# Automatically create a Profile when a User is created
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
+        return f"{self.user.username}'s profile"
 
 
 class SecurityQuestion(models.Model):

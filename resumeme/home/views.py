@@ -18,32 +18,79 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import CoverLetter, CoverLetterTemplate
 from .forms import CoverLetterForm
 from django.views.generic import TemplateView
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
-from .models import ResumeTemplate, Resume, ResumeSection
-from .forms import ResumeForm
-from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView
-from django.contrib import messages
 from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CareerArticle, CareerCategory, NewsletterSubscription
 from .forms import NewsletterSubscriptionForm, CareerAdviceSearchForm
-from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse, HttpResponse
 from django.template.loader import render_to_string
-from django.utils.text import slugify
-from django.contrib import messages
 import json
 from .models import ResumeTemplate, Resume, ResumeSection
 from .forms import ResumeForm
+from django.shortcuts import render, get_object_or_404
+from django.db.models import Q, Count
+from .models import FAQCategory, FAQArticle
 
+
+def faq_home(request):
+    # Get all categories with article count
+    categories = FAQCategory.objects.annotate(article_count=Count('articles'))
+
+    # Get popular articles
+    popular_articles = FAQArticle.objects.filter(is_popular=True)
+
+    context = {
+        'categories': categories,
+        'popular_articles': popular_articles,
+    }
+
+    return render(request, 'home/faq/home.html', context)
+
+
+def faq_category(request, slug):
+    category = get_object_or_404(FAQCategory, slug=slug)
+    articles = FAQArticle.objects.filter(category=category)
+
+    context = {
+        'category': category,
+        'articles': articles,
+    }
+
+    return render(request, 'home/faq/category.html', context)
+
+
+def faq_article(request, slug):
+    article = get_object_or_404(FAQArticle, slug=slug)
+    related_articles = FAQArticle.objects.filter(category=article.category).exclude(id=article.id)[:3]
+
+    context = {
+        'article': article,
+        'related_articles': related_articles,
+    }
+
+    return render(request, 'home/faq/article.html', context)
+
+
+def faq_search(request):
+    query = request.GET.get('q', '')
+
+    if query:
+        articles = FAQArticle.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
+    else:
+        articles = FAQArticle.objects.none()
+
+    context = {
+        'query': query,
+        'articles': articles,
+    }
+
+    return render(request, 'home/faq/search.html', context)
 
 def home(request):
     """Landing page view"""
@@ -84,28 +131,6 @@ class ResumeTemplateListView(ListView):
         context['categories'] = dict(ResumeTemplate.CATEGORY_CHOICES)
         context['selected_category'] = self.request.GET.get('category', '')
         return context
-
-
-@login_required
-def resume_edit(request, uuid):
-    """Edit a resume"""
-    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
-    sections = resume.sections.all().order_by('order')
-
-    if request.method == 'POST':
-        form = ResumeForm(request.POST, instance=resume)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Resume updated successfully!")
-            return redirect('resume_edit', uuid=resume.uuid)
-    else:
-        form = ResumeForm(instance=resume)
-
-    return render(request, 'dashboard/resume_edit.html', {
-        'resume': resume,
-        'sections': sections,
-        'form': form,
-    })
 
 
 @login_required
@@ -155,7 +180,7 @@ def upload_resume(request):
                 )
 
             messages.success(request, "Resume uploaded successfully! Please review and edit the extracted information.")
-            return redirect('resume_edit', uuid=resume.uuid)
+            return redirect('dashboard:resume_edit', uuid=resume.uuid)
     else:
         form = ResumeUploadForm()
 
@@ -2667,28 +2692,6 @@ def my_resumes(request):
 
 
 @login_required
-def resume_edit(request, uuid):
-    """Edit a resume"""
-    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
-    sections = resume.sections.all().order_by('order')
-
-    if request.method == 'POST':
-        form = ResumeForm(request.POST, instance=resume)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Resume updated successfully!")
-            return redirect('dashboard:resume_edit', uuid=resume.uuid)
-    else:
-        form = ResumeForm(instance=resume)
-
-    return render(request, 'dashboard/resume_edit.html', {
-        'resume': resume,
-        'sections': sections,
-        'form': form,
-    })
-
-
-@login_required
 def resume_preview(request, uuid):
     """Preview a resume"""
     resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
@@ -2978,7 +2981,6 @@ def resume_edit(request, resume_id):
     if request.method == 'POST':
         # Update basic resume information
         resume.title = request.POST.get('title', resume.title)
-        resume.full_name = request.POST.get('full_name', resume.full_name)
         resume.email = request.POST.get('email', resume.email)
         resume.phone = request.POST.get('phone', resume.phone)
         resume.location = request.POST.get('location', resume.location)
@@ -2992,7 +2994,7 @@ def resume_edit(request, resume_id):
         messages.success(request, 'Resume updated successfully!')
 
         # Redirect back to the edit page
-        return redirect('templates_app:resume_edit', resume_id=resume.id)
+        return redirect('home:edit_resume', resume_id=resume.id)
 
     # Get available templates for template switching
     templates = ResumeTemplate.objects.filter(is_active=True)

@@ -132,4 +132,9 @@ urlpatterns = [
     # Newsletter subscription
     path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
 
+    path('faq/', views.faq_home, name='home'),
+    path('category/<slug:slug>/', views.faq_category, name='category'),
+    path('article/<slug:slug>/', views.faq_article, name='article'),
+    path('search/', views.faq_search, name='search'),
+
 ]

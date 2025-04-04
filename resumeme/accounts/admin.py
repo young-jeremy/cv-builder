@@ -1,40 +1,47 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import Group
-from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+from .models import UserProfile
 
-from .models import User, UserProfile
-
-
+# Define an inline admin descriptor for UserProfile model
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'Profile'
+    fk_name = 'user'
 
 
-class UserAdmin(BaseUserAdmin):
-    """Define admin model for custom User model with no username field."""
+# Define a new User admin that works with your custom User model
+class CustomUserAdmin(UserAdmin):
+    inlines = (UserProfileInline,)
 
+    # Update these fields based on your actual User model fields
+    list_display = ('email', 'first_name', 'last_name', 'is_staff')
+    search_fields = ('email', 'first_name', 'last_name')
+    ordering = ('email',)  # Change this to a field that exists in your User model
+
+    # Update fieldsets to match your User model
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        (_('Personal info'),
-         {'fields': ('first_name', 'last_name', 'bio', 'profile_picture', 'date_of_birth', 'phone_number')}),
-        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
-                                       'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        ('Personal info', {'fields': ('first_name', 'last_name')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
+
+    # Update add_fieldsets to match your User model
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'password1', 'password2'),
         }),
     )
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
-    search_fields = ('email', 'first_name', 'last_name')
-    ordering = ('email',)
-    inlines = [UserProfileInline]
+
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return []
+        return super().get_inline_instances(request, obj)
 
 
-admin.site.register(User, UserAdmin)
+# Register your models with the updated admin classes
+admin.site.register(User, CustomUserAdmin)
 
-admin.site.unregister(Group)

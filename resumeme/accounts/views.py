@@ -9,12 +9,8 @@ from .forms import (
     CustomUserCreationForm, CustomAuthenticationForm,
     UserProfileForm, UserUpdateForm
 )
-from .models import UserProfile
-
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+
 from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -24,10 +20,193 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.sites.shortcuts import get_current_site
 
+from django.shortcuts import render, redirect, get_object_or_404
 
-from django.shortcuts import render, redirect
+from django.db import transaction
+
+from .models import UserProfile
+from .forms import UserForm, UserProfileForm
+
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+
+
+@login_required
+def profile_view(request):
+    # Check if request.user exists and is authenticated
+    if not request.user.is_authenticated:
+        return redirect('account_login')
+
+    try:
+        # Get the user's profile or create it if it doesn't exist
+        profile = request.user.profile
+    except:
+        # If there's an error with the profile, show a message
+        messages.error(request, "There was an error accessing your profile.")
+        return redirect('accounts:create_profile')
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('accounts:profile')
+    else:
+        form = UserProfileForm(instance=profile)
+
+    return render(request, 'accounts/profile.html', {
+        'form': form,
+        'profile': profile
+    })
+
+
+@login_required
+def create_profile(request):
+    """
+    View for creating a new profile if one doesn't exist.
+    """
+    # Check if profile already exists
+    if hasattr(request.user, 'profile'):
+        messages.info(request, "You already have a profile.")
+        return redirect('accounts:profile_view')
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            try:
+                with transaction.atomic():
+                    user_form.save()
+                    # Create the profile but don't save it yet
+                    profile = profile_form.save(commit=False)
+                    profile.user = request.user  # Assign the user
+                    profile.save()  # Now save it
+
+                messages.success(request, 'Your profile has been created successfully!')
+                return redirect('accounts:profile_view')
+            except Exception as e:
+                messages.error(request, f'An error occurred: {str(e)}')
+        else:
+            for field, errors in user_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+
+            for field, errors in profile_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm()
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'is_new_profile': True,
+    }
+    return render(request, 'accounts/create_profile.html', context)
+
+
+@login_required
+def profile_edit(request):
+    """View for editing the user's profile"""
+    # Check if profile exists
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except UserProfile.DoesNotExist:
+        messages.info(request, "Please create your profile first.")
+        return redirect('create_profile')
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            try:
+                with transaction.atomic():
+                    user_form.save()
+                    profile_form.save()
+                messages.success(request, 'Your profile was successfully updated!')
+                return redirect('profile_view')
+            except Exception as e:
+                messages.error(request, f'An error occurred: {str(e)}')
+        else:
+            for field, errors in user_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+
+            for field, errors in profile_form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=user_profile)
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'is_new_profile': False,
+    }
+    return render(request, 'accounts/profile_edit.html', context)
+
+
+@login_required
+def public_profile_view(request, username):
+    """View for displaying a user's public profile"""
+    user = get_object_or_404(User, username=username)
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+    except UserProfile.DoesNotExist:
+        messages.error(request, f"The user {username} has not created a profile yet.")
+        return redirect('accounts:profile_view')
+
+    # Check if the profile belongs to the current user
+    is_own_profile = request.user == user
+
+    context = {
+        'profile_user': user,
+        'profile': user_profile,
+        'is_own_profile': is_own_profile,
+    }
+    return render(request, 'accounts/public_profile.html', context)
+
+
+@login_required
+def delete_avatar(request):
+    """View for deleting the user's avatar"""
+    if request.method == 'POST':
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            if profile.avatar:
+                profile.avatar.delete(save=True)
+                messages.success(request, 'Your avatar has been removed.')
+            else:
+                messages.info(request, 'You do not have an avatar to remove.')
+        except UserProfile.DoesNotExist:
+            messages.error(request, 'Profile not found.')
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+
+    return redirect('profile_edit')
+
+
+@login_required
+def toggle_email_notifications(request):
+    """View for toggling email notifications preference"""
+    if request.method == 'POST':
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            profile.email_notifications = not profile.email_notifications
+            profile.save()
+
+            status = "enabled" if profile.email_notifications else "disabled"
+            messages.success(request, f'Email notifications {status} successfully.')
+        except UserProfile.DoesNotExist:
+            messages.error(request, 'Profile not found.')
+        except Exception as e:
+            messages.error(request, f'An error occurred: {str(e)}')
+
+    return redirect('profile_edit')
 
 
 @login_required
@@ -156,30 +335,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserChangeForm, UserProfileForm
-
-
-@login_required
-def profile_view(request):
-    """View for user profile page"""
-    if request.method == 'POST':
-        user_form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
-        profile_form = UserProfileForm(request.POST, instance=request.user.profile)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Your profile was successfully updated!')
-            return redirect('accounts:profile')
-        else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        user_form = CustomUserChangeForm(instance=request.user)
-        profile_form = UserProfileForm(instance=request.user.profile)
-
-    return render(request, 'accounts/profile.html', {
-        'user_form': user_form,
-        'profile_form': profile_form
-    })
 
 
 @login_required

@@ -1,0 +1,699 @@
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #0d6efd;
+        --primary-hover: #0b5ed7;
+        --secondary-color: #f8f9fa;
+        --text-color: #212529;
+        --text-muted: #6c757d;
+        --border-color: #dee2e6;
+        --success-color: #198754;
+        --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        --input-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+        background-color: #f8f9fa;
+        color: var(--text-color);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    .page-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .edit-profile-header {
+        background: white;
+        color: var(--text-color);
+        padding: 2.5rem 0 1.5rem;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .edit-profile-header h1 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .edit-profile-header .lead {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        font-weight: 400;
+    }
+
+    .profile-nav {
+        display: flex;
+        margin-top: 2rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .profile-nav-item {
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+    }
+
+    .profile-nav-item.active {
+        color: var(--primary-color);
+        border-bottom: 2px solid var(--primary-color);
+    }
+
+    .profile-avatar-container {
+        position: relative;
+        width: 180px;
+        height: 180px;
+        margin: 0 auto;
+    }
+
+    .profile-avatar {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: var(--card-shadow);
+    }
+
+    .profile-avatar-placeholder {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background-color: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        font-weight: 300;
+        color: #6c757d;
+        border: 3px solid white;
+        box-shadow: var(--card-shadow);
+    }
+
+    .avatar-edit-overlay {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: var(--primary-color);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.4);
+    }
+
+    .avatar-edit-overlay:hover {
+        background-color: var(--primary-hover);
+        transform: scale(1.05);
+    }
+
+    .form-section {
+        background-color: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--card-shadow);
+        transition: transform 0.2s ease;
+    }
+
+    .form-section:hover {
+        transform: translateY(-3px);
+    }
+
+    .form-section h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-section h3 i {
+        margin-right: 0.75rem;
+        color: var(--primary-color);
+        font-size: 1.1rem;
+    }
+
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border-color);
+        background-color: #fff;
+        transition: all 0.2s ease;
+        box-shadow: var(--input-shadow);
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+    }
+
+    label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: var(--text-color);
+    }
+
+    .form-text {
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        box-shadow: 0 2px 6px rgba(13, 110, 253, 0.3);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+        border-color: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(13, 110, 253, 0.4);
+    }
+
+    .btn-outline-secondary {
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: var(--secondary-color);
+        color: var(--text-color);
+    }
+
+    .btn-outline-danger {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0.25rem;
+    }
+
+    .form-switch .form-check-input {
+        width: 2.5rem;
+        height: 1.25rem;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .social-icon-wrapper {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .social-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        margin-right: 10px;
+        background-color: #f8f9fa;
+        color: var(--primary-color);
+    }
+
+    .premium-badge {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        box-shadow: 0 2px 8px rgba(253, 160, 133, 0.5);
+    }
+
+    .premium-badge i {
+        margin-right: 0.5rem;
+    }
+
+    .alert {
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .alert-info {
+        background-color: #cfe2ff;
+        color: #084298;
+    }
+
+    .completion-bar {
+        background-color: #e9ecef;
+        height: 6px;
+        border-radius: 3px;
+        margin: 1.5rem 0;
+        overflow: hidden;
+    }
+
+    .completion-progress {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary-color), #6610f2);
+        border-radius: 3px;
+        transition: width 0.5s ease;
+    }
+
+    .completion-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+        color: var(--text-muted);
+    }
+
+    .section-complete {
+        color: var(--success-color);
+        font-weight: 500;
+    }
+
+    .section-complete i {
+        margin-right: 0.25rem;
+    }
+
+    .section-incomplete {
+        color: var(--text-muted);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .edit-profile-header {
+            padding: 1.5rem 0 1rem;
+        }
+
+        .edit-profile-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .profile-nav-item {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .form-section {
+            padding: 1.5rem;
+        }
+
+        .profile-avatar-container {
+            width: 150px;
+            height: 150px;
+        }
+
+        .profile-avatar, .profile-avatar-placeholder {
+            width: 150px;
+            height: 150px;
+        }
+    }
+
+    /* Animation effects */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    {% if messages %}
+    <div class="messages mt-4 animate-fade-in">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="edit-profile-header animate-fade-in">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>Edit Profile</h1>
+                <p class="lead">Update your information to complete your profile</p>
+            </div>
+
+            {% if user.profile.has_premium_access %}
+            <div class="premium-badge">
+                <i class="fas fa-crown"></i> Premium
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="profile-nav">
+            <div class="profile-nav-item active">Personal Info</div>
+            <div class="profile-nav-item">Account Settings</div>
+            <div class="profile-nav-item">Privacy</div>
+        </div>
+    </div>
+
+    <!-- Profile Completion Bar -->
+    <div class="completion-bar-container animate-fade-in delay-1">
+        <div class="completion-text mb-2">
+            <span>Profile Completion</span>
+            <span>75%</span>
+        </div>
+        <div class="completion-bar">
+            <div class="completion-progress" style="width: 75%"></div>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <!-- Avatar Section -->
+                <div class="form-section animate-fade-in delay-2">
+                    <h3><i class="fas fa-user-circle"></i> Profile Picture</h3>
+
+                    <div class="profile-avatar-container mb-4">
+                        {% if user.profile.avatar %}
+                        <img src="{{ user.profile.avatar.url }}" alt="{{ user.get_full_name }}" class="profile-avatar">
+                        {% else %}
+                        <div class="profile-avatar-placeholder">
+                            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                        </div>
+                        {% endif %}
+
+                        <label for="id_avatar" class="avatar-edit-overlay">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                    </div>
+
+                    <div class="text-center">
+                        <div style="display: none;">{{ profile_form.avatar }}</div>
+                        <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('id_avatar').click()">
+                            <i class="fas fa-upload me-2"></i>Upload Photo
+                        </button>
+                        <div class="form-text mt-2">Recommended: Square image, at least 400x400 pixels</div>
+
+                        {% if user.profile.avatar %}
+                        <div class="mt-3">
+                            <form action="{% url 'delete_avatar' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash-alt me-1"></i> Remove Picture
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div class="form-section animate-fade-in delay-3">
+                    <h3><i class="fas fa-cog"></i> Account Settings</h3>
+
+                    <div class="form-check form-switch mb-4" style="padding-left: 3rem;">
+                        {{ profile_form.email_notifications }}
+                        <label class="form-check-label ms-2" for="id_email_notifications" style="font-weight: 400;">
+                            Receive Email Notifications
+                        </label>
+                        <div class="form-text">Get updates about new features and tips</div>
+                    </div>
+
+                    {% if user.profile.has_premium_access %}
+                    <div class="p-3 rounded-3" style="background-color: #fff9e6; border: 1px solid #ffe69c;">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-crown me-2" style="color: #ffc107;"></i>
+                            <span style="font-weight: 600; color: #664d03;">Premium Account</span>
+                        </div>
+                        {% if user.profile.premium_expiry %}
+                        <div style="font-size: 0.9rem; color: #664d03;">
+                            <i class="far fa-calendar-alt me-1"></i> Expires on: {{ user.profile.premium_expiry }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="p-3 rounded-3 text-center" style="background-color: #f8f9fa; border: 1px dashed #dee2e6;">
+                        <div style="font-weight: 500; margin-bottom: 0.5rem;">Upgrade to Premium</div>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                            Get access to premium templates and features
+                        </p>
+                        <a href="#" class="btn btn-sm btn-primary">
+                            <i class="fas fa-crown me-1"></i> Upgrade Now
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <!-- Basic Information -->
+                <div class="form-section animate-fade-in delay-2">
+                    <h3><i class="fas fa-id-card"></i> Basic Information</h3>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_first_name">First Name</label>
+                            {{ user_form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_last_name">Last Name</label>
+                            {{ user_form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_email">Email Address</label>
+                        {{ user_form.email }}
+                        <div class="form-text">This email will be used for account notifications</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_bio">Bio</label>
+                        {{ profile_form.bio }}
+                        <div class="form-text">A brief description about yourself (max 500 characters)</div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_location">
+                                <i class="fas fa-map-marker-alt me-1" style="color: var(--primary-color);"></i> Location
+                            </label>
+                            {{ profile_form.location }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_phone">
+                                <i class="fas fa-phone-alt me-1" style="color: var(--primary-color);"></i> Phone
+                            </label>
+                            {{ profile_form.phone }}
+                        </div>
+                    </div>
+
+                    <div class="section-complete mt-3">
+                        <i class="fas fa-check-circle"></i> Section complete
+                    </div>
+                </div>
+
+                <!-- Professional Information -->
+                <div class="form-section animate-fade-in delay-3">
+                    <h3><i class="fas fa-briefcase"></i> Professional Information</h3>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_job_title">Job Title</label>
+                            {{ profile_form.job_title }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_company">Company</label>
+                            {{ profile_form.company }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_website">
+                            <i class="fas fa-globe me-1" style="color: var(--primary-color);"></i> Website
+                        </label>
+                        {{ profile_form.website }}
+                        <div class="form-text">Your personal or company website</div>
+                    </div>
+
+                    <div class="section-incomplete mt-3">
+                        Add your job title to complete this section
+                    </div>
+                </div>
+
+                <!-- Social Media Links -->
+                <div class="form-section animate-fade-in delay-4">
+                    <h3><i class="fas fa-share-alt"></i> Social Media</h3>
+
+                    <div class="mb-3">
+                        <div class="social-icon-wrapper">
+                            <div class="social-icon"><i class="fab fa-linkedin-in"></i></div>
+                            <label for="id_linkedin_url">LinkedIn URL</label>
+                        </div>
+                        {{ profile_form.linkedin_url }}
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="social-icon-wrapper">
+                            <div class="social-icon"><i class="fab fa-github"></i></div>
+                            <label for="id_github_url">GitHub URL</label>
+                        </div>
+                        {{ profile_form.github_url }}
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="social-icon-wrapper">
+                            <div class="social-icon"><i class="fab fa-twitter"></i></div>
+                            <label for="id_twitter_url">Twitter URL</label>
+                        </div>
+                        {{ profile_form.twitter_url }}
+                    </div>
+
+                    <div class="section-incomplete mt-3">
+                        Add at least one social profile to complete this section
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="form-section animate-fade-in delay-5">
+                    <h3><i class="fas fa-home"></i> Address Information</h3>
+
+                    <div class="mb-3">
+                        <label for="id_address">Street Address</label>
+                        {{ profile_form.address }}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_city">City</label>
+                            {{ profile_form.city }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_state">State/Province</label>
+                            {{ profile_form.state }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_country">Country</label>
+                            {{ profile_form.country }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_postal_code">Postal/ZIP Code</label>
+                            {{ profile_form.postal_code }}
+                        </div>
+                    </div>
+
+                    <div class="section-incomplete mt-3">
+                        Add your address details to complete this section
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5 animate-fade-in delay-5">
+                    <a href="{% url 'accounts:profile_view' %}" class="btn btn-outline-secondary me-md-2">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Save Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Preview avatar image before upload
+    document.getElementById('id_avatar').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const avatarContainer = document.querySelector('.profile-avatar-container');
+
+                // Remove existing avatar or placeholder
+                const existingAvatar = avatarContainer.querySelector('.profile-avatar');
+                const existingPlaceholder = avatarContainer.querySelector('.profile-avatar-placeholder');
+
+                if (existingAvatar) {
+                    existingAvatar.remove();
+                }
+
+                if (existingPlaceholder) {
+                    existingPlaceholder.remove();
+                }
+
+                // Create new avatar image
+                const newAvatar = document.createElement('img');
+                newAvatar.src = event.target.result;
+                newAvatar.alt = 'Profile Avatar';
+                newAvatar.className = 'profile-avatar';
+
+                // Insert before the edit overlay
+                const editOverlay = avatarContainer.querySelector('.avatar-edit-overlay');
+                avatarContainer.insertBefore(newAvatar, editOverlay);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Tab navigation (for demonstration - would need backend support for full functionality)
+    document.querySelectorAll('.profile-nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.profile-nav-item').forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+            this.classList.add('active');
+        });
+    });
+</script>
+{% endblock %}
+

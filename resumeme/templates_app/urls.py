@@ -14,7 +14,7 @@ urlpatterns = [
     # Add this to your templates_app/urls.py if you don't already have a home URL
     path('contemporary/', views.home, name='home'),
 
-    path('resume/editor/', views.resume_editor, name='resume_editor'),
+    # path('resume/editor/', views.resume_editor, name='resume_editor'),
 
     # Add these to your urls.py
     path('resume/section/<int:section_id>/', views.get_section, name='get_section'),
@@ -24,7 +24,7 @@ urlpatterns = [
     path('resume/<int:resume_id>/save/', views.save_resume, name='save_resume'),
     path('resume/<int:resume_id>/preview/', views.preview_resume, name='preview_resume'),
     path('resumes/<int:resume_id>/design/', views.resume_design, name='resume_design'),
-    path('resumes/<int:resume_id>/download/', views.resume_download, name='resume_download'),path('resumes/<int:resume_id>/download/', views.resume_download, name='resume_download'),
+    path('resumes/<int:resume_id>/download/', views.resume_download, name='resume_download'),
 
     path('my-resumes/', views.my_resumes, name='my_resumes'),
     path('templates/', views.ResumeTemplateListView.as_view(), name='resume_templates'),

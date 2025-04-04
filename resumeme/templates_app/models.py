@@ -1,8 +1,10 @@
+from allauth.socialaccount.providers.mediawiki.provider import settings
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
 from colorfield.fields import ColorField
-
+from django.conf import settings
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class TemplateCategory(models.Model):
@@ -59,6 +61,7 @@ class ResumeTemplate(models.Model):
         ('burgundy', 'Burgundy'),
         ('navy', 'Navy'),
     )
+    is_active = models.BooleanField(default=True)
 
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='simple')
     style = models.CharField(max_length=20, choices=STYLE_CHOICES, default='classic')
@@ -72,6 +75,9 @@ class ResumeTemplate(models.Model):
     preview_image = models.ImageField(upload_to='template_previews/')
     thumbnail = models.ImageField(upload_to='template_thumbnails/', blank=True)
     categories = models.ManyToManyField(TemplateCategory, related_name='templates')
+    color_scheme = models.CharField(max_length=50, default='blue')  # Add a default value
+
+
 
     # Template features
     has_photo = models.BooleanField(default=True)
@@ -163,7 +169,7 @@ class TemplateSection(models.Model):
 
 class UserTemplateSelection(models.Model):
     """Tracks which templates users have selected/used"""
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     template = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE)
     selected_at = models.DateTimeField(auto_now_add=True)
     color_scheme = models.ForeignKey(TemplateColor, on_delete=models.SET_NULL, null=True, blank=True)
