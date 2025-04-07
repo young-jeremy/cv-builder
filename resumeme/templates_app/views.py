@@ -1758,3 +1758,23 @@ def download_resume(request, uuid, format):
         # Invalid format
         messages.error(request, f"Invalid download format: {format}")
         return redirect('dashboard:resume_preview', uuid=uuid)
+
+
+class NewResumeTemplateListView(ListView):
+    """View for browsing resume templates"""
+    model = ResumeTemplate
+    template_name = 'latest_dashboard.html'
+    context_object_name = 'templates'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        category = self.request.GET.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = dict(ResumeTemplate.CATEGORY_CHOICES)
+        context['selected_category'] = self.request.GET.get('category', '')
+        return context

@@ -1,4 +1,4 @@
-{% extends "faq/base.html" %}
+{% extends "home/faq/base.html" %}
 {% load static %}
 
 {% block title %}Search Results - CD Builder Help Center{% endblock %}
@@ -7,7 +7,7 @@
 <div class="faq-header">
     <div class="container">
         <h1 class="text-center text-white text-3xl font-bold mb-6">Search Results</h1>
-        <form action="{% url 'faq:search' %}" method="GET" class="faq-search">
+        <form action="{% url 'home:search' %}" method="GET" class="faq-search">
             <div class="flex">
                 <input type="text" name="q" placeholder="Search the knowledge base" value="{{ query }}" required>
                 <button type="submit">
@@ -20,7 +20,7 @@
 
 <div class="faq-container">
     <div class="mb-4">
-        <a href="{% url 'faq:home' %}" class="text-sky-500 hover:underline">
+        <a href="{% url 'home:home' %}" class="text-sky-500 hover:underline">
             <i class="fas fa-arrow-left mr-1"></i> Back to Help Center
         </a>
     </div>

@@ -1,10 +1,28 @@
 from django import forms
 from django import forms
 from django.core.exceptions import ValidationError
+from django import forms
+from django import forms
+from django import forms
 
-from django import forms
-from django import forms
-# from .models import NewsletterSubscription, CareerArticle
+#from .models import BlogComment
+
+
+# from .models import BlogComment
+
+class BlogCommentForm(forms.ModelForm):
+    class Meta:
+        # model = BlogComment
+        fields = ['name', 'email', 'website', 'content']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Name'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Your Email'}),
+            'website': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Your Website (optional)'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Your Comment', 'rows': 5}),
+        }
+
+
+
 
 class NewsletterSubscriptionForm(forms.ModelForm):
     class Meta:

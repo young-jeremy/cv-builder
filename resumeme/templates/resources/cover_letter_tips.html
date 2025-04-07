@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cover Letter Tips & Advice | CD Builder{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/resources.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="resource-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title">Cover Letter Tips & Advice</h1>
+                <p class="hero-subtitle">Learn how to write a cover letter that lands you interviews. Our expert tips and advice will help you create a compelling cover letter that showcases your skills and experience.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Article Section -->
+{% if featured_article %}
+<section class="featured-article-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="featured-article">
+                    <div class="featured-badge">Featured</div>
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="featured-content">
+                                <h2 class="featured-title">{{ featured_article.title }}</h2>
+                                <p class="featured-summary">{{ featured_article.summary }}</p>
+                                <div class="featured-meta">
+                                    <span class="read-time">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                        </svg>
+                                        {{ featured_article.read_time }} min read
+                                    </span>
+                                    <span class="date">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar3" viewBox="0 0 16 16">
+                                            <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                                            <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                        </svg>
+                                        {{ featured_article.updated_at|date:"F j, Y" }}
+                                    </span>
+                                </div>
+                                <a href="{{ featured_article.get_absolute_url }}" class="btn btn-primary mt-3">Read Article</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="featured-image">
+                                {% if featured_article.featured_image %}
+                                <img src="{{ featured_article.featured_image.url }}" alt="{{ featured_article.title }}" class="img-fluid">
+                                {% else %}
+                                <img src="{% static 'img/resources/cover-letter-tips.jpg' %}" alt="{{ featured_article.title }}" class="img-fluid">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Quick Tips Section -->
+<section class="quick-tips-section">
+    <div class="container">
+        <h2 class="section-title">Essential Cover Letter Tips</h2>
+        <div class="row">
+            {% for tip in standalone_tips %}
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        {% if tip.icon %}
+                        <i class="fas fa-{{ tip.icon }}"></i>
+                        {% else %}
+                        <i class="fas fa-check-circle"></i>
+                        {% endif %}
+                    </div>
+                    <h3 class="tip-title">{{ tip.title }}</h3>
+                    <div class="tip-content">
+                        {{ tip.content|safe }}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <!-- Default tips if none in database -->
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3 class="tip-title">Tailor Each Cover Letter</h3>
+                    <div class="tip-content">
+                        <p>Customize your cover letter for each job application. Research the company and position to highlight relevant skills and experiences that match the job requirements.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="tip-title">Address the Hiring Manager</h3>
+                    <div class="tip-content">
+                        <p>Whenever possible, address your cover letter to a specific person rather than using "To Whom It May Concern." Research the company website or call to find the hiring manager's name.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-paragraph"></i>
+                    </div>
+                    <h3 class="tip-title">Keep It Concise</h3>
+                    <div class="tip-content">
+                        <p>Limit your cover letter to one page with 3-4 paragraphs. Be clear and concise, focusing on your most relevant qualifications and achievements for the position.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="tip-title">Highlight Achievements</h3>
+                    <div class="tip-content">
+                        <p>Don't just list job duties. Showcase specific accomplishments with measurable results that demonstrate your value. Use numbers and percentages when possible.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-spell-check"></i>
+                    </div>
+                    <h3 class="tip-title">Proofread Carefully</h3>
+                    <div class="tip-content">
+                        <p>Errors can immediately disqualify you. Proofread multiple times, use spell check, and ask someone else to review your cover letter before submitting.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="tip-card">
+                    <div class="tip-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="tip-title">End With a Call to Action</h3>
+                    <div class="tip-content">
+                        <p>Conclude with a strong closing paragraph that expresses your interest in an interview and provides your contact information. Be confident but not presumptuous.</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Articles Section -->
+{% if articles %}
+<section class="articles-section">
+    <div class="container">
+        <h2 class="section-title">In-Depth Cover Letter Guides</h2>
+        <div class="row">
+            {% for article in articles %}
+            {% if article != featured_article %}
+            <div class="col-lg-4 col-md-6">
+                <div class="article-card">
+                    <div class="article-image">
+                        {% if article.featured_image %}
+                        <img src="{{ article.featured_image.url }}" alt="{{ article.title }}" class="img-fluid">
+                        {% else %}
+                        <img src="{% static 'img/resources/article-placeholder.jpg' %}" alt="{{ article.title }}" class="img-fluid">
+                        {% endif %}
+                    </div>
+                    <div class="article-content">
+                        <h3 class="article-title">{{ article.title }}</h3>
+                        <p class="article-summary">{{ article.summary }}</p>
+                        <div class="article-meta">
+                            <span class="read-time">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
+                                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                                </svg>
+                                {{ article.read_time }} min read
+                            </span>
+                        </div>
+                        <a href="{{ article.get_absolute_url }}" class="btn btn-outline-primary btn-sm mt-3">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Cover Letter Builder CTA -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <h2 class="cta-title">Ready to create your cover letter?</h2>
+                    <p class="cta-text">Apply these tips with our professional cover letter builder. Create a personalized cover letter in minutes that will help you land more interviews.</p>
+                </div>
+                <div class="col-lg-5 text-lg-end">
+                    <a href="{% url 'home:create_resume' %}" class="btn btn-light btn-lg">Create My Cover Letter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="coverLetterFAQ">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                How long should my cover letter be?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#coverLetterFAQ">
+                            <div class="accordion-body">
+                                <p>Your cover letter should be concise and to the point, typically no more than one page. Aim for 3-4 paragraphs that highlight your most relevant qualifications and achievements. Recruiters often review many applications, so keeping your cover letter brief but impactful increases the chances it will be read completely.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                Should I include my salary requirements in my cover letter?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#coverLetterFAQ">
+                            <div class="accordion-body">
+                                <p>Generally, it's best to avoid mentioning salary requirements in your cover letter unless the job posting specifically asks for this information. Discussing compensation too early in the process can limit your negotiating power later. If the job posting requires you to include salary expectations, provide a range rather than a specific figure, and indicate that it's negotiable based on the total compensation package.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Do I need a different cover letter for each job application?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#coverLetterFAQ">
+                            <div class="accordion-body">
+                                <p>Yes, you should customize your cover letter for each job application. While this doesn't mean writing a completely new letter each time, you should tailor the content to address the specific requirements and qualifications mentioned in the job posting. Research the company and position to highlight relevant skills and experiences that match what they're looking for. This targeted approach shows employers that you're genuinely interested in their specific position rather than mass-applying to jobs.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                How should I address my cover letter if I don't know the hiring manager's name?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#coverLetterFAQ">
+                            <div class="accordion-body">
+                                <p>While it's best to address your cover letter to a specific person, sometimes this information isn't available. In these cases, use a professional greeting such as "Dear Hiring Manager," "Dear [Department] Team," or "Dear Hiring Committee." Avoid outdated salutations like "To Whom It May Concern" or "Dear Sir/Madam." Before resorting to a general greeting, try to find the hiring manager's name by checking the company website, LinkedIn, or calling the company directly.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Should I mention employment gaps in my cover letter?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#coverLetterFAQ">
+                            <div class="accordion-body">
+                                <p>It's generally not necessary to address employment gaps directly in your cover letter unless they are recent or significant. Your cover letter should focus on your qualifications and enthusiasm for the position. If you do decide to address a gap, be brief and positive, focusing on any relevant skills or experiences gained during that time (such as volunteer work, education, or freelance projects). Save detailed explanations for the interview, where you can provide context in a conversation rather than in writing.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

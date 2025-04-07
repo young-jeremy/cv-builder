@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/resume_io_style.css' %}">
 {% block title %}Professional Resume Builder - Create a Perfect Resume in Minutes{% endblock %}
 
 {% block extra_css %}
@@ -616,807 +617,582 @@
             display: block;
         }
     }
+
+    /* Resume.io specific styles */
+    .resume-counter {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .resume-counter-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: #1a91f0;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .resume-counter-text {
+        color: #4a5568;
+        font-size: 14px;
+    }
+
+    .hero-flex {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 40px 0 20px;
+        background-color: #ffffff;
+        text-align: left;
+    }
+
+    .hero-content {
+        flex: 1;
+        min-width: 300px;
+        padding-right: 20px;
+    }
+
+    .hero-preview {
+        flex: 1;
+        min-width: 300px;
+        position: relative;
+    }
+
+    .hero-title-resumeio {
+        font-size: 3rem;
+        font-weight: 800;
+        line-height: 1.1;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+
+    .hero-subtitle-resumeio {
+        font-size: 1.125rem;
+        color: #4a5568;
+        margin-bottom: 30px;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 40px;
+    }
+
+    .cta-button-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        background-color: #1a91f0;
+        color: #ffffff;
+        border: none;
+        min-width: 180px;
+    }
+
+    .cta-button-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        background-color: #ffffff;
+        color: #1a91f0;
+        border: 1px solid #1a91f0;
+        min-width: 180px;
+    }
+
+    .stats-container {
+        display: flex;
+        margin-bottom: 30px;
+    }
+
+    .stat-divider {
+        padding-right: 40px;
+        border-right: 1px solid #e2e8f0;
+    }
+
+    .stat-value-green {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #4caf50;
+        margin-bottom: 5px;
+    }
+
+    .stat-value-orange {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #ff9800;
+        margin-bottom: 5px;
+    }
+
+    .stat-description {
+        color: #718096;
+        font-size: 0.875rem;
+    }
+
+    .stat-right {
+        padding-left: 40px;
+    }
+
+    .decorative-dot-purple {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background-color: #f0f4ff;
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .decorative-dot-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        background-color: #6366f1;
+        border-radius: 50%;
+    }
+
+    .decorative-square {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        transform: rotate(45deg);
+        background-color: #ffd54f;
+        border-radius: 4px;
+        z-index: 1;
+    }
+
+    .resume-preview-image {
+        width: 100%;
+        max-width: 500px;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .counter-section {
+        padding: 40px 0;
+        background-color: #f0f7ff;
+        margin-top: 60px;
+    }
+
+    .counter-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .counter-icon {
+        width: 60px;
+        height: 60px;
+        margin-right: 20px;
+    }
+
+    .counter-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-right: 15px;
+    }
+
+    .counter-text {
+        font-size: 1.25rem;
+        color: #4a5568;
+    }
+
+    .partners-section {
+        padding: 40px 0;
+        background-color: #ffffff;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+        margin-top: 60px;
+    }
+
+    .partners-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .partner-logo {
+        height: 30px;
+        margin: 15px;
+    }
+
+    .cookie-banner {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 800px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        padding: 20px;
+        z-index: 1000;
+    }
+
+    .cookie-header {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+
+    .cookie-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #2d3748;
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    .cookie-indicator {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: #e6f7f1;
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .cookie-indicator-inner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        background-color: #00b67a;
+        border-radius: 50%;
+    }
+
+    .cookie-text {
+        font-size: 0.875rem;
+        color: #4a5568;
+        margin-bottom: 15px;
+    }
+
+    .cookie-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .cookie-button-accept {
+        padding: 8px 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .cookie-button-preferences {
+        padding: 8px 16px;
+        background-color: #f1f5f9;
+        color: #4a5568;
+        border: none;
+        border-radius: 4px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Header styling to match resume.io */
+    .header-resumeio {
+        background-color: #ffffff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding: 15px 0;
+    }
+
+    .header-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo-text {
+        font-weight: 700;
+        font-size: 18px;
+        margin-left: 5px;
+        color: #333;
+    }
+
+    .logo-subtext {
+        font-size: 10px;
+        color: #777;
+        margin-left: 5px;
+        margin-top: 10px;
+    }
+
+    .nav-resumeio {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-list-resumeio {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-item-resumeio {
+        position: relative;
+        margin: 0 0.75rem;
+    }
+
+    .nav-link-resumeio {
+        color: #4a5568;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 0.75rem;
+        border-radius: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .dropdown-arrow {
+        display: inline-block;
+        margin-left: 3px;
+        transform: rotate(45deg);
+        border: solid #4a5568;
+        border-width: 0 2px 2px 0;
+        padding: 2px;
+    }
+
+    .header-actions-resumeio {
+        display: flex;
+        align-items: center;
+    }
+
+    .account-link {
+        color: #1a91f0;
+        text-decoration: none;
+        font-weight: 500;
+        margin-right: 20px;
+    }
+
+    .build-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        background-color: #1a91f0;
+        color: #ffffff;
+        border: none;
+    }
+
+    /* Editor toolbar styles */
+    .editor-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .toolbar-button {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        color: #4a5568;
+    }
+
+    .toolbar-button:hover {
+        background-color: #f1f5f9;
+    }
+
+    .toolbar-button.active {
+        color: #1a91f0;
+    }
+
+    .toolbar-divider {
+        width: 1px;
+        height: 20px;
+        background-color: #e2e8f0;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Header/Navigation -->
-<header class="header">
-    <div class="container">
-        <div class="header-inner">
-            <div class="logo">
-                <a href="{% url 'home:index' %}">
-                    <img src="{% static 'images/logo.svg' %}" alt="Resume Builder Logo">
-                </a>
-            </div>
-
-            <nav class="nav-main">
-                <ul class="nav-list">
-                    <li class="nav-item">
-                        <a href="{% url 'home:templates' %}" class="nav-link">Resume Templates</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'home:resume_list' %}" class="nav-link">Resume Examples</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'home:cover_letter' %}" class="nav-link">Cover Letter</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'home:blog' %}" class="nav-link">Career Blog</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'home:pricing' %}" class="nav-link">Pricing</a>
-                    </li>
-                </ul>
-            </nav>
-
-            <div class="header-actions">
-                {% if user.is_authenticated %}
-                    <a href="{% url 'dashboard:dashboard' %}" class="nav-link">My Resumes</a>
-                {% else %}
-                    <a href="{% url 'accounts:login' %}" class="nav-link">Log in</a>
-                {% endif %}
-                <a href="{% url 'home:create_resume'  %}" class="btn btn-primary">Create Resume</a>
-            </div>
-        </div>
-    </div>
-</header>
 
 <!-- Hero Section -->
-<section class="hero">
-    <div class="container">
-        <h1 class="hero-title">The online resume builder getting folks hired by BBC, Google, Apple, Tesla, and Airbnb</h1>
-        <p class="hero-subtitle">Build your brand-new resume in as little as 5 minutes with our easy-to-use builder. Try it for free!</p>
-
-        <div class="hero-cta">
-            <a href="{% url 'home:create_resume' %}" class="btn btn-primary btn-large">Create My Resume</a>
+<section style="padding: 40px 0 20px; background-color: #ffffff; text-align: left;">
+    <div class="container" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <!-- Resumes created counter -->
+        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <span style="display: inline-block; width: 8px; height: 8px; background-color: #1a91f0; border-radius: 50%; margin-right: 8px;"></span>
+            <span style="color: #4a5568; font-size: 14px;">34,839 resumes created today</span>
         </div>
 
-        <img src="{% static 'images/hero-resume.png' %}" alt="Resume Builder Preview" class="hero-image">
-    </div>
-</section>
+        <!-- Hero content -->
+        <div style="display: flex; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px; padding-right: 20px;">
+                <h1 style="font-size: 3rem; font-weight: 800; line-height: 1.1; color: #2d3748; margin-bottom: 20px;">
+                    The professional resume builder
+                </h1>
+                <p style="font-size: 1.125rem; color: #4a5568; margin-bottom: 30px;">
+                    Only 2% of resumes win. Yours will be one of them. Let's build you a resume that works.
+                </p>
 
-<!-- Trustpilot Section -->
-<section class="trustpilot">
-    <div class="container">
-        <p class="trustpilot-title">Trusted by 10+ million job seekers worldwide</p>
-
-        <div class="trustpilot-score">
-            <div class="stars">
-                <div class="star">★</div>
-                <div class="star">★</div>
-                <div class="star">★</div>
-                <div class="star">★</div>
-                <div class="star">★</div>
-            </div>
-            <div class="rating-text">Excellent 4.8 out of 5</div>
-        </div>
-
-        <div class="reviews-count">Based on 12,480+ reviews on <strong>Trustpilot</strong></div>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="features">
-    <div class="container">
-        <h2 class="section-title">Build a job-winning resume in just minutes</h2>
-
-        <div class="features-grid">
-            <div class="feature-card">
-                <img src="{% static 'images/feature-templates.jpg' %}" alt="Professional Templates" class="feature-image">
-                <div class="feature-content">
-                    <h3 class="feature-title">Professional Templates</h3>
-                    <p class="feature-description">Choose from our library of ATS-friendly templates that employers love. Our designs are created by HR experts.</p>
-                    <a href="{% url 'home:templates' %}" class="btn btn-outline">Browse Templates</a>
+                <!-- CTA Buttons -->
+                <div style="display: flex; gap: 15px; margin-bottom: 40px;">
+                    <a href="{% url 'home:create_resume' %}" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; background-color: #1a91f0; color: #ffffff; border: none; min-width: 180px;">
+                        Create my resume
+                    </a>
+                    <a href="{% url 'templates_app:upload_resume' %}" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: 600; text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; background-color: #ffffff; color: #1a91f0; border: 1px solid #1a91f0; min-width: 180px;">
+                        Upload my resume
+                    </a>
                 </div>
-            </div>
 
-            <div class="feature-card">
-                <img src="{% static 'images/feature-builder.jpg' %}" alt="Easy-to-use Builder" class="feature-image">
-                <div class="feature-content">
-                    <h3 class="feature-title">Easy-to-use Builder</h3>
-                    <p class="feature-description">No more writer's block! Our step-by-step builder guides you to create a perfect resume with ease.</p>
-                    <a href="{% url 'home:create_resume' %}" class="btn btn-outline">Try Builder</a>
-                </div>
-            </div>
-
-            <div class="feature-card">
-                <img src="{% static 'images/feature-matching.jpg' %}" alt="Job Matching" class="feature-image">
-                <div class="feature-content">
-                    <h3 class="feature-title">Job Matching</h3>
-                    <p class="feature-description">Get personalized job recommendations based on your resume to find the perfect career opportunities.</p>
-                    <a href="{% url 'home:job_matching' %}" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Templates Section -->
-<section class="templates">
-    <div class="container">
-        <h2 class="section-title">Resume templates for every career path</h2>
-
-        <div class="templates-grid">
-            <div class="template-card">
-                <img src="{% static 'images/templates/professional.jpg' %}" alt="Professional Template" class="template-image">
-                <div class="template-content">
-                    <h3 class="template-title">Edinburgh</h3>
-                    <span class="template-tag">Professional</span>
-                </div>
-            </div>
-
-            <div class="template-card">
-                <img src="{% static 'images/templates/modern.jpg' %}" alt="Modern Template" class="template-image">
-                <div class="template-content">
-                    <h3 class="template-title">Stockholm</h3>
-                    <span class="template-tag">Modern</span>
-                </div>
-            </div>
-
-            <div class="template-card">
-                <img src="{% static 'images/templates/creative.jpg' %}" alt="Creative Template" class="template-image">
-                <div class="template-content">
-                    <h3 class="template-title">Barcelona</h3>
-                    <span class="template-tag">Creative</span>
-                </div>
-            </div>
-
-            <div class="template-card">
-                <img src="{% static 'images/templates/simple.jpg' %}" alt="Simple Template" class="template-image">
-                <div class="template-content">
-                    <h3 class="template-title">Copenhagen</h3>
-                    <span class="template-tag">Simple</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="view-all-link">
-            <a href="{% url 'home:templates' %}" class="btn btn-outline">View All Templates</a>
-        </div>
-    </div>
-</section>
-
-<!-- How It Works Section -->
-<section class="how-it-works">
-    <div class="container">
-        <h2 class="section-title">Build your resume in 3 easy steps</h2>
-
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <h3 class="step-title">Choose your template</h3>
-                <p class="step-description">Select from our professional, field-tested resume templates</p>
-            </div>
-
-            <div class="step">
-                <div class="step-number">2</div>
-                <h3 class="step-title">Fill in your details</h3>
-                <p class="step-description">Follow our step-by-step guide with expert tips and examples</p>
-            </div>
-
-            <div class="step">
-                <div class="step-number">3</div>
-                <h3 class="step-title">Download & Apply</h3>
-                <p class="step-description">Download your resume in PDF, Word, or other formats ready to submit</p>
-            </div>
-        </div>
-
-        <div class="text-center" style="margin-top: 2rem;">
-            <a href="{% url 'home:create_resume' %}" class="btn btn-primary btn-large">Build My Resume Now</a>
-        </div>
-    </div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="testimonials">
-    <div class="container">
-        <h2 class="section-title">What our users say</h2>
-
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <div class="testimonial-content">
-                    "After using this resume builder, I received 3 interview calls in just one week! The templates are professional and the guidance helped me highlight my skills perfectly."
-                </div>
-                <div class="testimonial-author">
-                    <img src="{% static 'images/testimonials/user1.jpg' %}" alt="Michael Johnson" class="author-avatar">
-                    <div class="author-info">
-                        <h4>Michael Johnson</h4>
-                        <p>Marketing Specialist</p>
+                <!-- Statistics -->
+                <div style="display: flex; margin-bottom: 30px;">
+                    <div style="padding-right: 40px; border-right: 1px solid #e2e8f0;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #4caf50; margin-bottom: 5px;">39%</div>
+                        <div style="color: #718096; font-size: 0.875rem;">more likely to get hired</div>
+                    </div>
+                    <div style="padding-left: 40px;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #ff9800; margin-bottom: 5px;">8%</div>
+                        <div style="color: #718096; font-size: 0.875rem;">better pay with your next job</div>
                     </div>
                 </div>
             </div>
 
-            <div class="testimonial-card">
-                <div class="testimonial-content">
-                    "As a recent graduate with limited experience, I was struggling to create a decent resume. This platform made it so simple! I landed my first job within a month."
+            <!-- Resume Preview -->
+            <div style="flex: 1; min-width: 300px; position: relative;">
+                <!-- Decorative elements -->
+                <div style="position: absolute; top: -20px; left: -20px; width: 40px; height: 40px; background-color: #f0f4ff; border-radius: 50%; z-index: 1;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; background-color: #6366f1; border-radius: 50%;"></div>
                 </div>
-                <div class="testimonial-author">
-                    <img src="{% static 'images/testimonials/user2.jpg' %}" alt="Sarah Williams" class="author-avatar">
-                    <div class="author-info">
-                        <h4>Sarah Williams</h4>
-                        <p>Recent Graduate</p>
-                    </div>
+                <div style="position: absolute; top: 40px; right: -10px; width: 30px; height: 30px; background-color: #f0f4ff; border-radius: 50%; z-index: 1;">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 15px; height: 15px; background-color: #6366f1; border-radius: 50%;"></div>
                 </div>
-            </div>
 
-            <div class="testimonial-card">
-                <div class="testimonial-content">
-                    "After 15 years at the same company, my resume needed a complete overhaul. This builder helped me modernize my resume and showcase my experience in the best light."
-                </div>
-                <div class="testimonial-author">
-                    <img src="{% static 'images/testimonials/user3.jpg' %}" alt="David Chen" class="author-avatar">
-                    <div class="author-info">
-                        <h4>David Chen</h4>
-                        <p>IT Project Manager</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+                <!-- Resume image -->
+                <img src="{% static 'images/hero-resume.png' %}" alt="Resume Preview" style="width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);">
 
-<!-- Statistics Section -->
-<section class="statistics">
-    <div class="container">
-        <h2>Trusted by millions of job seekers worldwide</h2>
+                <!-- Decorative element -->
+                <div style="position: absolute; bottom: 40px; right: 40px; width: 30px; height: 30px; transform: rotate(45deg); background-color: #ffd54f; border-radius: 4px; z-index: 1;"></div>
 
-        <div class="stats-grid">
-            <div class="stat-item">
-                <h3>10M+</h3>
-                <p>Resumes Created</p>
-            </div>
-
-            <div class="stat-item">
-                <h3>92%</h3>
-                <p>Interview Success Rate</p>
-            </div>
-
-            <div class="stat-item">
-                <h3>45K+</h3>
-                <p>5-Star Reviews</p>
-            </div>
-
-            <div class="stat-item">
-                <h3>150+</h3>
-                <p>Countries Worldwide</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- FAQ Section -->
-<section class="faq">
-    <div class="container">
-        <h2 class="section-title">Frequently Asked Questions</h2>
-
-        <div class="faq-list">
-            <div class="faq-item">
-                <div class="faq-question">
-                    What is the best resume format?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>The best resume format depends on your work experience and career situation. The most common formats are:</p>
-                    <ul>
-                        <li><strong>Chronological:</strong> Best for candidates with a consistent work history and career progression.</li>
-                        <li><strong>Functional:</strong> Ideal for those with employment gaps or career changers.</li>
-                        <li><strong>Combination:</strong> Perfect for highlighting both skills and work experience.</li>
-                    </ul>
-                    <p>Our resume builder helps you choose the optimal format based on your specific situation.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    How long should my resume be?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>For most candidates, a one-page resume is ideal. However, if you have extensive relevant experience (typically more than 10 years), you might extend to two pages. Our builder helps you optimize your content to fit the appropriate length while keeping all essential information.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    What should I include in my resume?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>A complete resume should include:</p>
-                    <ul>
-                        <li>Contact information</li>
-                        <li>Professional summary or objective</li>
-                        <li>Work experience</li>
-                        <li>Education</li>
-                        <li>Skills</li>
-                        <li>Achievements and certifications</li>
-                    </ul>
-                    <p>Optional sections might include languages, projects, volunteer experience, or interests. Our builder guides you through each section with expert tips.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    Will my resume pass ATS systems?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes! All our templates are ATS-friendly and designed to pass through Applicant Tracking Systems. Our builder also provides keyword suggestions based on your target job to increase your chances of getting past automated screening.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    Can I download my resume in different formats?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>Absolutely! You can download your resume in multiple formats including PDF, Word (.docx), and plain text. Premium users also get access to additional formats and the ability to create unlimited resumes.</p>
+                <!-- Editor toolbar -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 20px 0;">
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #1a91f0; font-weight: bold;">B</button>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568; font-style: italic;">I</button>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568; text-decoration: underline;">U</button>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568;">S</button>
+                    <span style="width: 1px; height: 20px; background-color: #e2e8f0; margin: 0 5px;"></span>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568;">≡</button>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568;">•</button>
+                    <span style="width: 1px; height: 20px; background-color: #e2e8f0; margin: 0 5px;"></span>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568;">🔗</button>
+                    <button style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 4px; cursor: pointer; color: #4a5568;">⚙️</button>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-grid">
-            <div class="footer-column">
-                <h3>Resume Builder</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:about' %}">About Us</a></li>
-                    <li><a href="{% url 'home:pricing' %}">Pricing</a></li>
-                    <li><a href="{% url 'home:contact' %}">Contact Us</a></li>
-                    <li><a href="{% url 'home:privacy' %}">Privacy Policy</a></li>
-                    <li><a href="{% url 'home:terms' %}">Terms of Service</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-column">
-                <h3>Resume</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:templates' %}">Resume Templates</a></li>
-                    <li><a href="{% url 'home:resume_examples' %}">Resume Examples</a></li>
-                    <li><a href="{% url 'home:create_resume' %}">Resume Builder</a></li>
-                    <li><a href="{% url 'home:resume_tips' %}">Resume Writing Tips</a></li>
-                    <li><a href="{% url 'home:resume_formats' %}">Resume Formats</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-column">
-                <h3>Cover Letter</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:cover_letter_templates' %}">Cover Letter Templates</a></li>
-                    <li><a href="{% url 'home:cover_letter_examples' %}">Cover Letter Examples</a></li>
-                    <li><a href="{% url 'home:cover_letter_create' %}">Cover Letter Builder</a></li>
-                    <li><a href="{% url 'home:cover_letter_tips' %}">Cover Letter Tips</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-column">
-                <h3>Career Resources</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:career_blog' %}">Career Blog</a></li>
-                    <li><a href="{% url 'home:job_search' %}">Job Search Tips</a></li>
-                    <li><a href="{% url 'home:interview_tips' %}">Interview Preparation</a></li>
-                    <li><a href="{% url 'home:salary_negotiation' %}">Salary Negotiation</a></li>
-                    <li><a href="{% url 'home:career_development' %}">Career Development</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="copyright">
-                &copy; {% now "Y" %} Resume Builder. All Rights Reserved.
-            </div>
-
-
-
-                            <p>All our templates are optimized to pass through Applicant Tracking Systems and get your resume in front of hiring managers.</p>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
-                </div>
-                <h3>Customizable Templates</h3>
-                <p>Easily customize colors, fonts, and layouts to match your personal style and make your resume unique.</p>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                </div>
-                <h3>Instant Downloads</h3>
-                <p>Download your resume in multiple formats including PDF, Word, and plain text to suit different application requirements.</p>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-                    </svg>
-                </div>
-                <h3>Content Suggestions</h3>
-                <p>Get expert suggestions for each section of your resume based on your job title and industry.</p>
-            </div>
-
-            <!-- Feature 5 -->
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                </div>
-                <h3>Multiple Resume Versions</h3>
-                <p>Create and store different versions of your resume tailored to specific jobs or industries.</p>
-            </div>
-
-            <!-- Feature 6 -->
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                </div>
-                <h3>Privacy Protection</h3>
-                <p>Your data is always secure with us. Create and edit your resume with confidence knowing your information is protected.</p>
-            </div>
-        </div>
-    </div>
-</footer>
-</section>
-
-<!-- How It Works Section -->
-<section class="how-it-works">
-    <div class="container">
-        <div class="section-header">
-            <h2>Create Your Resume in 3 Easy Steps</h2>
-            <p>Our simple process makes it easy to create a professional resume in minutes.</p>
-        </div>
-
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3>Choose a Template</h3>
-                    <p>Browse our collection of professional templates and select the one that best matches your style and industry.</p>
-                </div>
-                <div class="step-image">
-                    <img src="{% static 'images/step-1-choose-template.jpg' %}" alt="Choose a template">
-                </div>
-            </div>
-
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3>Add Your Content</h3>
-                    <p>Fill in your details with our easy-to-use editor. Get suggestions and tips for each section to make your resume stand out.</p>
-                </div>
-                <div class="step-image">
-                    <img src="{% static 'images/step-2-add-content.jpg' %}" alt="Add your content">
-                </div>
-            </div>
-
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3>Download and Share</h3>
-                    <p>Download your resume in multiple formats or share it directly with employers. Make updates anytime with ease.</p>
-                </div>
-                <div class="step-image">
-                    <img src="{% static 'images/step-3-download.jpg' %}" alt="Download and share">
-                </div>
-            </div>
-        </div>
-
-        <div class="cta-center">
-            <a href="{% url 'home:create_resume' %}" class="btn btn-primary btn-large">Create My Resume Now</a>
-        </div>
-    </div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="testimonials">
-    <div class="container">
-        <div class="section-header">
-            <h2>What Our Users Say</h2>
-            <p>Join thousands of job seekers who have successfully landed their dream jobs using our resume builder.</p>
-        </div>
-
-        <div class="testimonials-slider">
-            <!-- Testimonial 1 -->
-            <div class="testimonial-card">
-                <div class="testimonial-rating">
-                    <span>★★★★★</span>
-                </div>
-                <p class="testimonial-text">"I landed three interviews within a week of using this resume builder. The templates are professional and the content suggestions helped me highlight my skills perfectly."</p>
-                <div class="testimonial-user">
-                    <div class="testimonial-avatar">
-                        <img src="{% static 'images/testimonials/user-1.jpg' %}" alt="User avatar">
-                    </div>
-                    <div class="testimonial-info">
-                        <h4>Sarah Johnson</h4>
-                        <p>Marketing Specialist</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Testimonial 2 -->
-            <div class="testimonial-card">
-                <div class="testimonial-rating">
-                    <span>★★★★★</span>
-                </div>
-                <p class="testimonial-text">"After struggling with my resume for weeks, I found this platform and created a professional resume in less than an hour. The ATS-friendly templates really work - I got calls for interviews right away!"</p>
-                <div class="testimonial-user">
-                    <div class="testimonial-avatar">
-                        <img src="{% static 'images/testimonials/user-2.jpg' %}" alt="User avatar">
-                    </div>
-                    <div class="testimonial-info">
-                        <h4>Michael Chen</h4>
-                        <p>Software Developer</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Testimonial 3 -->
-            <div class="testimonial-card">
-                <div class="testimonial-rating">
-                    <span>★★★★★</span>
-                </div>
-                <p class="testimonial-text">"As a recent graduate with limited experience, I was worried about my resume. This builder helped me highlight my relevant skills and education in a professional way. I secured my first job within a month!"</p>
-                <div class="testimonial-user">
-                    <div class="testimonial-avatar">
-                        <img src="{% static 'images/testimonials/user-3.jpg' %}" alt="User avatar">
-                    </div>
-                    <div class="testimonial-info">
-                        <h4>Emma Rodriguez</h4>
-                        <p>Recent Graduate</p>
-                    </div>
-                </div>
+<!-- Counter Section -->
+<section style="padding: 40px 0; background-color: #f0f7ff; margin-top: 60px;">
+    <div class="container" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: center;">
+        <div style="display: flex; align-items: center;">
+            <img src="{% static 'images/document-icon.svg' %}" alt="Document Icon" style="width: 60px; height: 60px; margin-right: 20px;">
+            <div style="display: flex; align-items: center;">
+                <span style="font-size: 2.5rem; font-weight: 700; color: #2d3748; margin-right: 15px;">34,839</span>
+                <span style="font-size: 1.25rem; color: #4a5568;">resumes created today</span>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Statistics Section -->
-<section class="statistics">
-    <div class="container">
-        <h2>Trusted by millions of job seekers worldwide</h2>
-
-        <div class="stats-grid">
-            <div class="stat-item">
-                <h3>10M+</h3>
-                <p>Resumes Created</p>
-            </div>
-
-            <div class="stat-item">
-                <h3>92%</h3>
-                <p>Interview Success Rate</p>
-            </div>
-
-            <div class="stat-item">
-                <h3>45K+</h3>
-                <p>5-Star Reviews</p>
-            </div>
-
-            <div class="stat-item">
-                <h3>150+</h3>
-                <p>Countries Worldwide</p>
-            </div>
+<!-- Partners Section -->
+<section style="padding: 40px 0; background-color: #ffffff; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; margin-top: 60px;">
+    <div class="container" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <img src="{% static 'img/booking.svg' %}" alt="Booking.com" style="height: 30px; margin: 15px;">
+            <img src="{% static 'img/netflix.svg' %}" alt="Netflix" style="height: 30px; margin: 15px;">
+            <img src="{% static 'img/spotify.svg' %}" alt="Spotify" style="height: 30px; margin: 15px;">
+            <img src="{% static 'img/kpmg.svg' %}" alt="KPMG" style="height: 30px; margin: 15px;">
         </div>
     </div>
 </section>
 
-<!-- FAQ Section -->
-<section class="faq">
-    <div class="container">
-        <div class="section-header">
-            <h2>Frequently Asked Questions</h2>
-            <p>Find answers to common questions about our resume builder and job application process.</p>
-        </div>
-
-        <div class="faq-list">
-            <div class="faq-item">
-                <div class="faq-question">
-                    What is the best resume format?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>The best resume format depends on your work experience and career situation. The most common formats are:</p>
-                    <ul>
-                        <li><strong>Chronological:</strong> Best for candidates with a consistent work history and career progression.</li>
-                        <li><strong>Functional:</strong> Ideal for those with employment gaps or career changers.</li>
-                        <li><strong>Combination:</strong> Perfect for highlighting both skills and work experience.</li>
-                    </ul>
-                    <p>Our resume builder helps you choose the optimal format based on your specific situation.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    How long should my resume be?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>For most candidates, a one-page resume is ideal. However, if you have extensive relevant experience (typically more than 10 years), you might extend to two pages. Our builder helps you optimize your content to fit the appropriate length while keeping all essential information.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    What should I include in my resume?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>A complete resume should include:</p>
-                    <ul>
-                        <li>Contact information</li>
-                        <li>Professional summary or objective</li>
-                        <li>Work experience</li>
-                        <li>Education</li>
-                        <li>Skills</li>
-                        <li>Achievements and certifications</li>
-                    </ul>
-                    <p>Optional sections might include languages, projects, volunteer experience, or interests. Our builder guides you through each section with expert tips.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    Will my resume pass ATS systems?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>Yes! All our templates are ATS-friendly and designed to pass through Applicant Tracking Systems. Our builder also provides keyword suggestions based on your target job to increase your chances of getting past automated screening.</p>
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    Can I download my resume in different formats?
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </div>
-                <div class="faq-answer">
-                    <p>Absolutely! You can download your resume in multiple formats including PDF, Word (.docx), and plain text. Premium users also get access to additional formats and the ability to create unlimited resumes.</p>
-                </div>
-            </div>
-        </div>
+<!-- Cookie Consent Banner -->
+<div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 800px; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); padding: 20px; z-index: 1000; display: flex; flex-direction: column;">
+    <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
+        <h3 style="font-size: 1.25rem; font-weight: 600; color: #2d3748; margin: 0; flex-grow: 1;">Protect your data</h3>
+        <span style="display: inline-block; width: 20px; height: 20px; background-color: #e6f7f1; border-radius: 50%; position: relative;">
+            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 10px; height: 10px; background-color: #00b67a; border-radius: 50%;"></span>
+        </span>
     </div>
-</section>
-
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="cta-content">
-            <h2>Ready to land your dream job?</h2>
-            <p>Create a professional resume that gets you noticed by employers and increases your chances of getting an interview.</p>
-            <a href="{% url 'home:templates' %}" class="btn btn-primary btn-large">Create My Resume Now</a>
-        </div>
+    <p style="font-size: 0.875rem; color: #4a5568; margin-bottom: 15px;">
+        We use cookies to make our website work better. They improve your experience and help with our advertising and analysis. By agreeing, you accept that your data may be shared with our colleagues in the USA. You can
+        <a href="#" style="color: #1a91f0; text-decoration: none;">reject</a> cookie permission at any time, just send email to
+        <a href="mailto:privacy@kalebman-do@gmail.com" style="color: #1a91f0; text-decoration: none;">kalebman-do@gmail.com</a>. Please see our
+        <a href="#" style="color: #1a91f0; text-decoration: none;">Cookie</a> policy for more detail.
+    </p>
+    <div style="display: flex; gap: 10px;">
+        <button style="padding: 8px 16px; background-color: #4caf50; color: white; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Accept All</button>
+        <button style="padding: 8px 16px; background-color: #f1f5f9; color: #4a5568; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">Preferences</button>
     </div>
-</section>
-
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="footer-grid">
-            <div class="footer-column">
-                <h3>Resume Builder</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:about' %}">About Us</a></li>
-                    <li><a href="{% url 'home:pricing' %}">Pricing</a></li>
-                    <li><a href="{% url 'home:contact' %}">Contact Us</a></li>
-                    <li><a href="{% url 'home:privacy' %}">Privacy Policy</a></li>
-                    <li><a href="{% url 'home:terms' %}">Terms of Service</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-column">
-                <h3>Resume</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:templates' %}">Resume Templates</a></li>
-                    <li><a href="{% url 'home:resume_examples' %}">Resume Examples</a></li>
-                    <li><a href="{% url 'home:resume_builder' %}">Resume Builder</a></li>
-                    <li><a href="{% url 'home:resume_tips' %}">Resume Writing Tips</a></li>
-                    <li><a href="{% url 'home:resume_formats' %}">Resume Formats</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-column">
-                <h3>Cover Letter</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:cover_letter' %}">Cover Letter Templates</a></li>
-                    <li><a href="{% url 'home:cover_letter_examples' %}">Cover Letter Examples</a></li>
-                    <li><a href="{% url 'home:cover_letter_create' %}">Cover Letter Builder</a></li>
-                    <li><a href="{% url 'home:cover_letter_tips' %}">Cover Letter Tips</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-column">
-                <h3>Career Resources</h3>
-                <ul class="footer-links">
-                    <li><a href="{% url 'home:career_blog' %}">Career Blog</a></li>
-                    <li><a href="{% url 'home:job_search' %}">Job Search Tips</a></li>
-                    <li><a href="{% url 'home:interview_tips' %}">Interview Preparation</a></li>
-                    <li><a href="{% url 'home:salary_negotiation' %}">Salary Negotiation</a></li>
-                    <li><a href="{% url 'home:career_development' %}">Career Development</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="copyright">
-                &copy; {% now "Y" %} Resume Builder. All Rights Reserved.
-            </div>
-            <div class="social-links">
-                <a href="#" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
-                    </svg>
-                </a>
-                <a href="#" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
-                    </svg>
-                </a>
-                <a href="#" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
-                    </svg>
-                </a>
-                <a href="#" class="social-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </div>
-</footer>
+</div>
 
 <script>
     // JavaScript for interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add any JavaScript functionality here
 
-    // FAQ Accordion
-    document.querySelectorAll('.faq-question').forEach(question => {
-        question.addEventListener('click', () => {
-            const item = question.parentElement;
-            item.classList.toggle('open');
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('open');
+            });
         });
-    });
 
-    // Mobile Navigation Toggle
-    document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
-        document.querySelector('.nav-main').classList.toggle('open');
+        // Mobile Navigation Toggle
+        document.getElementById('mobile-menu-button')?.addEventListener('click', function() {
+            document.querySelector('.nav-main').classList.toggle('open');
+        });
     });
 </script>
 {% endblock %}

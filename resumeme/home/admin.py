@@ -5,6 +5,138 @@ from .models import (
 )
 from django.contrib import admin
 from .models import FAQCategory, FAQArticle
+from django.contrib import admin
+from .models import Statistic, TrustedCompany, ResumeCounter
+from django.contrib import admin
+from .models import Industry, JobPosition, CoverLetterExample
+from django.contrib import admin
+from .models import ResourceCategory, ResourceArticle, Tip
+from django.contrib import admin
+from .models import (
+    ResourceCategory, ResourceArticle, Tip,
+    BlogCategory, BlogTag, BlogAuthor, BlogPost, BlogComment
+)
+
+
+@admin.register(BlogCategory)
+class BlogCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name', 'description')
+
+
+@admin.register(BlogTag)
+class BlogTagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name',)
+
+
+@admin.register(BlogAuthor)
+class BlogAuthorAdmin(admin.ModelAdmin):
+    list_display = ('__str__', 'job_title')
+    search_fields = ('user__username', 'user__first_name', 'user__last_name', 'job_title')
+
+
+class BlogCommentInline(admin.TabularInline):
+    model = BlogComment
+    extra = 0
+    readonly_fields = ('name', 'email', 'website', 'created_at')
+    fields = ('name', 'email', 'website', 'content', 'is_approved', 'created_at')
+
+
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'category', 'status', 'is_featured', 'published_at')
+    list_filter = ('status', 'category', 'is_featured', 'author')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'content', 'summary')
+    date_hierarchy = 'published_at'
+    filter_horizontal = ('tags',)
+    inlines = [BlogCommentInline]
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'slug', 'author', 'category', 'tags')
+        }),
+        ('Content', {
+            'fields': ('summary', 'content', 'featured_image')
+        }),
+        ('Publication', {
+            'fields': ('status', 'is_featured', 'published_at', 'read_time')
+        }),
+    )
+
+
+@admin.register(BlogComment)
+class BlogCommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'post', 'created_at', 'is_approved')
+    list_filter = ('is_approved', 'created_at')
+    search_fields = ('name', 'email', 'content')
+    actions = ['approve_comments']
+
+    def approve_comments(self, request, queryset):
+        queryset.update(is_approved=True)
+
+    approve_comments.short_description = "Approve selected comments"
+
+
+class TipInline(admin.TabularInline):
+    model = Tip
+    extra = 1
+
+@admin.register(ResourceCategory)
+class ResourceCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'order')
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name', 'description')
+
+@admin.register(ResourceArticle)
+class ResourceArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'category', 'is_featured', 'created_at', 'updated_at')
+    list_filter = ('category', 'is_featured')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'content', 'summary')
+    inlines = [TipInline]
+
+@admin.register(Tip)
+class TipAdmin(admin.ModelAdmin):
+    list_display = ('title', 'article', 'order')
+    list_filter = ('article',)
+    search_fields = ('title', 'content')
+
+
+@admin.register(JobPosition)
+class JobPositionAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'order')
+    prepopulated_fields = {'slug': ('title',)}
+    list_editable = ('order',)
+    search_fields = ('title',)
+
+@admin.register(CoverLetterExample)
+class CoverLetterExampleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'industry', 'job_position', 'is_featured', 'created_at')
+    list_filter = ('industry', 'job_position', 'is_featured')
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields = ('title', 'content')
+    list_editable = ('is_featured',)
+
+
+
+@admin.register(Statistic)
+class StatisticAdmin(admin.ModelAdmin):
+    list_display = ('title', 'value', 'order')
+    list_editable = ('order',)
+
+@admin.register(TrustedCompany)
+class TrustedCompanyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order')
+    list_editable = ('order',)
+
+@admin.register(ResumeCounter)
+class ResumeCounterAdmin(admin.ModelAdmin):
+    list_display = ('count', 'last_updated')
+
 
 @admin.register(FAQCategory)
 class FAQCategoryAdmin(admin.ModelAdmin):

@@ -8,18 +8,32 @@ from .views import (BlogListView, ResumeExamplesView, CareerAdviceListView, Care
                     CoverLetterEditView,
                     CoverLetterDeleteView,
                     CoverLetterTemplateListView,
-                    CoverLetterTemplateDetailView)
+                    CoverLetterTemplateDetailView, HomePageView, ResourceHomeView, ResourceCategoryView,
+                    ResourceArticleDetailView, CoverLetterTipsView, BlogCommentCreateView)
+
+from .views import (
+    ResourceHomeView,
+    ResourceCategoryView,
+    ResourceArticleDetailView,
+    CoverLetterTipsView,
+    BlogHomeView,
+    BlogPostDetailView,
+    BlogCategoryView,
+    BlogTagView,
+    BlogAuthorView,
+    BlogSearchView,
+)
 
 app_name = 'home'
 
 urlpatterns = [
-    path('', views.landing_page, name='landing'),
+   # path('', views.landing_page, name='landing'),
     path('pricing/', views.PricingView.as_view(), name='pricing'),
     path('about/', views.AboutView.as_view(), name='about'),
     path('contact/', views.ContactView.as_view(), name='contact'),
     path('terms/', views.TermsView.as_view(), name='terms'),
     path('privacy/', views.PrivacyView.as_view(), name='privacy'),
-    path('', views.HomeView.as_view(), name='index'),
+    path('', HomePageView.as_view(), name='landing'),
     path('pricing/', views.PricingView.as_view(), name='pricing'),
     path('about/', views.AboutView.as_view(), name='about'),
     path('contact/', views.ContactView.as_view(), name='contact'),
@@ -103,10 +117,8 @@ urlpatterns = [
     path('job-matching/', views.job_matching, name='job_matching'),
     path('resume/tips/', views.resume_tips, name='resume_tips'),
     path('resume/formats/', views.resume_formats, name='resume_formats'),
-   # path('resume/builder/', views.resume_builder, name='resume_builder'),
-   # path('cover-letter/examples/', views.cover_letter_examples, name='cover_letter_examples'),
-   # path('cover-letter/tips/', views.cover_letter_tips, name='cover_letter_tips'),
-   # path('career-blog/', views.career_blog, name='career_blog'),
+    # path('resume/builder/', views.resume_builder, name='resume_builder'),
+    path('cover-letter/examples/', views.CoverLetterExamplesView.as_view(), name='cover_letter_examples'),
     path('job-search/', views.job_search, name='job_search'),
     path('interview-tips/', views.interview_tips, name='interview_tips'),
     path('salary-negotiation/', views.salary_negotiation, name='salary_negotiation'),
@@ -132,9 +144,36 @@ urlpatterns = [
     # Newsletter subscription
     path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
 
-    path('faq/', views.faq_home, name='home'),
+    path('faq/', views.faq_home, name='faq_home'),
     path('category/<slug:slug>/', views.faq_category, name='category'),
     path('article/<slug:slug>/', views.faq_article, name='article'),
     path('search/', views.faq_search, name='search'),
+
+    path('resources', ResourceHomeView.as_view(), name='resource_view'),
+    path('category/<slug:slug>/', ResourceCategoryView.as_view(), name='category'),
+    path('article/<slug:slug>/', ResourceArticleDetailView.as_view(), name='article_detail'),
+    path('cover-letter-tips/', CoverLetterTipsView.as_view(), name='cover_letter_tips'),
+
+    # Blog URLs
+    path('blog/', BlogHomeView.as_view(), name='career_blog'),
+    path('blog/post/<slug:slug>/', BlogPostDetailView.as_view(), name='blog_post_detail'),
+    path('blog/category/<slug:slug>/', BlogCategoryView.as_view(), name='blog_category'),
+    path('blog/tag/<slug:slug>/', BlogTagView.as_view(), name='blog_tag'),
+    path('blog/author/<int:pk>/', BlogAuthorView.as_view(), name='blog_author'),
+    path('blog/search/', BlogSearchView.as_view(), name='blog_search'),
+    path('blog/post/<slug:slug>/comment/', BlogCommentCreateView.as_view(), name='blog_comment_create'),
+
+    path('resume-examples/', views.resume_examples_home, name='resume_examples'),
+
+    # Industry pages
+    path('resume-examples/industries/', views.IndustryListView.as_view(), name='resume_examples_industries'),
+    path('resume-examples/industry/<slug:slug>/', views.IndustryDetailView.as_view(), name='resume_examples_industry'),
+
+    # Job title pages
+    path('resume-examples/job-titles/', views.JobTitleListView.as_view(), name='resume_examples_jobs'),
+    path('resume-examples/job-title/<slug:slug>/', views.JobTitleDetailView.as_view(), name='resume_examples_job'),
+
+    # Level pages
+    path('resume-examples/level/<str:level>/', views.resume_examples_by_level, name='resume_examples_level'),
 
 ]

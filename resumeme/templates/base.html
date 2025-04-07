@@ -8,6 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     <title>Professional Resume Builder</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/resume_io_style.css' %}">
     <style>
         :root {
             --primary-color: #1a91f0;
@@ -641,21 +643,21 @@
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link">Cover Letter <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i></a>
                 <div class="dropdown-content">
-                    <a href="#" class="dropdown-item">Templates</a>
-                    <a href="#" class="dropdown-item">Examples</a>
-                    <a href="#" class="dropdown-item">Writing Guide</a>
+                    <a href="{% url 'home:cover_letter_templates' %}" class="dropdown-item">Templates</a>
+                    <a href="{% url 'home:cover_letter_examples' %}" class="dropdown-item">Examples</a>
+                    <a href="{% url 'home:cover_letter_tips' %}" class="dropdown-item">Writing Guide</a>
                 </div>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">Resources</a>
+                <a href="{% url 'home:resource_view' %}" class="nav-link">Resources</a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'home:home' %}" class="nav-link">FAQ</a>
+                <a href="{% url 'home:faq_home' %}" class="nav-link">FAQ</a>
             </li>
         </ul>
         <div>
             {% if user.is_authenticated %}
-                <a href="{% url 'accounts:profile' %}" class="btn btn-outline">My Account</a>
+                <a href="{% url 'dashboard:dashboard' %}" class="btn btn-outline">My Account</a>
             {% else %}
                 <a href="{% url 'account_login' %}" class="btn btn-outline">Login</a>
                 <a href="{% url 'account_signup' %}" class="btn btn-outline">Sign Up</a>
@@ -668,25 +670,6 @@
 
     {% endblock content %}
 
-
-
-<!-- Statistics Counter Section -->
-<div class="statistics-section py-4 bg-light">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <div class="d-flex align-items-center">
-                    <img src="{% static 'images/document-icon.svg' %}" alt="Document icon" class="me-3" width="50">
-                    <h2 class="statistics-counter mb-0 text-primary">
-                        <span id="resume-counter">45,586</span>
-                        <span class="text-dark fs-5 ms-2">resumes created today</span>
-                    </h2>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Trusted By Section -->
 <div class="trusted-by-section py-4">
     <div class="container">
@@ -696,8 +679,8 @@
             </div>
             <div class="col-12">
                 <div class="d-flex justify-content-center align-items-center flex-wrap">
-                    <img src="{% static 'images/booking-logo.png' %}" alt="Booking.com" class="company-logo mx-4 my-2" height="30">
-                    <img src="{% static 'images/kpmg-logo.png' %}" alt="KPMG" class="company-logo mx-4 my-2" height="30">
+                    <img src="{% static 'img/booking-logo.png' %}" alt="Booking.com" class="company-logo mx-4 my-2" height="30">
+                    <img src="{% static 'img/kpmg-logo.png' %}" alt="KPMG" class="company-logo mx-4 my-2" height="30">
                     <!-- Add more company logos as needed -->
                 </div>
             </div>
@@ -727,7 +710,7 @@
                     <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Resume Examples</a></li>
                     <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Career Blog</a></li>
                     <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">How to Write a Resume</a></li>
-                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">FAQ</a></li>
+                    <li class="mb-2"><a href="home:faq_home" class="text-decoration-none text-secondary">FAQ</a></li>
                 </ul>
             </div>
 

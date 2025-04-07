@@ -1,7 +1,7 @@
 from .models import *
 from django.views.generic import TemplateView, FormView
 from .models import Pricing, Feature, FAQ, Testimonial
-from .forms import ContactForm
+from .forms import ContactForm, BlogCommentForm
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from dashboard.forms import ResumeForm
@@ -17,8 +17,6 @@ from .forms import CVTemplateSelectForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import CoverLetter, CoverLetterTemplate
 from .forms import CoverLetterForm
-from django.views.generic import TemplateView
-from django.db.models import Q
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CareerArticle, CareerCategory, NewsletterSubscription
 from .forms import NewsletterSubscriptionForm, CareerAdviceSearchForm
@@ -34,6 +32,510 @@ from .forms import ResumeForm
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q, Count
 from .models import FAQCategory, FAQArticle
+from django.shortcuts import render
+from django.views.generic import TemplateView
+from .models import Statistic, TrustedCompany, ResumeCounter
+import random
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView
+from .models import CoverLetterExample, Industry, JobPosition
+from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView, TemplateView
+from .models import ResourceCategory, ResourceArticle, Tip
+from django.shortcuts import render
+from django.views.generic import ListView, DetailView
+from .models import Industry, JobTitle, ResumeExample
+
+
+def resume_examples_home(request):
+    """View for the main resume examples page"""
+    industries = Industry.objects.filter(featured=True)[:6]
+    job_titles = JobTitle.objects.filter(featured=True)[:6]
+    examples = ResumeExample.objects.filter(featured=True)[:9]
+
+    return render(request, 'home/examples/home.html', {
+        'industries': industries,
+        'job_titles': job_titles,
+        'examples': examples,
+    })
+
+
+class IndustryListView(ListView):
+    """View for listing all industries"""
+    model = Industry
+    template_name = 'home/examples/industries.html'
+    context_object_name = 'industries'
+
+
+class IndustryDetailView(DetailView):
+    """View for showing resume examples by industry"""
+    model = Industry
+    template_name = 'home/examples/industry_detail.html'
+    context_object_name = 'industry'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['examples'] = ResumeExample.objects.filter(industry=self.object)
+        return context
+
+
+class JobTitleListView(ListView):
+    """View for listing all job titles"""
+    model = JobTitle
+    template_name = 'home/examples/job_titles.html'
+    context_object_name = 'job_titles'
+
+
+class JobTitleDetailView(DetailView):
+    """View for showing resume examples by job title"""
+    model = JobTitle
+    template_name = 'home/examples/job_title_detail.html'
+    context_object_name = 'job_title'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['examples'] = ResumeExample.objects.filter(job_title=self.object)
+        return context
+
+
+def resume_examples_by_level(request, level):
+    """View for showing resume examples by experience level"""
+    examples = ResumeExample.objects.filter(experience_level=level)
+
+    level_display = {
+        'entry-level': 'Entry Level',
+        'mid-level': 'Mid Level',
+        'senior': 'Senior',
+        'executive': 'Executive',
+        'student': 'Student'
+    }
+
+    return render(request, 'home/examples/level.html', {
+        'examples': examples,
+        'level': level,
+        'level_display': level_display.get(level, level.title())
+    })
+
+
+class BlogCommentCreateView(CreateView):
+    model = BlogComment
+    form_class = BlogCommentForm
+
+    def form_valid(self, form):
+        post = get_object_or_404(BlogPost, slug=self.kwargs['slug'])
+        form.instance.post = post
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('resources:blog_post_detail', kwargs={'slug': self.kwargs['slug']}) + '#comments-section'
+
+
+class BlogHomeView(ListView):
+    model = BlogPost
+    template_name = 'resources/blog/home.html'
+    context_object_name = 'posts'
+    paginate_by = 6
+
+    def get_queryset(self):
+        return BlogPost.objects.filter(status='published', published_at__lte=timezone.now())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get featured posts
+        context['featured_posts'] = BlogPost.objects.filter(
+            status='published',
+            is_featured=True,
+            published_at__lte=timezone.now()
+        )[:3]
+
+        # Get categories with post count
+        context['categories'] = BlogCategory.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        )
+
+        # Get popular tags
+        context['popular_tags'] = BlogTag.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        ).order_by('-post_count')[:10]
+
+        # Get recent posts for sidebar
+        context['recent_posts'] = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now()
+        ).order_by('-published_at')[:5]
+
+        return context
+
+
+class BlogPostDetailView(DetailView):
+    model = BlogPost
+    template_name = 'resources/blog/post_detail.html'
+    context_object_name = 'post'
+
+    def get_queryset(self):
+        return BlogPost.objects.filter(status='published', published_at__lte=timezone.now())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.get_object()
+
+        # Get related posts from the same category
+        related_posts = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now(),
+            category=post.category
+        ).exclude(id=post.id)[:3]
+
+        context['related_posts'] = related_posts
+
+        # Get approved comments
+        context['comments'] = post.comments.filter(is_approved=True)
+
+        # Comment form
+        context['comment_form'] = BlogCommentForm()
+
+        # Get recent posts for sidebar
+        context['recent_posts'] = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now()
+        ).exclude(id=post.id).order_by('-published_at')[:5]
+
+        # Get popular tags
+        context['popular_tags'] = BlogTag.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        ).order_by('-post_count')[:10]
+
+        return context
+
+
+class BlogCategoryView(ListView):
+    model = BlogPost
+    template_name = 'resources/blog/category.html'
+    context_object_name = 'posts'
+    paginate_by = 6
+
+    def get_queryset(self):
+        self.category = get_object_or_404(BlogCategory, slug=self.kwargs['slug'])
+        return BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now(),
+            category=self.category
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = self.category
+
+        # Get recent posts for sidebar
+        context['recent_posts'] = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now()
+        ).order_by('-published_at')[:5]
+
+        # Get popular tags
+        context['popular_tags'] = BlogTag.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        ).order_by('-post_count')[:10]
+
+        return context
+
+
+class BlogTagView(ListView):
+    model = BlogPost
+    template_name = 'resources/blog/tag.html'
+    context_object_name = 'posts'
+    paginate_by = 6
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(BlogTag, slug=self.kwargs['slug'])
+        return BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now(),
+            tags=self.tag
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = self.tag
+
+        # Get recent posts for sidebar
+        context['recent_posts'] = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now()
+        ).order_by('-published_at')[:5]
+
+        # Get popular tags
+        context['popular_tags'] = BlogTag.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        ).order_by('-post_count')[:10]
+
+        return context
+
+
+class BlogAuthorView(ListView):
+    model = BlogPost
+    template_name = 'resources/blog/author.html'
+    context_object_name = 'posts'
+    paginate_by = 6
+
+    def get_queryset(self):
+        self.author = get_object_or_404(BlogAuthor, pk=self.kwargs['pk'])
+        return BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now(),
+            author=self.author
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['author'] = self.author
+
+        # Get recent posts for sidebar
+        context['recent_posts'] = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now()
+        ).order_by('-published_at')[:5]
+
+        # Get popular tags
+        context['popular_tags'] = BlogTag.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        ).order_by('-post_count')[:10]
+
+        return context
+
+
+class BlogSearchView(ListView):
+    model = BlogPost
+    template_name = 'resources/blog/search.html'
+    context_object_name = 'posts'
+    paginate_by = 6
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return BlogPost.objects.filter(
+                status='published',
+                published_at__lte=timezone.now()
+            ).filter(
+                models.Q(title__icontains=query) |
+                models.Q(summary__icontains=query) |
+                models.Q(content__icontains=query)
+            )
+        return BlogPost.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')
+
+        # Get recent posts for sidebar
+        context['recent_posts'] = BlogPost.objects.filter(
+            status='published',
+            published_at__lte=timezone.now()
+        ).order_by('-published_at')[:5]
+
+        # Get popular tags
+        context['popular_tags'] = BlogTag.objects.annotate(
+            post_count=Count('blog_posts', filter=models.Q(blog_posts__status='published'))
+        ).order_by('-post_count')[:10]
+
+        return context
+
+
+
+class ResourceHomeView(ListView):
+    model = ResourceCategory
+    template_name = 'resources/blog/home.html'
+    context_object_name = 'categories'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['featured_articles'] = ResourceArticle.objects.filter(is_featured=True)[:3]
+        return context
+
+
+class ResourceCategoryView(ListView):
+    model = ResourceArticle
+    template_name = 'resources/category.html'
+    context_object_name = 'articles'
+    paginate_by = 9
+
+    def get_queryset(self):
+        self.category = get_object_or_404(ResourceCategory, slug=self.kwargs['slug'])
+        return ResourceArticle.objects.filter(category=self.category)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = self.category
+        return context
+
+
+class ResourceArticleDetailView(DetailView):
+    model = ResourceArticle
+    template_name = 'resources/article_detail.html'
+    context_object_name = 'article'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        article = self.get_object()
+
+        # Get related articles from the same category
+        related_articles = ResourceArticle.objects.filter(
+            category=article.category
+        ).exclude(id=article.id)[:3]
+
+        context['related_articles'] = related_articles
+
+        # Get next and previous articles
+        try:
+            context['next_article'] = ResourceArticle.objects.filter(
+                created_at__gt=article.created_at
+            ).order_by('created_at').first()
+        except:
+            context['next_article'] = None
+
+        try:
+            context['prev_article'] = ResourceArticle.objects.filter(
+                created_at__lt=article.created_at
+            ).order_by('-created_at').first()
+        except:
+            context['prev_article'] = None
+
+        return context
+
+
+class CoverLetterTipsView(TemplateView):
+    template_name = 'resources/cover_letter_tips.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get the cover letter tips category
+        try:
+            category = ResourceCategory.objects.get(slug='cover-letter-tips')
+        except ResourceCategory.DoesNotExist:
+            # Create the category if it doesn't exist
+            category = ResourceCategory.objects.create(
+                name='Cover Letter Tips',
+                slug='cover-letter-tips',
+                description='Tips and advice for writing effective cover letters',
+                icon='file-text'
+            )
+
+        # Get featured article if any
+        try:
+            featured_article = ResourceArticle.objects.filter(
+                category=category,
+                is_featured=True
+            ).first()
+        except:
+            featured_article = None
+
+        # Get all articles in this category
+        articles = ResourceArticle.objects.filter(category=category)
+
+        # Get standalone tips
+        standalone_tips = Tip.objects.filter(article=None)
+
+        context.update({
+            'category': category,
+            'featured_article': featured_article,
+            'articles': articles,
+            'standalone_tips': standalone_tips,
+        })
+
+        return context
+
+
+class CoverLetterExamplesView(ListView):
+    model = CoverLetterExample
+    template_name = 'home/cover_letter/examples.html'
+    context_object_name = 'cover_letters'
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        # Filter by industry if provided
+        industry_slug = self.request.GET.get('industry')
+        if industry_slug:
+            queryset = queryset.filter(industry__slug=industry_slug)
+
+        # Filter by job position if provided
+        position_slug = self.request.GET.get('position')
+        if position_slug:
+            queryset = queryset.filter(job_position__slug=position_slug)
+
+        # Filter by search query if provided
+        search_query = self.request.GET.get('q')
+        if search_query:
+            queryset = queryset.filter(title__icontains=search_query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Add industries and job positions for filtering
+        context['industries'] = Industry.objects.all()
+        context['job_positions'] = JobPosition.objects.all()
+
+        # Add current filters to context
+        context['current_industry'] = self.request.GET.get('industry', '')
+        context['current_position'] = self.request.GET.get('position', '')
+        context['search_query'] = self.request.GET.get('q', '')
+
+        # Add featured examples
+        context['featured_examples'] = CoverLetterExample.objects.filter(is_featured=True)[:3]
+
+        return context
+
+
+class CoverLetterDetailView(DetailView):
+    model = CoverLetterExample
+    template_name = 'home/cover_letter/detail.html'
+    context_object_name = 'cover_letter'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get related cover letters from the same industry
+        current_cover_letter = self.get_object()
+        related_cover_letters = CoverLetterExample.objects.filter(
+            industry=current_cover_letter.industry
+        ).exclude(id=current_cover_letter.id)[:4]
+
+        context['related_cover_letters'] = related_cover_letters
+
+        return context
+
+
+class HomePageView(TemplateView):
+    template_name = "home/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Get statistics
+        context['statistics'] = Statistic.objects.all().order_by('order')
+
+        # Get trusted companies
+        context['trusted_companies'] = TrustedCompany.objects.all().order_by('order')
+
+        # Get or create resume counter
+        counter, created = ResumeCounter.objects.get_or_create(id=1)
+
+        # In a real app, you'd have actual logic to count resumes created today
+        # For demo purposes, we'll use a random number or the stored count
+        if created or random.random() > 0.5:
+            # Generate a random number between 30,000 and 40,000
+            today_count = random.randint(30000, 40000)
+            counter.count = today_count
+            counter.save()
+
+        context['resumes_today'] = counter.count
+
+        return context
 
 
 def faq_home(request):
@@ -1570,15 +2072,6 @@ class CoverLetterListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return CoverLetter.objects.filter(user=self.request.user)
 
-class CoverLetterDetailView(LoginRequiredMixin, DetailView):
-    model = CoverLetter
-    template_name = 'home/cover_letter/detail.html'
-    context_object_name = 'cover_letter'
-    slug_field = 'uuid'
-    slug_url_kwarg = 'uuid'
-
-    def get_queryset(self):
-        return CoverLetter.objects.filter(user=self.request.user)
 
 class CoverLetterCreateView(LoginRequiredMixin, CreateView):
     model = CoverLetter

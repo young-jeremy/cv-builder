@@ -1,29 +1,335 @@
 from django.conf import settings
-from django.db import models
 from accounts.models import User
 from colorfield.fields import ColorField
-from django.db import models
-from django.db import models
-from colorfield.fields import ColorField
-from django.db import models
-from django.utils.text import slugify
-from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from phonenumber_field.modelfields import PhoneNumberField
-
 # from .models import CVTemplate, Resume
 from .forms import CVTemplateSelectForm
-from django.db import models
-from django.utils.text import slugify
-from django.urls import reverse
-from django.db import models
-from django.urls import reverse
 import uuid
 from django.db import models
+from django.db import models
 from django.utils.text import slugify
+from django.db import models
+from django.utils.text import slugify
+from django.urls import reverse
+from django.db import models
+from django.utils.text import slugify
+
+
+class Industry(models.Model):
+    """Model for industries (e.g., Technology, Healthcare, Finance)"""
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+    icon = models.CharField(max_length=50, blank=True, help_text="Bootstrap icon class")
+    featured = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name_plural = "Industries"
+
+
+class JobTitle(models.Model):
+    """Model for job titles (e.g., Software Engineer, Marketing Manager)"""
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+    industry = models.ForeignKey(Industry, on_delete=models.SET_NULL, null=True, related_name='job_titles')
+    featured = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['name']
+
+
+class ResumeExample(models.Model):
+    """Model for resume examples"""
+    LEVEL_CHOICES = (
+        ('entry-level', 'Entry Level'),
+        ('mid-level', 'Mid Level'),
+        ('senior', 'Senior'),
+        ('executive', 'Executive'),
+        ('student', 'Student'),
+    )
+
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    description = models.TextField()
+    industry = models.ForeignKey(Industry, on_delete=models.CASCADE, related_name='examples')
+    job_title = models.ForeignKey(JobTitle, on_delete=models.CASCADE, related_name='examples')
+    experience_level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
+    image = models.ImageField(upload_to='resume_examples/')
+    pdf = models.FileField(upload_to='resume_examples/pdf/', blank=True)
+    featured = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+class BlogCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name_plural = "Blog Categories"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('resources:blog_category', kwargs={'slug': self.slug})
+
+
+class BlogTag(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=50, unique=True, blank=True)
+
+    class Meta:
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('resources:blog_tag', kwargs={'slug': self.slug})
+
+
+class BlogAuthor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='blog_author')
+    bio = models.TextField(blank=True)
+    profile_image = models.ImageField(upload_to='author_images/', blank=True, null=True)
+    job_title = models.CharField(max_length=100, blank=True)
+    linkedin_url = models.URLField(blank=True)
+    twitter_url = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.user.get_full_name() or self.user.username
+
+    def get_absolute_url(self):
+        return reverse('resources:blog_author', kwargs={'pk': self.pk})
+
+
+class BlogPost(models.Model):
+    STATUS_CHOICES = (
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+    )
+
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    author = models.ForeignKey(BlogAuthor, on_delete=models.CASCADE, related_name='blog_posts', blank=True, null=True)
+    category = models.ForeignKey(BlogCategory, on_delete=models.CASCADE, related_name='blog_posts')
+    tags = models.ManyToManyField(BlogTag, related_name='blog_posts', blank=True)
+    summary = models.TextField(help_text="A brief summary of the post (shown in listings)", null=True, blank=True)
+    content = models.TextField()
+    featured_image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
+    read_time = models.PositiveIntegerField(help_text="Estimated read time in minutes", default=5)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    published_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['-is_featured', '-published_at', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('resources:blog_post_detail', kwargs={'slug': self.slug})
+
+
+class BlogComment(models.Model):
+    post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    website = models.URLField(blank=True)
+    content = models.TextField()
+    is_approved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Comment by {self.name} on {self.post.title}"
+
+
+class ResourceCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    description = models.TextField(blank=True)
+    icon = models.CharField(max_length=50, help_text="Icon name from your icon library", blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "Resource Categories"
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
+class ResourceArticle(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    category = models.ForeignKey(ResourceCategory, on_delete=models.CASCADE, related_name='articles')
+    summary = models.TextField(help_text="A brief summary of the article (shown in listings)")
+    content = models.TextField()
+    featured_image = models.ImageField(upload_to='resource_images/', blank=True, null=True)
+    is_featured = models.BooleanField(default=False)
+    read_time = models.PositiveIntegerField(help_text="Estimated read time in minutes", default=5)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_featured', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('resources:article_detail', kwargs={'slug': self.slug})
+
+
+class Tip(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    icon = models.CharField(max_length=50, help_text="Icon name from your icon library", blank=True)
+    order = models.IntegerField(default=0)
+    article = models.ForeignKey(ResourceArticle, on_delete=models.CASCADE, related_name='tips', null=True, blank=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class JobPosition(models.Model):
+    title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
+    description = models.TextField(blank=True)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'title']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
+class CoverLetterExample(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique=True, blank=True)
+    industry = models.ForeignKey(Industry, on_delete=models.CASCADE, related_name='cover_letters')
+    job_position = models.ForeignKey(JobPosition, on_delete=models.CASCADE, related_name='cover_letters')
+    content = models.TextField()
+    preview_image = models.ImageField(upload_to='cover_letter_examples/')
+    is_featured = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_featured', '-created_at']
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
+class Statistic(models.Model):
+    title = models.CharField(max_length=100)
+    value = models.CharField(max_length=20)
+    description = models.TextField()
+    order = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.title}: {self.value}"
+
+
+class TrustedCompany(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='company_logos/')
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "Trusted Companies"
+
+    def __str__(self):
+        return self.name
+
+
+class ResumeCounter(models.Model):
+    count = models.IntegerField(default=0)
+    last_updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Resume Count: {self.count}"
 
 
 class FAQCategory(models.Model):
@@ -196,36 +502,6 @@ class CVTemplateSelectView(LoginRequiredMixin, CreateView):
             slug=self.kwargs['slug']
         )
         return super().form_valid(form)
-
-
-class BlogPost(models.Model):
-    STATUS_CHOICES = [
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-    ]
-
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True, max_length=200)
-    content = models.TextField()
-    category = models.CharField(max_length=50)
-    featured_image = models.ImageField(upload_to='blog/', null=True, blank=True)
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return self.title
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-
-    def get_absolute_url(self):
-        return reverse('home:blog_detail', kwargs={'slug': self.slug})
 
 
 class ResumeExample(models.Model):

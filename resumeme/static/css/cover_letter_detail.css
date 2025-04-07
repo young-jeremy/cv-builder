@@ -1,0 +1,185 @@
+/* Breadcrumbs */
+.breadcrumbs-container {
+    background-color: #f8f9fa;
+    padding: 12px 0;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+.breadcrumb-item a {
+    color: #4a4a4a;
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    color: #0072EF;
+}
+
+.breadcrumb-item.active {
+    color: #0072EF;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+}
+
+/* Detail Section */
+.detail-section {
+    padding: 60px 0;
+}
+
+.cover-letter-header {
+    margin-bottom: 30px;
+}
+
+.detail-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+}
+
+.detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.industry-badge, .position-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.industry-badge {
+    background-color: #e6f2ff;
+    color: #0072EF;
+}
+
+.position-badge {
+    background-color: #f0f0f0;
+    color: #4a4a4a;
+}
+
+.updated-date {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Cover Letter Preview */
+.cover-letter-preview {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.preview-image {
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.preview-image img {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.preview-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: white;
+}
+
+.preview-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preview-actions .btn svg {
+    margin-right: 4px;
+}
+
+/* Cover Letter Content */
+.cover-letter-content {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+}
+
+.cover-letter-content h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+}
+
+.content-text {
+    color: #4a4a4a;
+    line-height: 1.7;
+}
+
+.content-text p {
+    margin-bottom: 16px;
+}
+
+.content-text h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 30px 0 15px;
+    color: #1a1a1a;
+}
+
+.content-text ul, .content-text ol {
+    margin-bottom: 16px;
+    padding-left: 20px;
+}
+
+.content-text li {
+    margin-bottom: 8px;
+}
+
+/* Sidebar */
+.sidebar {
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-card {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.sidebar-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1a1a1a;
+}
+
+.cta-card {
+    background-color: #f0f7ff;
+    border-left: 4px solid #0072EF;
+}
+
+.cta-card p {
+    margin-bottom: 20px;
+    color: #4

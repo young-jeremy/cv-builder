@@ -1,0 +1,245 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cover Letter Examples | CD Builder{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cover_letter_examples.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title">Cover Letter Examples</h1>
+                <p class="hero-subtitle">Browse our collection of professionally written cover letter examples to inspire your own. Find examples by industry, job position, or search for specific roles.</p>
+                
+                <!-- Search Form -->
+                <form class="search-form" method="GET" action="{% url 'home:cover_letter_examples' %}">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search for cover letter examples..." value="{{ search_query }}">
+                        <button type="submit" class="btn btn-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Examples Section -->
+{% if featured_examples and not search_query and not current_industry and not current_position %}
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title">Featured Cover Letter Examples</h2>
+        <div class="row">
+            {% for example in featured_examples %}
+            <div class="col-md-4">
+                <div class="featured-card">
+                    <div class="featured-badge">Featured</div>
+                    <div class="featured-image">
+                        <img src="{{ example.preview_image.url }}" alt="{{ example.title }}" class="img-fluid">
+                    </div>
+                    <div class="featured-content">
+                        <h3 class="featured-title">{{ example.title }}</h3>
+                        <div class="featured-meta">
+                            <span class="industry-badge">{{ example.industry.name }}</span>
+                            <span class="position-badge">{{ example.job_position.title }}</span>
+                        </div>
+                        <a href="{% url 'cover_letter:detail' example.slug %}" class="btn btn-outline-primary btn-sm mt-3">View Example</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Filter Section -->
+<section class="filter-section">
+    <div class="container">
+        <div class="filter-container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="filter-group">
+                        <label for="industry-filter">Filter by Industry</label>
+                        <select id="industry-filter" class="form-select" onchange="applyFilter('industry', this.value)">
+                            <option value="">All Industries</option>
+                            {% for industry in industries %}
+                            <option value="{{ industry.slug }}" {% if current_industry == industry.slug %}selected{% endif %}>{{ industry.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="filter-group">
+                        <label for="position-filter">Filter by Job Position</label>
+                        <select id="position-filter" class="form-select" onchange="applyFilter('position', this.value)">
+                            <option value="">All Positions</option>
+                            {% for position in job_positions %}
+                            <option value="{{ position.slug }}" {% if current_position == position.slug %}selected{% endif %}>{{ position.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            {% if current_industry or current_position or search_query %}
+            <div class="active-filters">
+                <div class="active-filters-label">Active filters:</div>
+                <div class="active-filters-tags">
+                    {% if current_industry %}
+                    {% with industry=industries|dictsort:"slug"|first %}
+                    <div class="filter-tag">
+                        Industry: {{ industry.name }}
+                        <button onclick="removeFilter('industry')" class="filter-remove">×</button>
+                    </div>
+                    {% endwith %}
+                    {% endif %}
+                    
+                    {% if current_position %}
+                    {% with position=job_positions|dictsort:"slug"|first %}
+                    <div class="filter-tag">
+                        Position: {{ position.title }}
+                        <button onclick="removeFilter('position')" class="filter-remove">×</button>
+                    </div>
+                    {% endwith %}
+                    {% endif %}
+                    
+                    {% if search_query %}
+                    <div class="filter-tag">
+                        Search: "{{ search_query }}"
+                        <button onclick="removeFilter('q')" class="filter-remove">×</button>
+                    </div>
+                    {% endif %}
+                    
+                    <button onclick="clearAllFilters()" class="btn btn-sm btn-outline-secondary">Clear All</button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Examples Grid Section -->
+<section class="examples-section">
+    <div class="container">
+        {% if cover_letters %}
+        <div class="row">
+            {% for cover_letter in cover_letters %}
+            <div class="col-lg-4 col-md-6">
+                <div class="example-card">
+                    <div class="example-image">
+                        <img src="{{ cover_letter.preview_image.url }}" alt="{{ cover_letter.title }}" class="img-fluid">
+                        {% if cover_letter.is_featured %}
+                        <div class="featured-tag">Featured</div>
+                        {% endif %}
+                    </div>
+                    <div class="example-content">
+                        <h3 class="example-title">{{ cover_letter.title }}</h3>
+                        <div class="example-meta">
+                            <span class="industry-badge">{{ cover_letter.industry.name }}</span>
+                            <span class="position-badge">{{ cover_letter.job_position.title }}</span>
+                        </div>
+                        <a href="{% url 'cover_letter:detail' cover_letter.slug %}" class="btn btn-primary btn-sm mt-3">View Example</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="pagination-container">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" aria-label="Previous">                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>                {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="no-results">
+            <div class="no-results-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                </svg>
+            </div>
+            <h3>No cover letter examples found</h3>
+            <p>Try adjusting your filters or search criteria to find what you're looking for.</p>
+            <button onclick="clearAllFilters()" class="btn btn-primary">Clear All Filters</button>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="cta-title">Ready to create your own cover letter?</h2>
+                    <p class="cta-text">Use our professional cover letter builder to create a personalized cover letter in minutes.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a href="{% url 'home:cover_letter_create' %}" class="btn btn-primary btn-lg">Create Cover Letter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- JavaScript for filters -->
+<script>
+    function applyFilter(filterName, value) {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (value) {
+            urlParams.set(filterName, value);
+        } else {
+            urlParams.delete(filterName);
+        }
+        
+        // Reset to page 1 when changing filters
+        urlParams.delete('page');
+        
+        window.location.search = urlParams.toString();
+    }
+    
+    function removeFilter(filterName) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.delete(filterName);
+        urlParams.delete('page');
+        window.location.search = urlParams.toString();
+    }
+    
+    function clearAllFilters() {
+        window.location.href = "{% url 'home:cover_letter_examples' %}";
+    }
+</script>
+{% endblock %}
