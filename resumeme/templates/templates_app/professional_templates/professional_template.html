@@ -1,299 +1,407 @@
+{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Professional Resume Templates - ResumeMe{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/professional-templates.css' %}">
-{% endblock %}
+{% block title %}Professional Resume Templates | Resume.io{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Professional Resume Templates</h1>
-            <p class="hero-description">
-                Create a standout resume with our professionally designed templates. 
-                Perfect for corporate roles, executive positions, and traditional industries.
+<div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1a202c; line-height: 1.5; -webkit-font-smoothing: antialiased;">
+    <!-- Header Banner -->
+    <div style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 24px 0;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+            <h1 style="font-size: 32px; font-weight: 700; margin: 0 0 16px 0; color: #1a202c;">Professional Resume Templates</h1>
+            <p style="font-size: 16px; color: #4a5568; max-width: 600px; margin: 0;">
+                Create a professional resume with our collection of professional resume templates. Perfect for corporate roles, executive positions, and traditional industries.
             </p>
         </div>
     </div>
-</section>
 
-<!-- Filters Section -->
-<section class="filters-section">
-    <div class="container">
-        <div class="filters-wrapper">
-            <div class="filters-header">
-                <h2 class="filters-title">Filter Templates</h2>
-                <button id="clear-filters" class="btn-clear-filters">Clear All</button>
+    <!-- Filters Section -->
+    <div style="background-color: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 10;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 16px 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="font-size: 18px; font-weight: 600; margin: 0;">Filter Templates</h2>
+                <button id="clear-filters" style="background: none; border: none; color: #3182ce; font-size: 14px; font-weight: 500; cursor: pointer;">Clear All</button>
             </div>
-            
-            <div class="filters-content">
-                <div class="filter-group">
-                    <h3 class="filter-group-title">Style</h3>
-                    <div class="filter-options">
-                        <button class="filter-option {% if not selected_style %}active{% endif %}" data-filter="style" data-value="">All</button>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+                <!-- Style Filter -->
+                <div style="flex: 1; min-width: 200px;">
+                    <h3 style="font-size: 14px; font-weight: 600; color: #4a5568; margin: 0 0 12px 0;">Style</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button class="filter-option active" data-filter="style" data-value="" style="background-color: #3182ce; color: white; border: 1px solid #3182ce; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer;">All</button>
                         {% for style in styles %}
-                        <button class="filter-option {% if selected_style == style %}active{% endif %}" data-filter="style" data-value="{{ style }}">
+                        <button class="filter-option" data-filter="style" data-value="{{ style }}" style="background-color: white; color: #4a5568; border: 1px solid #e2e8f0; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer;">
                             {{ style|title }}
                         </button>
                         {% endfor %}
                     </div>
                 </div>
-                
-                <div class="filter-group">
-                    <h3 class="filter-group-title">Color</h3>
-                    <div class="filter-options">
-                        <button class="filter-option {% if not selected_color %}active{% endif %}" data-filter="color" data-value="">All</button>
-                        {% for color in colors %}
-                        <button class="filter-option {% if selected_color == color %}active{% endif %}" data-filter="color" data-value="{{ color }}">
-                            <span class="color-swatch color-{{ color }}"></span>
-                            {{ color|title }}
+
+                <!-- Color Filter -->
+                <div style="flex: 1; min-width: 200px;">
+                    <h3 style="font-size: 14px; font-weight: 600; color: #4a5568; margin: 0 0 12px 0;">Color</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <button class="filter-option active" data-filter="color" data-value="" style="background-color: #3182ce; color: white; border: 1px solid #3182ce; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer;">All</button>
+
+                        <button class="filter-option" data-filter="color" data-value="blue" style="background-color: white; color: #4a5568; border: 1px solid #e2e8f0; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                            <span style="display: inline-block; width: 16px; height: 16px; border-radius: 50%; background-color: #3182ce; margin-right: 8px;"></span>
+                            Blue
                         </button>
-                        {% endfor %}
+
+                        <button class="filter-option" data-filter="color" data-value="black" style="background-color: white; color: #4a5568; border: 1px solid #e2e8f0; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                            <span style="display: inline-block; width: 16px; height: 16px; border-radius: 50%; background-color: #000000; margin-right: 8px;"></span>
+                            Black
+                        </button>
+
+                        <button class="filter-option" data-filter="color" data-value="gray" style="background-color: white; color: #4a5568; border: 1px solid #e2e8f0; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                            <span style="display: inline-block; width: 16px; height: 16px; border-radius: 50%; background-color: #718096; margin-right: 8px;"></span>
+                            Gray
+                        </button>
+
+                        <button class="filter-option" data-filter="color" data-value="green" style="background-color: white; color: #4a5568; border: 1px solid #e2e8f0; border-radius: 20px; padding: 6px 12px; font-size: 14px; cursor: pointer; display: flex; align-items: center;">
+                            <span style="display: inline-block; width: 16px; height: 16px; border-radius: 50%; background-color: #38a169; margin-right: 8px;"></span>
+                            Green
+                        </button>
                     </div>
                 </div>
-                
-                <div class="filter-group">
-                    <h3 class="filter-group-title">Difficulty</h3>
-                    <div class="filter-options">
-                        <button class="filter-option {% if not selected_difficulty %}active{% endif %}" data-filter="difficulty" data-value="">All</button>
-                        <button class="filter-option {% if selected_difficulty == 'beginner' %}active{% endif %}" data-filter="difficulty" data-value="beginner">
-                            Beginner
-                        </button>
-                        <button class="filter-option {% if selected_difficulty == 'intermediate' %}active{% endif %}" data-filter="difficulty" data-value="intermediate">
-                            Intermediate
-                        </button>
-                        <button class="filter-option {% if selected_difficulty == 'advanced' %}active{% endif %}" data-filter="difficulty" data-value="advanced">
-                            Advanced
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="filter-group sort-group">
-                    <h3 class="filter-group-title">Sort By</h3>
-                    <select id="sort-select" class="sort-select">
-                        <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %}>Most Popular</option>
-                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
-                        <option value="name" {% if selected_sort == 'name' %}selected{% endif %}>Name (A-Z)</option>
+
+                <!-- Sort By -->
+                <div style="min-width: 200px;">
+                    <h3 style="font-size: 14px; font-weight: 600; color: #4a5568; margin: 0 0 12px 0;">Sort By</h3>
+                    <select id="sort-select" style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; background-color: white; color: #4a5568; font-size: 14px; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%234a5568\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px;">
+                        <option value="popular">Most Popular</option>
+                        <option value="newest">Newest</option>
+                        <option value="name">Name (A-Z)</option>
                     </select>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- Templates Grid Section -->
-<section class="templates-section">
-    <div class="container">
-        <div class="templates-count">
-            <p><span id="templates-count">{{ templates|length }}</span> templates found</p>
-        </div>
-        
-        <div class="templates-grid">
-            {% for template in templates %}
-            <div class="template-card" 
-                 data-style="{{ template.style }}" 
-                 data-color="{{ template.color }}" 
-                 data-difficulty="{{ template.difficulty_level }}">
-                <div class="template-preview">
-                    <img src="{% if template.preview_image %}{{ template.preview_image.url }}{% else %}{% static 'images/template-placeholder.jpg' %}{% endif %}" alt="{{ template.name }}">
-                    
-                    {% if template.is_premium %}
-                    <div class="template-badge premium">Premium</div>
-                    {% endif %}
-                    
-                    {% if template.is_featured %}
-                    <div class="template-badge popular">Popular</div>
-                    {% endif %}
-                    
-                    <div class="template-overlay">
-                        <div class="template-actions">
-                            <a href="{% url 'templates_app:template_preview' slug=template.slug %}" class="btn-preview" target="_blank">
-                                <i class="bi bi-eye"></i> Preview
-                            </a>
-                            <a href="{% url 'templates_app:create_resume_with_template' template_slug=template.slug %}" class="btn-use">
-                                Use This Template
-                            </a>
+    <!-- Templates Grid Section -->
+    <div style="background-color: #f8fafc; padding: 40px 0 80px;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+            <div style="margin-bottom: 24px; font-size: 14px; color: #4a5568;">
+                <p><span id="templates-count">{{ templates|length }}</span> templates found</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+                {% for template in templates %}
+                <div class="template-card" data-style="{{ template.style }}" data-color="{{ template.color }}" style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <div style="position: relative; overflow: hidden;">
+                        {% if template.preview_image %}
+                            <img src="{{ template.preview_image.url }}" alt="{{ template.name }} Resume Template" style="width: 100%; height: 380px; object-fit: cover; object-position: top; transition: transform 0.5s ease;">
+                        {% elif template.placeholder_image %}
+                            <img src="{{ template.placeholder_image }}" alt="{{ template.name }} Resume Template" style="width: 100%; height: 380px; object-fit: cover; object-position: top; transition: transform 0.5s ease;">
+                        {% else %}
+                            <img src="{% static 'images/templates/professional-1.jpg' %}" alt="{{ template.name }} Resume Template" style="width: 100%; height: 380px; object-fit: cover; object-position: top; transition: transform 0.5s ease;">
+                        {% endif %}
+
+                        {% if template.is_premium %}
+                        <div style="position: absolute; top: 12px; right: 12px; background-color: #9f7aea; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                            Premium
+                        </div>
+                        {% elif template.is_featured %}
+                        <div style="position: absolute; top: 12px; right: 12px; background-color: #3182ce; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
+                            Popular
+                        </div>
+                        {% endif %}
+
+                        <div class="template-overlay" style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 48px 16px 16px; transform: translateY(100%); transition: transform 0.3s ease;">
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <a href="{% url 'templates_app:template_preview' slug=template.slug %}" class="btn-preview" style="background-color: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; padding: 8px 16px; text-align: center; text-decoration: none; font-size: 14px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                    Preview
+                                </a>
+                                <a href="{% url 'templates_app:payment_redirect' template.slug %}" class="btn-use" style="background-color: #3182ce; color: white; border: none; border-radius: 6px; padding: 8px 16px; text-align: center; text-decoration: none; font-size: 14px; font-weight: 500;">
+                                    Use This Template
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 16px;">
+                        <h3 style="font-size: 16px; font-weight: 600; margin: 0 0 8px 0; color: #1a202c;">{{ template.name }}</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 16px 0; line-height: 1.5;">{{ template.description|truncatechars:100 }}</p>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; gap: 8px;">
+                                <span style="background-color: #ebf8ff; color: #3182ce; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">{{ template.style|title }}</span>
+                                <span style="background-color: #ebf8ff; color: #3182ce; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500;">{{ template.color|title }}</span>
+                            </div>
+
+                            <div style="display: flex; gap: 8px; color: #3182ce;">
+                                {% if template.is_ats_friendly %}
+                                <span title="ATS-Friendly">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                </span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="template-info">
-                    <h3 class="template-name">{{ template.name }}</h3>
-                    <p class="template-description">{{ template.description|truncatechars:100 }}</p>
-                    
-                    <div class="template-meta">
-                        <div class="template-tags">
-                            <span class="template-tag style">{{ template.style|title }}</span>
-                            <span class="template-tag color">{{ template.color|title }}</span>
-                            <span class="template-tag difficulty">{{ template.difficulty_level|title }}</span>
-                        </div>
-                        
-                        <div class="template-features">
-                            {% if template.is_ats_friendly %}
-                            <span class="template-feature" title="ATS-Friendly">
-                                <i class="bi bi-check-circle"></i>
-                            </span>
-                            {% endif %}
-                            
-                            {% if template.has_photo %}
-                            <span class="template-feature" title="Photo Support">
-                                <i class="bi bi-camera"></i>
-                            </span>
-                            {% endif %}
-                        </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div style="background-color: white; padding: 80px 0;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+            <h2 style="font-size: 28px; font-weight: 700; text-align: center; margin: 0 0 48px 0; color: #1a202c;">Why Choose Our Professional Templates?</h2>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 32px;">
+                <!-- Feature 1 -->
+                <div style="text-align: center; padding: 24px;">
+                    <div style="margin-bottom: 24px; color: #3182ce; font-size: 32px; display: flex; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zM9 4h6v3H9V4zm11 16H4V9h16v11z"></path><path d="M12 11h4v4h-4z"></path></svg>
                     </div>
+                    <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 16px 0; color: #1a202c;">Industry-Approved Designs</h3>
+                    <p style="font-size: 16px; color: #4a5568; line-height: 1.6;">
+                        Our professional templates are designed by career experts and HR professionals to meet industry standards.
+                    </p>
                 </div>
-            </div>
-            {% empty %}
-            <div class="no-templates">
-                <div class="no-templates-content">
-                    <i class="bi bi-search"></i>
-                    <h3>No templates found</h3>
-                    <p>Try adjusting your filters to see more templates</p>
-                    <button id="reset-filters" class="btn-reset">Reset Filters</button>
+
+                <!-- Feature 2 -->
+                <div style="text-align: center; padding: 24px;">
+                    <div style="margin-bottom: 24px; color: #3182ce; font-size: 32px; display: flex; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M21.2 8A10 10 0 0 0 17 3.8L12 12V2a10 10 0 0 0 0 20 10 10 0 0 0 9.2-14"></path></svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 16px 0; color: #1a202c;">ATS-Friendly</h3>
+                    <p style="font-size: 16px; color: #4a5568; line-height: 1.6;">
+                        All templates are optimized to pass through Applicant Tracking Systems with flying colors.
+                    </p>
                 </div>
-            </div>
-            {% endfor %}
-        </div>
-        
-        <!-- Empty State (Hidden by default) -->
-        <div class="no-templates" style="display: none;">
-            <div class="no-templates-content">
-                <i class="bi bi-search"></i>
-                <h3>No templates found</h3>
-                <p>Try adjusting your filters to see more templates</p>
-                <button id="reset-filters" class="btn-reset">Reset Filters</button>
+
+                <!-- Feature 3 -->
+                <div style="text-align: center; padding: 24px;">
+                    <div style="margin-bottom: 24px; color: #3182ce; font-size: 32px; display: flex; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18v-6"></path><path d="M8 18v-1"></path><path d="M16 18v-3"></path><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M3 9h18"></path></svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 16px 0; color: #1a202c;">Fully Customizable</h3>
+                    <p style="font-size: 16px; color: #4a5568; line-height: 1.6;">
+                        Easily customize colors, fonts, and layouts while maintaining professional standards.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div style="text-align: center; padding: 24px;">
+                    <div style="margin-bottom: 24px; color: #3182ce; font-size: 32px; display: flex; justify-content: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    </div>
+                    <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 16px 0; color: #1a202c;">Proven Results</h3>
+                    <p style="font-size: 16px; color: #4a5568; line-height: 1.6;">
+                        Our users report 34% more interview callbacks when using our professional templates.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- Features Section -->
-<section class="features-section">
-    <div class="container">
-        <h2 class="section-title">Why Choose Our Professional Templates?</h2>
-        
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-briefcase"></i>
-                </div>
-                <h3 class="feature-title">Industry-Approved Designs</h3>
-                <p class="feature-description">
-                    Our professional templates are designed by career experts and HR professionals to meet industry standards.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-robot"></i>
-                </div>
-                <h3 class="feature-title">ATS-Friendly</h3>
-                <p class="feature-description">
-                    All templates are optimized to pass through Applicant Tracking Systems with flying colors.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-sliders"></i>
-                </div>
-                <h3 class="feature-title">Fully Customizable</h3>
-                <p class="feature-description">
-                    Easily customize colors, fonts, and layouts while maintaining professional standards.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-graph-up"></i>
-                </div>
-                <h3 class="feature-title">Proven Results</h3>
-                <p class="feature-description">
-                    Our users report 34% more interview callbacks when using our professional templates.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
+    <!-- FAQ Section -->
+    <div style="background-color: #f8fafc; padding: 80px 0;">
+        <div style="max-width: 800px; margin: 0 auto; padding: 0 24px;">
+            <h2 style="font-size: 28px; font-weight: 700; text-align: center; margin: 0 0 48px 0; color: #1a202c;">Frequently Asked Questions</h2>
 
-<!-- FAQ Section -->
-<section class="faq-section">
-    <div class="container">
-        <h2 class="section-title">Frequently Asked Questions</h2>
-        
-        <div class="accordion" id="faqAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <!-- FAQ Item 1 -->
+                <div class="faq-item" style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="faq-question" style="padding: 20px; font-weight: 600; color: #1a202c; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                         What makes a resume template "professional"?
-                    </button>
-                </h2>
-                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p>Professional resume templates feature clean layouts, traditional formatting, and subtle design elements. They use conservative colors and focus on readability and content organization. These templates are ideal for corporate roles, executive positions, and industries that value tradition and formality.</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="faq-answer" style="padding: 0 20px 20px; color: #4a5568; display: none;">
+                        <p style="margin: 0; line-height: 1.6;">Professional resume templates feature clean layouts, traditional formatting, and subtle design elements. They use conservative colors and focus on readability and content organization. These templates are ideal for corporate roles, executive positions, and industries that value tradition and formality.</p>
                     </div>
                 </div>
-            </div>
-            
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+
+                <!-- FAQ Item 2 -->
+                <div class="faq-item" style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="faq-question" style="padding: 20px; font-weight: 600; color: #1a202c; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                         Are these templates ATS-friendly?
-                    </button>
-                </h2>
-                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p>Yes, all our professional templates are designed to be ATS (Applicant Tracking System) friendly. They use standard sections, appropriate headings, and clean formatting that can be easily parsed by automated systems. This ensures your resume gets past the initial screening and into the hands of hiring managers.</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="faq-answer" style="padding: 0 20px 20px; color: #4a5568; display: none;">
+                        <p style="margin: 0; line-height: 1.6;">Yes, all our professional templates are designed to be ATS (Applicant Tracking System) friendly. They use standard sections, appropriate headings, and clean formatting that can be easily parsed by automated systems. This ensures your resume gets past the initial screening and into the hands of hiring managers.</p>
                     </div>
                 </div>
-            </div>
-            
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+
+                <!-- FAQ Item 3 -->
+                <div class="faq-item" style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="faq-question" style="padding: 20px; font-weight: 600; color: #1a202c; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                         Which industries are these templates best for?
-                    </button>
-                </h2>
-                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p>Our professional templates are ideal for traditional industries such as finance, banking, law, healthcare, government, consulting, and corporate roles. They're also excellent for executive positions across all industries where a polished, traditional presentation is valued.</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="faq-answer" style="padding: 0 20px 20px; color: #4a5568; display: none;">
+                        <p style="margin: 0; line-height: 1.6;">Our professional templates are ideal for traditional industries such as finance, banking, law, healthcare, government, consulting, and corporate roles. They're also excellent for executive positions across all industries where a polished, traditional presentation is valued.</p>
                     </div>
                 </div>
-            </div>
-            
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+
+                <!-- FAQ Item 4 -->
+                <div class="faq-item" style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <div class="faq-question" style="padding: 20px; font-weight: 600; color: #1a202c; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                         Can I customize these templates?
-                    </button>
-                </h2>
-                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">
-                        <p>While our templates provide a professional foundation, you can customize colors, fonts, spacing, and layout elements to match your personal style while maintaining professionalism. Our editor makes it easy to adjust these elements without compromising the template's effectiveness.</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.3s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                    <div class="faq-answer" style="padding: 0 20px 20px; color: #4a5568; display: none;">
+                        <p style="margin: 0; line-height: 1.6;">While our templates provide a professional foundation, you can customize colors, fonts, spacing, and layout elements to match your personal style while maintaining professionalism. Our editor makes it easy to adjust these elements without compromising the template's effectiveness.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
 
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="cta-content">
-            <h2 class="cta-title">Ready to create your professional resume?</h2>
-            <p class="cta-description">Choose from our collection of professional templates and land your dream job.</p>
-            <a href="#templates-section" class="btn-cta">Get Started</a>
+    <!-- CTA Section -->
+    <div style="background: linear-gradient(to right, #3182ce, #2c5282); padding: 80px 0; color: white; text-align: center;">
+        <div style="max-width: 700px; margin: 0 auto; padding: 0 24px;">
+            <h2 style="font-size: 28px; font-weight: 700; margin: 0 0 24px 0; color: white;">Ready to create your professional resume?</h2>
+            <p style="font-size: 18px; margin: 0 0 32px 0; opacity: 0.9;">Choose from our collection of professional templates and land your dream job.</p>
+            <a href="#" style="display: inline-block; background-color: white; color: #3182ce; font-weight: 600; padding: 12px 32px; border-radius: 6px; text-decoration: none; font-size: 16px; transition: all 0.2s ease;">Get Started</a>
         </div>
     </div>
-</section>
-{% endblock %}
+</div>
 
-{% block extra_js %}
-<script src="{% static 'js/professional-templates.js' %}"></script>
-{% endblock %}
+<script>
+    // JavaScript for interactive elements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Template card hover effect
+        const templateCards = document.querySelectorAll('.template-card');
+        templateCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)';
+                const overlay = this.querySelector('.template-overlay');
+                if (overlay) overlay.style.transform = 'translateY(0)';
+                const img = this.querySelector('img');
+                if (img) img.style.transform = 'translateY(-20px)';
+            });
 
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+                this.style.boxShadow = '';
+                const overlay = this.querySelector('.template-overlay');
+                if (overlay) overlay.style.transform = 'translateY(100%)';
+                const img = this.querySelector('img');
+                if (img) img.style.transform = '';
+            });
+        });
+
+        // Filter functionality
+        const filterOptions = document.querySelectorAll('.filter-option');
+        filterOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                const value = this.getAttribute('data-value');
+
+                // Update active state
+                document.querySelectorAll(`.filter-option[data-filter="${filter}"]`).forEach(opt => {
+                    opt.style.backgroundColor = 'white';
+                    opt.style.color = '#4a5568';
+                    opt.style.borderColor = '#e2e8f0';
+                    opt.classList.remove('active');
+                });
+
+                this.style.backgroundColor = '#3182ce';
+                this.style.color = 'white';
+                this.style.borderColor = '#3182ce';
+                this.classList.add('active');
+
+                // Apply filters
+                applyFilters();
+            });
+        });
+
+        // Clear filters
+        document.getElementById('clear-filters').addEventListener('click', function() {
+            filterOptions.forEach(option => {
+                if (option.getAttribute('data-value') === '') {
+                    option.style.backgroundColor = '#3182ce';
+                    option.style.color = 'white';
+                    option.style.borderColor = '#3182ce';
+                    option.classList.add('active');
+                } else {
+                    option.style.backgroundColor = 'white';
+                    option.style.color = '#4a5568';
+                    option.style.borderColor = '#e2e8f0';
+                    option.classList.remove('active');
+                }
+            });
+
+            applyFilters();
+        });
+
+        // Sort functionality
+        document.getElementById('sort-select').addEventListener('change', function() {
+            applyFilters();
+        });
+
+        function applyFilters() {
+            // Get active filters
+            const activeFilters = {};
+            document.querySelectorAll('.filter-option.active').forEach(option => {
+                const filter = option.getAttribute('data-filter');
+                const value = option.getAttribute('data-value');
+                activeFilters[filter] = value;
+            });
+
+            // Get sort option
+            const sortBy = document.getElementById('sort-select').value;
+
+            // Filter templates
+            let visibleCount = 0;
+            templateCards.forEach(card => {
+                let isVisible = true;
+
+                // Check each filter
+                for (const filter in activeFilters) {
+                    if (activeFilters[filter] && card.getAttribute(`data-${filter}`) !== activeFilters[filter]) {
+                        isVisible = false;
+                        break;
+                    }
+                }
+
+                // Show/hide card
+                if (isVisible) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update count
+            document.getElementById('templates-count').textContent = visibleCount;
+
+            // Show/hide empty state
+            const noTemplates = document.querySelector('.no-templates');
+            if (noTemplates) {
+                if (visibleCount === 0) {
+                    noTemplates.style.display = 'block';
+                } else {
+                    noTemplates.style.display = 'none';
+                }
+            }
+        }
+
+        // FAQ accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const arrow = this.querySelector('svg');
+
+                if (answer.style.display === 'block') {
+                    answer.style.display = 'none';
+                    arrow.style.transform = '';
+                } else {
+                    answer.style.display = 'block';
+                    arrow.style.transform = 'rotate(180deg)';
+                }
+            });
+        });
+
+        // Show first FAQ by default
+        faqQuestions[0].click();
+    });
+</script>
+{% endblock %}

@@ -6,6 +6,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
+from templates_app.models import ResumeTemplate
+
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -119,6 +121,8 @@ class UserProfile(models.Model):
 
     # Preferences
     email_notifications = models.BooleanField(default=True)
+    purchased_templates = models.ManyToManyField(ResumeTemplate, blank=True, related_name='purchased_by')
+    subscription_active_until = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username}'s profile"

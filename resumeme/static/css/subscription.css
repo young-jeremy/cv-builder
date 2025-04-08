@@ -1,0 +1,467 @@
+/* General Styles */
+body {
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  line-height: 1.6;
+}
+
+.section-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+}
+
+/* Hero Section */
+.plan-hero {
+  background-color: #f0f7ff;
+  padding: 60px 0;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: #4a4a4a;
+  margin-bottom: 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Plans Section */
+.plans-section {
+  padding: 60px 0;
+}
+
+.plan-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 30px;
+  height: 100%;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.plan-card.featured {
+  border: 2px solid #0072ef;
+  transform: scale(1.05);
+}
+
+.plan-card.featured:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: #0072ef;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 1;
+}
+
+.plan-header {
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.plan-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.currency {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 4px;
+}
+
+.period {
+  font-size: 16px;
+  color: #6c757d;
+}
+
+.plan-features {
+  padding: 24px;
+  flex-grow: 1;
+}
+
+.plan-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #4a4a4a;
+}
+
+.plan-features li svg {
+  color: #0072ef;
+  flex-shrink: 0;
+}
+
+.plan-footer {
+  padding: 24px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.form-check-input:checked {
+  background-color: #0072ef;
+  border-color: #0072ef;
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 60px 0;
+  background-color: #f8f9fa;
+}
+
+.accordion {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.accordion-item {
+  border: none;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-button {
+  padding: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background-color: white;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #0072ef;
+  background-color: #f0f7ff;
+  box-shadow: none;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: #e1e1e1;
+}
+
+.accordion-button::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230072EF' class='bi bi-plus' viewBox='0 0 16 16'%3E%3Cpath d='M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z'/%3E%3C/svg%3E");
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%230072EF' class='bi bi-dash' viewBox='0 0 16 16'%3E%3Cpath d='M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z'/%3E%3C/svg%3E");
+}
+
+.accordion-body {
+  padding: 20px;
+  background-color: white;
+}
+
+.accordion-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Breadcrumbs */
+.breadcrumbs-container {
+  background-color: #f8f9fa;
+  padding: 12px 0;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.breadcrumb {
+  margin-bottom: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.breadcrumb-item a {
+  color: #4a4a4a;
+  text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+  color: #0072ef;
+}
+
+.breadcrumb-item.active {
+  color: #0072ef;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">";
+}
+
+/* Payment Section */
+.payment-section {
+  padding: 60px 0;
+}
+
+.payment-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.order-summary-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+  position: sticky;
+  top: 20px;
+}
+
+.summary-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.plan-details {
+  margin-bottom: 20px;
+}
+
+.plan-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.plan-cycle {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.price-breakdown {
+  margin-bottom: 20px;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.item-name {
+  color: #4a4a4a;
+}
+
+.price-total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 12px;
+}
+
+.total-label {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.total-value {
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 18px;
+}
+
+.plan-features h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1a1a1a;
+}
+
+.secure-payment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Success Section */
+.success-section {
+  padding: 80px 0;
+  background-color: #f8f9fa;
+}
+
+.success-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.success-icon {
+  color: #28a745;
+  margin-bottom: 24px;
+}
+
+.success-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+.success-message {
+  font-size: 18px;
+  color: #4a4a4a;
+  margin-bottom: 32px;
+}
+
+.subscription-details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.subscription-details h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+.details-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.item-label {
+  font-weight: 600;
+  color: #4a4a4a;
+}
+
+.success-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .plan-card.featured {
+    transform: none;
+  }
+
+  .plan-card.featured:hover {
+    transform: translateY(-5px);
+  }
+
+  .order-summary-card {
+    position: static;
+    margin-top: 30px;
+  }
+
+  .success-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .plan-hero {
+    padding: 40px 0;
+  }
+
+  .hero-title {
+    font-size: 28px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+  }
+
+  .plans-section,
+  .payment-section,
+  .faq-section {
+    padding: 40px 0;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .payment-card,
+  .success-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .plan-price {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .success-title {
+    font-size: 28px;
+  }
+
+  .success-message {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment Required - {{ template.name }} | ResumeMe{% endblock %}
+
+{% block extra_css %}
+<style>
+    .payment-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    
+    .payment-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .payment-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+    
+    .payment-subtitle {
+        font-size: 1.1rem;
+        color: #64748b;
+    }
+    
+    .template-preview {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background-color: #f8fafc;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .template-image {
+        width: 120px;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .template-info {
+        flex: 1;
+    }
+    
+    .template-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 0.5rem;
+    }
+    
+    .template-description {
+        font-size: 0.95rem;
+        color: #64748b;
+        margin-bottom: 1rem;
+    }
+    
+    .template-tags {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .template-tag {
+        background-color: #e2e8f0;
+        color: #475569;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+    }
+    
+    .payment-options {
+        margin-bottom: 2rem;
+    }
+    
+    .payment-option {
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .payment-option:hover, .payment-option.selected {
+        border-color: #0d6efd;
+        background-color: #f0f7ff;
+    }
+    
+    .payment-option.selected {
+        box-shadow: 0 0 0 1px #0d6efd;
+    }
+    
+    .option-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .option-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .option-price {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0d6efd;
+    }
+    
+    .option-description {
+        font-size: 0.95rem;
+        color: #64748b;
+    }
+    
+    .option-features {
+        margin-top: 1rem;
+    }
+    
+    .option-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        color: #475569;
+    }
+    
+    .option-feature i {
+        color: #10b981;
+    }
+    
+    .payment-actions {
+        text-align: center;
+    }
+    
+    .btn-proceed {
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.875rem 2rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-proceed:hover {
+        background-color: #0b5ed7;
+    }
+    
+    .payment-note {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.875rem;
+        color: #64748b;
+    }
+    
+    .payment-methods {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .payment-method {
+        width: 40px;
+        height: 25px;
+        object-fit: contain;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-container">
+    <div class="payment-header">
+        <h1 class="payment-title">Complete Your Purchase</h1>
+        <p class="payment-subtitle">Get access to premium resume templates and features</p>
+    </div>
+    
+    <div class="template-preview">
+        <img src="{{ template.preview_image.url }}" alt="{{ template.name }}" class="template-image" onerror="this.src='{% static 'images/template-placeholder.jpg' %}'">
+        <div class="template-info">
+            <h2 class="template-name">{{ template.name }}</h2>
+            <p class="template-description">{{ template.description|truncatechars:100 }}</p>
+            <div class="template-tags">
+                <span class="template-tag">{{ template.style|title }}</span>
+                <span class="template-tag">{{ template.color|title }}</span>
+                {% if template.is_premium %}
+                <span class="template-tag">Premium</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="payment-options">
+        <div class="payment-option selected" id="subscription-option">
+            <div class="option-header">
+                <div class="option-title">
+                    <i class="bi bi-star-fill"></i> Monthly Subscription
+                </div>
+                <div class="option-price">$9.99/month</div>
+            </div>
+            <div class="option-description">
+                Get unlimited access to all premium templates and features
+            </div>
+            <div class="option-features">
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Access to all premium templates
+                </div>
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Unlimited resume downloads
+                </div>
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Advanced customization options
+                </div>
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Cancel anytime
+                </div>
+            </div>
+        </div>
+        
+        <div class="payment-option" id="onetime-option">
+            <div class="option-header">
+                <div class="option-title">
+                    <i class="bi bi-lightning-charge-fill"></i> One-Time Purchase
+                </div>
+                <div class="option-price">$19.99</div>
+            </div>
+            <div class="option-description">
+                Get permanent access to this template only
+            </div>
+            <div class="option-features">
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Lifetime access to this template
+                </div>
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Unlimited downloads
+                </div>
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> Basic customization options
+                </div>
+                <div class="option-feature">
+                    <i class="bi bi-check-circle-fill"></i> No recurring charges
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="payment-actions">
+        <form method="post" action="{% url 'dashboard:process_payment' template_slug=template.slug %}">
+            {% csrf_token %}
+            <input type="hidden" name="payment_option" id="payment_option" value="subscription">
+            <button type="submit" class="btn-proceed">Proceed to Payment</button>
+        </form>
+    </div>
+    
+    <div class="payment-note">
+        <p>Secure payment processing. We accept:</p>
+        <div class="payment-methods">
+            <img src="{% static 'images/payment/visa.png' %}" alt="Visa" class="payment-method">
+            <img src="{% static 'images/payment/mastercard.png' %}" alt="Mastercard" class="payment-method">
+            <img src="{% static 'images/payment/amex.png' %}" alt="American Express" class="payment-method">
+            <img src="{% static 'images/payment/paypal.png' %}" alt="PayPal" class="payment-method">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const subscriptionOption = document.getElementById('subscription-option');
+        const onetimeOption = document.getElementById('onetime-option');
+        const paymentOptionInput = document.getElementById('payment_option');
+        
+        subscriptionOption.addEventListener('click', function() {
+            subscriptionOption.classList.add('selected');
+            onetimeOption.classList.remove('selected');
+            paymentOptionInput.value = 'subscription';
+        });
+        
+        onetimeOption.addEventListener('click', function() {
+            onetimeOption.classList.add('selected');
+            subscriptionOption.classList.remove('selected');
+            paymentOptionInput.value = 'onetime';
+        });
+    });
+</script>
+{% endblock %}

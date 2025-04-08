@@ -53,33 +53,8 @@ class ResumeTemplate(models.Model):
         ordering = ['display_order', 'name']
 
 
-class Resume(models.Model):
-    STATUS_CHOICES = (
-        ('draft', 'Draft'),
-        ('published', 'Published'),
-    )
-
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='resumes')
-    template = models.ForeignKey(ResumeTemplate, on_delete=models.SET_NULL, null=True, related_name='resumes')
-    title = models.CharField(max_length=100)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
-    content = models.JSONField(default=dict)
-    custom_css = models.TextField(blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    email= models.EmailField(blank=True, null=True)
-    phone = PhoneNumberField()
-    location= models.CharField(max_length=100, blank=True, null=True)
-    headline= models.TextField(blank=True, null=True)
-    summary= models.CharField(max_length=1000, blank=True, null=True)
-
-    def __str__(self):
-        return f"{self.title} - {self.user.username}"
-
-
 class PersonalInfo(models.Model):
-    resume = models.OneToOneField(Resume, on_delete=models.CASCADE, related_name='personal_info')
+    resume = models.OneToOneField(ResumeTemplate, on_delete=models.CASCADE, related_name='personal_info')
     full_name = models.CharField(max_length=100)
     job_title = models.CharField(max_length=100, blank=True)
     email = models.EmailField(blank=True)
@@ -96,7 +71,7 @@ class PersonalInfo(models.Model):
 
 
 class Experience(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='experiences')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='experiences')
     company = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
     location = models.CharField(max_length=100, blank=True)
@@ -114,7 +89,7 @@ class Experience(models.Model):
 
 
 class Education(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='educations')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='educations')
     institution = models.CharField(max_length=100)
     degree = models.CharField(max_length=100)
     field_of_study = models.CharField(max_length=100, blank=True)
@@ -141,7 +116,7 @@ class Skill(models.Model):
         (5, 'Master'),
     )
 
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='skills')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='skills')
     name = models.CharField(max_length=50)
     level = models.IntegerField(choices=LEVEL_CHOICES, default=3)
     order = models.IntegerField(default=0)
@@ -154,7 +129,7 @@ class Skill(models.Model):
 
 
 class Project(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='projects')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='projects')
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     url = models.URLField(blank=True)
@@ -178,7 +153,7 @@ class Language(models.Model):
         ('native', 'Native/Bilingual'),
     )
 
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='languages')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='languages')
     name = models.CharField(max_length=50)
     proficiency = models.CharField(max_length=20, choices=PROFICIENCY_CHOICES, default='professional')
     order = models.IntegerField(default=0)
@@ -191,7 +166,7 @@ class Language(models.Model):
 
 
 class Certification(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='certifications')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='certifications')
     name = models.CharField(max_length=100)
     issuing_organization = models.CharField(max_length=100)
     issue_date = models.DateField(null=True, blank=True)
@@ -217,7 +192,7 @@ class UserProfile(models.Model):
 
 
 class TemplateColor(models.Model):
-    resume = models.ForeignKey(Resume, on_delete=models.CASCADE, related_name='colors')
+    resume = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE, related_name='colors')
     name = models.CharField(max_length=50)
     color_code = ColorField()
 

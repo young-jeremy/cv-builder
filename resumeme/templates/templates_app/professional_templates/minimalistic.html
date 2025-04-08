@@ -1,0 +1,244 @@
+<!-- templates/resume_templates/professional/minimalist.html -->
+{% extends "resume_templates/base.html" %}
+
+<div class="resume minimalist">
+    <!-- Header Section -->
+    <header class="resume-header">
+        <h1 class="resume-name">{{ first_name }} {{ last_name }}</h1>
+        <div class="resume-contact">
+            <span>{{ email }}</span>
+            <span>{{ phone }}</span>
+            <span>{{ city }}, {{ state }}</span>
+            {% if linkedin %}<span>{{ linkedin }}</span>{% endif %}
+            {% if website %}<span>{{ website }}</span>{% endif %}
+        </div>
+    </header>
+
+    <!-- Summary Section -->
+    <section class="resume-summary">
+        <h2 class="section-title">Summary</h2>
+        <div class="section-content">
+            <p>{{ summary }}</p>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section class="resume-experience">
+        <h2 class="section-title">Experience</h2>
+        <div class="section-content">
+            {% for item in experience_items %}
+            <div class="experience-item">
+                <div class="job-header">
+                    <div class="job-title">{{ item.job_title }}</div>
+                    <div class="employer">{{ item.employer }}</div>
+                    <div class="date">{{ item.start_date }} - {% if item.current_job %}Present{% else %}{{ item.end_date }}{% endif %}</div>
+                </div>
+                <p class="description">{{ item.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="resume-education">
+        <h2 class="section-title">Education</h2>
+        <div class="section-content">
+            {% for item in education_items %}
+            <div class="education-item">
+                <div class="education-header">
+                    <div class="degree">{{ item.degree }}</div>
+                    <div class="institution">{{ item.institution }}</div>
+                    <div class="date">{{ item.start_date }} - {% if item.current_education %}Present{% else %}{{ item.end_date }}{% endif %}</div>
+                </div>
+                {% if item.description %}<p class="description">{{ item.description }}</p>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="resume-skills">
+        <h2 class="section-title">Skills</h2>
+        <div class="section-content">
+            <ul class="skills-list">
+                {% for skill in skills %}
+                <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <!-- Optional Sections -->
+    {% if languages %}
+    <section class="resume-languages">
+        <h2 class="section-title">Languages</h2>
+        <div class="section-content">
+            <ul class="languages-list">
+                {% for language in languages %}
+                <li>{{ language.name }} - {{ language.proficiency|title }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if certifications %}
+    <section class="resume-certifications">
+        <h2 class="section-title">Certifications</h2>
+        <div class="section-content">
+            {% for cert in certifications %}
+            <div class="certification-item">
+                <div class="certification-name">{{ cert.name }}</div>
+                <div class="certification-issuer">{{ cert.issuing_organization }}</div>
+                <div class="certification-date">{{ cert.issue_date|date:"M Y" }}{% if cert.expiration_date %} - {{ cert.expiration_date|date:"M Y" }}{% endif %}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if projects %}
+    <section class="resume-projects">
+        <h2 class="section-title">Projects</h2>
+        <div class="section-content">
+            {% for project in projects %}
+            <div class="project-item">
+                <div class="project-title">{{ project.title }}</div>
+                <div class="project-date">{{ project.start_date|date:"M Y" }}{% if project.end_date %} - {{ project.end_date|date:"M Y" }}{% endif %}</div>
+                <p class="project-description">{{ project.description }}</p>
+                {% if project.url %}<a href="{{ project.url }}" class="project-link" target="_blank">View Project</a>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<style>
+/* Minimalist Resume Template Styles */
+.resume.minimalist {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    color: #333;
+    line-height: 1.5;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+.resume.minimalist .resume-header {
+    margin-bottom: 40px;
+}
+
+.resume.minimalist .resume-name {
+    font-size: 28px;
+    font-weight: 300;
+    margin: 0 0 15px 0;
+    letter-spacing: 1px;
+}
+
+.resume.minimalist .resume-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 14px;
+    color: #666;
+}
+
+.resume.minimalist .section-title {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 30px 0 15px 0;
+    color: #999;
+}
+
+.resume.minimalist .section-content {
+    margin-bottom: 30px;
+}
+
+.resume.minimalist .skills-list,
+.resume.minimalist .languages-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.resume.minimalist .skills-list li,
+.resume.minimalist .languages-list li {
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 3px;
+}
+
+.resume.minimalist .experience-item,
+.resume.minimalist .education-item,
+.resume.minimalist .certification-item,
+.resume.minimalist .project-item {
+    margin-bottom: 25px;
+}
+
+.resume.minimalist .job-title,
+.resume.minimalist .degree,
+.resume.minimalist .certification-name,
+.resume.minimalist .project-title {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.resume.minimalist .employer,
+.resume.minimalist .institution,
+.resume.minimalist .certification-issuer {
+    font-weight: 400;
+}
+
+.resume.minimalist .date,
+.resume.minimalist .certification-date,
+.resume.minimalist .project-date {
+    color: #999;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.resume.minimalist .description,
+.resume.minimalist .project-description {
+    font-size: 14px;
+    color: #555;
+}
+
+.resume.minimalist .project-link {
+    display: inline-block;
+    margin-top: 5px;
+    color: #333;
+    text-decoration: none;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .resume.minimalist {
+        padding: 20px;
+    }
+
+    .resume.minimalist .resume-contact {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .resume.minimalist {
+        padding: 0;
+    }
+
+    .resume.minimalist .section-title {
+        color: #333;
+    }
+}
+</style>

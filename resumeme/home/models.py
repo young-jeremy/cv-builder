@@ -17,6 +17,7 @@ from django.utils.text import slugify
 from django.urls import reverse
 from django.db import models
 from django.utils.text import slugify
+from templates_app.models import ResumeTemplate
 
 
 class Industry(models.Model):
@@ -71,11 +72,11 @@ class ResumeExample(models.Model):
     )
 
     title = models.CharField(max_length=200)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
     description = models.TextField()
-    industry = models.ForeignKey(Industry, on_delete=models.CASCADE, related_name='examples')
-    job_title = models.ForeignKey(JobTitle, on_delete=models.CASCADE, related_name='examples')
-    experience_level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
+    industry = models.ForeignKey(Industry, on_delete=models.CASCADE, related_name='examples', null=True)
+    job_title = models.ForeignKey(JobTitle, on_delete=models.CASCADE, related_name='examples', null=True, blank=True)
+    experience_level = models.CharField(max_length=20, choices=LEVEL_CHOICES, null=True, blank=True)
     image = models.ImageField(upload_to='resume_examples/')
     pdf = models.FileField(upload_to='resume_examples/pdf/', blank=True)
     featured = models.BooleanField(default=False)
@@ -504,24 +505,6 @@ class CVTemplateSelectView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ResumeExample(models.Model):
-    title = models.CharField(max_length=200)
-    category = models.CharField(max_length=50)
-    description = models.TextField()
-    image = models.ImageField(upload_to='resume_examples/')
-    pdf_file = models.FileField(upload_to='resume_examples/pdfs/')
-    is_featured = models.BooleanField(default=False)
-    is_published = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return self.title
-
-
 class CareerAdvice(models.Model):
     STATUS_CHOICES = [
         ('draft', 'Draft'),
@@ -552,30 +535,6 @@ class CareerAdvice(models.Model):
     def get_absolute_url(self):
         return reverse('home:career_advice_detail', kwargs={'slug': self.slug})
 
-
-
-class ResumeTemplate(models.Model):
-    CATEGORY_CHOICES = [
-        ('professional', 'Professional'),
-        ('creative', 'Creative'),
-        ('modern', 'Modern'),
-        ('simple', 'Simple'),
-        ('executive', 'Executive'),
-    ]
-
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-    preview_image = models.ImageField(upload_to='template_previews/')
-    thumbnail = models.ImageField(upload_to='template_thumbnails/')
-    is_premium = models.BooleanField(default=False)
-    is_featured = models.BooleanField(default=False)
-    description = models.TextField()
-    color_schemes = models.JSONField(null=True, blank=True)  # Store predefined color combinations
-    font_pairs = models.JSONField(null=True, blank=True)     # Store font combinations
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
 
 class TemplateSection(models.Model):
     template = models.ForeignKey(ResumeTemplate, on_delete=models.CASCADE)

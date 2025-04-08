@@ -12,17 +12,17 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import ResumeTemplate
-from home.models import Resume
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.contrib import messages
-from .models import ResumeTemplate
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from templates_app.models import ResumeTemplate
+
+from templates_app.models import UserTemplateSelection
 
 
 @login_required

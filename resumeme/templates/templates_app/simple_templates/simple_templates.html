@@ -1,56 +1,806 @@
-<!-- templates_app/simple_templates/simple_template.html -->
-{% extends 'templates_app/base_category_template.html' %}
-
-{% block category_css %}
-<style>
-    .category-hero {
-        background-color: #f0f9ff;
-    }
-
-    .category-title {
-        background: linear-gradient(90deg, #0ea5e9, #38bdf8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-    }
-
-    .filter-option.active {
-        background-color: #0ea5e9;
-    }
-
-    .simple-feature-icon {
-        color: #0ea5e9;
-    }
-</style>
-{% endblock %}
-
-{% block category_features %}
-<div class="col-md-4">
-    <div class="feature-card">
-        <div class="feature-icon">
-            <i class="bi bi-eye-fill fs-3 simple-feature-icon"></i>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="font-family: 'Inter', sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333;">
+    <!-- Header Section -->
+    <header style="background-color: white; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 20px 0;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 24px; font-weight: 700; color: #2d3748;">ResumeBuilder</div>
+            <nav>
+                <ul style="display: flex; list-style: none; gap: 30px; margin: 0; padding: 0;">
+                    <li><a href="#" style="text-decoration: none; color: #4a5568; font-weight: 500;">Templates</a></li>
+                    <li><a href="#" style="text-decoration: none; color: #4a5568; font-weight: 500;">Examples</a></li>
+                    <li><a href="#" style="text-decoration: none; color: #4a5568; font-weight: 500;">Pricing</a></li>
+                    <li><a href="#" style="text-decoration: none; color: #4a5568; font-weight: 500;">About</a></li>
+                </ul>
+            </nav>
+            <div>
+                <a href="#" style="text-decoration: none; background-color: #3182ce; color: white; padding: 10px 20px; border-radius: 4px; font-weight: 500;">Sign In</a>
+            </div>
         </div>
-        <h3 class="feature-title">Clean & Minimal</h3>
-        <p class="feature-description">Our simple templates focus on content with clean layouts and minimal distractions, making your qualifications stand out.</p>
-    </div>
-</div>
-<div class="col-md-4">
-    <div class="feature-card">
-        <div class="feature-icon">
-            <i class="bi bi-search fs-3 simple-feature-icon"></i>
+    </header>
+
+    <!-- Hero Section -->
+    <section style="background-color: #ebf4ff; padding: 60px 0;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
+            <h1 style="font-size: 42px; font-weight: 700; margin-bottom: 20px; color: #2d3748;">Professional Resume Templates</h1>
+            <p style="font-size: 18px; color: #4a5568; max-width: 700px; margin: 0 auto 30px;">Choose from our collection of professionally designed templates to create your perfect resume in minutes.</p>
+            <div style="display: flex; justify-content: center; gap: 20px;">
+                <a href="#creative" style="text-decoration: none; background-color: #3182ce; color: white; padding: 12px 24px; border-radius: 4px; font-weight: 500;">Creative Templates</a>
+                <a href="#simple" style="text-decoration: none; background-color: white; color: #3182ce; padding: 12px 24px; border-radius: 4px; font-weight: 500; border: 1px solid #3182ce;">Simple Templates</a>
+                <a href="#modern" style="text-decoration: none; background-color: white; color: #3182ce; padding: 12px 24px; border-radius: 4px; font-weight: 500; border: 1px solid #3182ce;">Modern Templates</a>
+            </div>
         </div>
-        <h3 class="feature-title">ATS Optimized</h3>
-        <p class="feature-description">All our simple templates are designed to pass through Applicant Tracking Systems with ease, ensuring your resume gets seen by recruiters.</p>
-    </div>
-</div>
-<div class="col-md-4">
-    <div class="feature-card">
-        <div class="feature-icon">
-            <i class="bi bi-file-earmark-text fs-3 simple-feature-icon"></i>
+    </section>
+
+    <!-- Creative Templates Section -->
+    <section id="creative" style="padding: 80px 0; background-color: white;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-size: 36px; font-weight: 700; color: #2d3748; margin-bottom: 15px;">Creative Templates</h2>
+                <p style="font-size: 18px; color: #4a5568; max-width: 700px; margin: 0 auto;">Stand out with our creative templates. Perfect for designers, artists, and professionals in creative industries.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Creative Template 1 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #f9e4b7; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 20px;">
+                            <div style="height: 40px; display: flex; align-items: center; margin-bottom: 15px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #f97316; margin-right: 15px;"></div>
+                                <div>
+                                    <div style="font-weight: 700; color: #1e293b;">SARAH JOHNSON</div>
+                                    <div style="font-size: 12px; color: #64748b;">GRAPHIC DESIGNER</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; height: calc(100% - 55px);">
+                                <div style="width: 35%; padding-right: 15px; border-right: 2px solid #f97316;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #f97316; margin-bottom: 10px;">CONTACT</div>
+                                    <div style="font-size: 10px; margin-bottom: 15px;">
+                                        <div style="margin-bottom: 5px;">sarah@example.com</div>
+                                        <div style="margin-bottom: 5px;">(123) 456-7890</div>
+                                        <div>New York, NY</div>
+                                    </div>
+
+                                    <div style="font-size: 12px; font-weight: 600; color: #f97316; margin-bottom: 10px; margin-top: 15px;">SKILLS</div>
+                                    <div style="font-size: 10px;">
+                                        <div style="margin-bottom: 5px;">Adobe Creative Suite</div>
+                                        <div style="margin-bottom: 5px;">UI/UX Design</div>
+                                        <div style="margin-bottom: 5px;">Typography</div>
+                                        <div>Brand Identity</div>
+                                    </div>
+                                </div>
+                                <div style="width: 65%; padding-left: 15px;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #f97316; margin-bottom: 10px;">EXPERIENCE</div>
+                                    <div style="font-size: 10px; margin-bottom: 10px;">
+                                        <div style="font-weight: 600; margin-bottom: 2px;">Senior Designer, Creative Agency</div>
+                                        <div style="font-style: italic; margin-bottom: 5px;">2018 - Present</div>
+                                        <div>Led design projects for major clients, managing brand identity and visual communication strategies.</div>
+                                    </div>
+
+                                    <div style="font-size: 12px; font-weight: 600; color: #f97316; margin-bottom: 10px; margin-top: 15px;">EDUCATION</div>
+                                    <div style="font-size: 10px;">
+                                        <div style="font-weight: 600; margin-bottom: 2px;">BFA in Graphic Design</div>
+                                        <div style="font-style: italic; margin-bottom: 5px;">Rhode Island School of Design</div>
+                                        <div>2014 - 2018</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Vibrant Creative</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Bold colors and creative layout for maximum visual impact.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #f97316; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+
+                <!-- Creative Template 2 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #d8b4fe; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 20px;">
+                            <div style="text-align: center; margin-bottom: 15px;">
+                                <div style="font-weight: 700; font-size: 18px; color: #1e293b; letter-spacing: 2px;">ALEX RIVERA</div>
+                                <div style="font-size: 12px; color: #64748b; letter-spacing: 1px;">INTERIOR DESIGNER</div>
+                            </div>
+                            <div style="display: flex; height: calc(100% - 55px);">
+                                <div style="width: 100%;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                        <div style="width: 30%; text-align: center; padding: 8px 0; border-bottom: 2px solid #a855f7;">
+                                            <div style="font-size: 10px; font-weight: 600; color: #a855f7;">CONTACT</div>
+                                        </div>
+                                        <div style="width: 30%; text-align: center; padding: 8px 0; border-bottom: 2px solid #a855f7;">
+                                            <div style="font-size: 10px; font-weight: 600; color: #a855f7;">SKILLS</div>
+                                        </div>
+                                        <div style="width: 30%; text-align: center; padding: 8px 0; border-bottom: 2px solid #a855f7;">
+                                            <div style="font-size: 10px; font-weight: 600; color: #a855f7;">EDUCATION</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="font-size: 12px; font-weight: 600; color: #a855f7; margin-bottom: 10px; text-align: center;">EXPERIENCE</div>
+                                    <div style="font-size: 10px; margin-bottom: 10px; text-align: center;">
+                                        <div style="font-weight: 600; margin-bottom: 2px;">Senior Interior Designer</div>
+                                        <div style="font-style: italic; margin-bottom: 5px;">Modern Spaces Design Studio • 2019 - Present</div>
+                                        <div style="padding: 0 20px;">Created innovative interior designs for residential and commercial spaces, focusing on sustainable materials and functional aesthetics.</div>
+                                    </div>
+
+                                    <div style="font-size: 10px; margin-bottom: 10px; text-align: center; margin-top: 15px;">
+                                        <div style="font-weight: 600; margin-bottom: 2px;">Interior Designer</div>
+                                        <div style="font-style: italic; margin-bottom: 5px;">Urban Living Interiors • 2016 - 2019</div>
+                                        <div style="padding: 0 20px;">Collaborated with architects and clients to develop cohesive interior design concepts for luxury apartments and boutique hotels.</div>
+                                    </div>
+
+                                    <div style="display: flex; justify-content: center; margin-top: 15px;">
+                                        <div style="width: 8px; height: 8px; background-color: #a855f7; border-radius: 50%; margin: 0 3px;"></div>
+                                        <div style="width: 8px; height: 8px; background-color: #a855f7; border-radius: 50%; margin: 0 3px;"></div>
+                                        <div style="width: 8px; height: 8px; background-color: #a855f7; border-radius: 50%; margin: 0 3px;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Artistic Flair</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Unique layout with artistic elements for creative professionals.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #a855f7; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+
+                <!-- Creative Template 3 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #bae6fd; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 20px;">
+                            <div style="display: flex; height: 100%;">
+                                <div style="width: 40%; background-color: #0ea5e9; color: white; padding: 20px; display: flex; flex-direction: column;">
+                                    <div style="margin-bottom: 20px;">
+                                        <div style="font-weight: 700; font-size: 16px; margin-bottom: 5px;">MICHAEL</div>
+                                        <div style="font-weight: 700; font-size: 16px;">THOMPSON</div>
+                                        <div style="font-size: 10px; margin-top: 5px;">WEB DEVELOPER</div>
+                                    </div>
+
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 10px; font-weight: 600; margin-bottom: 5px;">CONTACT</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">michael@example.com</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">(123) 456-7890</div>
+                                        <div style="font-size: 9px;">San Francisco, CA</div>
+                                    </div>
+
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 10px; font-weight: 600; margin-bottom: 5px;">SKILLS</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">JavaScript / React</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">Node.js / Express</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">HTML5 / CSS3</div>
+                                        <div style="font-size: 9px;">UI/UX Design</div>
+                                    </div>
+
+                                    <div>
+                                        <div style="font-size: 10px; font-weight: 600; margin-bottom: 5px;">EDUCATION</div>
+                                        <div style="font-size: 9px; font-weight: 600; margin-bottom: 2px;">B.S. Computer Science</div>
+                                        <div style="font-size: 9px; margin-bottom: 2px;">Stanford University</div>
+                                        <div style="font-size: 9px;">2014 - 2018</div>
+                                    </div>
+                                </div>
+                                <div style="width: 60%; padding: 20px;">
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 12px; font-weight: 600; color: #0ea5e9; margin-bottom: 10px;">PROFESSIONAL SUMMARY</div>
+                                        <div style="font-size: 9px;">Full-stack web developer with 5+ years of experience building responsive and scalable web applications using modern JavaScript frameworks.</div>
+                                    </div>
+
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 600; color: #0ea5e9; margin-bottom: 10px;">EXPERIENCE</div>
+
+                                        <div style="font-size: 9px; margin-bottom: 10px;">
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Senior Frontend Developer</div>
+                                            <div style="font-style: italic; margin-bottom: 3px;">TechStart Inc. • 2020 - Present</div>
+                                            <div style="margin-bottom: 5px;">• Developed responsive web applications using React and TypeScript</div>
+                                            <div style="margin-bottom: 5px;">• Implemented state management with Redux and Context API</div>
+                                            <div>• Collaborated with UX designers to create intuitive user interfaces</div>
+                                        </div>
+
+                                        <div style="font-size: 9px;">
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Web Developer</div>
+                                            <div style="font-style: italic; margin-bottom: 3px;">Digital Solutions • 2018 - 2020</div>
+                                            <div style="margin-bottom: 5px;">• Built and maintained client websites using JavaScript and PHP</div>
+                                            <div>• Optimized website performance and implemented SEO best practices</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Bold Contrast</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Strong color contrast with modern layout for visual impact.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #0ea5e9; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#" style="text-decoration: none; color: #3182ce; font-weight: 500; font-size: 16px;">View All Creative Templates →</a>
+            </div>
         </div>
-        <h3 class="feature-title">Traditional Format</h3>
-        <p class="feature-description">Our simple templates follow traditional resume formats that are widely accepted across industries and preferred by hiring managers.</p>
-    </div>
-</div>
-{% endblock %}
+    </section>
+
+    <!-- Simple Templates Section -->
+    <section id="simple" style="padding: 80px 0; background-color: #f8f9fa;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-size: 36px; font-weight: 700; color: #2d3748; margin-bottom: 15px;">Simple Templates</h2>
+                <p style="font-size: 18px; color: #4a5568; max-width: 700px; margin: 0 auto;">Clean and minimal designs that focus on content. Perfect for most professional fields.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Simple Template 1 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #f1f5f9; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+                            <div style="margin-bottom: 20px;">
+                                <div style="font-weight: 700; font-size: 18px; color: #1e293b;">David Wilson</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 3px;">Marketing Manager</div>
+                            </div>
+
+                            <div style="display: flex; margin-bottom: 20px;">
+                                <div style="font-size: 9px; margin-right: 15px;">
+                                    <div style="margin-bottom: 3px;">david@example.com</div>
+                                    <div>(123) 456-7890</div>
+                                </div>
+                                <div style="font-size: 9px;">
+                                    <div style="margin-bottom: 3px;">linkedin.com/in/davidwilson</div>
+                                    <div>Chicago, IL</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">EXPERIENCE</div>
+
+                                <div style="font-size: 9px; margin-bottom: 10px;">
+                                    <div style="font-weight: 600; margin-bottom: 2px;">Marketing Manager</div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                        <div>Global Brands Inc.</div>
+                                        <div>Jan 2019 - Present</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px;">• Developed and executed marketing strategies resulting in 30% growth</div>
+                                    <div style="margin-bottom: 3px;">• Managed a team of 5 marketing specialists and a $500K annual budget</div>
+                                    <div>• Launched successful digital campaigns across multiple platforms</div>
+                                </div>
+
+                                <div style="font-size: 9px;">
+                                    <div style="font-weight: 600; margin-bottom: 2px;">Marketing Specialist</div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                        <div>Tech Solutions LLC</div>
+                                        <div>Mar 2016 - Dec 2018</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px;">• Created content for social media and email marketing campaigns</div>
+                                    <div>• Analyzed marketing metrics and prepared monthly performance reports</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">EDUCATION</div>
+
+                                <div style="font-size: 9px;">
+                                    <div style="font-weight: 600; margin-bottom: 2px;">MBA, Marketing</div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                        <div>Northwestern University</div>
+                                        <div>2014 - 2016</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="font-size: 12px; font-weight: 600; color: #334155; margin-bottom: 5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">SKILLS</div>
+
+                                <div style="display: flex; flex-wrap: wrap; gap: 5px; font-size: 9px;">
+                                    <div style="background-color: #f1f5f9; padding: 3px 8px; border-radius: 3px;">Digital Marketing</div>
+                                    <div style="background-color: #f1f5f9; padding: 3px 8px; border-radius: 3px;">SEO</div>
+                                    <div style="background-color: #f1f5f9; padding: 3px 8px; border-radius: 3px;">Content Strategy</div>
+                                    <div style="background-color: #f1f5f9; padding: 3px 8px; border-radius: 3px;">Social Media</div>
+                                    <div style="background-color: #f1f5f9; padding: 3px 8px; border-radius: 3px;">Google Analytics</div>
+                                    <div style="background-color: #f1f5f9; padding: 3px 8px; border-radius: 3px;">Team Leadership</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Classic Simple</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Clean and straightforward design for a professional look.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #475569; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+
+                <!-- Simple Template 2 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #e2e8f0; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+                            <div style="text-align: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e2e8f0;">
+                                <div style="font-weight: 700; font-size: 18px; color: #1e293b;">JENNIFER PARKER</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 3px;">PROJECT MANAGER</div>
+                            </div>
+
+                            <div style="display: flex; height: calc(100% - 50px);">
+                                <div style="width: 100%;">
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">PROFESSIONAL SUMMARY</div>
+                                        <div style="font-size: 9px;">Dedicated project manager with 7+ years of experience leading cross-functional teams and delivering complex projects on time and within budget. Strong skills in stakeholder management, risk assessment, and agile methodologies.</div>
+                                    </div>
+
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">EXPERIENCE</div>
+
+                                        <div style="font-size: 9px; margin-bottom: 8px;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <div style="font-weight: 600;">Senior Project Manager</div>
+                                                <div>2018 - Present</div>
+                                            </div>
+                                            <div style="margin-bottom: 3px;">Innovate Solutions, Boston, MA</div>
+                                            <div>• Successfully managed 15+ enterprise software implementation projects</div>
+                                        </div>
+
+                                        <div style="font-size: 9px;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <div style="font-weight: 600;">Project Manager</div>
+                                                <div>2015 - 2018</div>
+                                            </div>
+                                            <div style="margin-bottom: 3px;">Tech Enterprises, Boston, MA</div>
+                                            <div>• Led agile development teams for web application projects</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">EDUCATION</div>
+
+                                        <div style="font-size: 9px;">
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <div style="font-weight: 600;">MBA, Business Administration</div>
+                                                <div>2013 - 2015</div>
+                                            </div>
+                                            <div>Boston University, Boston, MA</div>
+                                        </div>
+                                    </div>
+
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="width: 48%;">
+                                            <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">SKILLS</div>
+                                            <div style="font-size: 9px;">
+                                                <div>• Project Management</div>
+                                                <div>• Agile & Scrum</div>
+                                                <div>• Budgeting</div>
+                                                <div>• Risk Management</div>
+                                            </div>
+                                        </div>
+                                        <div style="width: 48%;">
+                                            <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">CONTACT</div>
+                                            <div style="font-size: 9px;">
+                                                <div>jennifer@example.com</div>
+                                                <div>(123) 456-7890</div>
+                                                <div>Boston, MA</div>
+                                                <div>linkedin.com/in/jenniferparker</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Minimalist</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Simple and elegant design with perfect content organization.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #64748b; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+
+                <!-- Simple Template 3 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #f8fafc; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+                            <div style="display: flex; margin-bottom: 15px;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; font-size: 18px; color: #1e293b;">Robert Chen</div>
+                                    <div style="font-size: 12px; color: #64748b; margin-top: 3px;">Financial Analyst</div>
+                                </div>
+                                <div style="text-align: right; font-size: 9px; color: #64748b;">
+                                    <div>robert@example.com</div>
+                                    <div>(123) 456-7890</div>
+                                    <div>San Francisco, CA</div>
+                                </div>
+                            </div>
+
+                            <div style="height: 1px; background-color: #e2e8f0; margin-bottom: 15px;"></div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">SUMMARY</div>
+                                <div style="font-size: 9px;">Detail-oriented financial analyst with 5+ years of experience in financial modeling, data analysis, and investment research. Proven track record of providing actionable insights that drive strategic business decisions.</div>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">EXPERIENCE</div>
+
+                                <div style="font-size: 9px; margin-bottom: 8px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="font-weight: 600;">Senior Financial Analyst</div>
+                                        <div>2019 - Present</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px;">Pacific Investment Group, San Francisco, CA</div>
+                                    <div style="margin-bottom: 3px;">• Developed financial models to evaluate investment opportunities</div>
+                                    <div>• Prepared quarterly financial reports and presentations for executive team</div>
+                                </div>
+
+                                <div style="font-size: 9px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="font-weight: 600;">Financial Analyst</div>
+                                        <div>2017 - 2019</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px;">Global Finance Corp, San Francisco, CA</div>
+                                    <div>• Conducted industry research and competitive analysis</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between;">
+                                <div style="width: 48%;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">EDUCATION</div>
+                                    <div style="font-size: 9px; margin-bottom: 8px;">
+                                        <div style="font-weight: 600;">MBA, Finance</div>
+                                        <div>University of California, Berkeley</div>
+                                        <div>2015 - 2017</div>
+                                    </div>
+                                    <div style="font-size: 9px;">
+                                        <div style="font-weight: 600;">B.S. Economics</div>
+                                        <div>University of Washington</div>
+                                        <div>2011 - 2015</div>
+                                    </div>
+                                </div>
+                                <div style="width: 48%;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #334155; margin-bottom: 5px;">SKILLS</div>
+                                    <div style="font-size: 9px;">
+                                        <div>• Financial Modeling</div>
+                                        <div>• Data Analysis</div>
+                                        <div>• Excel & PowerBI</div>
+                                        <div>• Investment Research</div>
+                                        <div>• Forecasting</div>
+                                        <div>• SQL</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Professional Basic</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Clean layout with emphasis on professional experience.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #334155; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#" style="text-decoration: none; color: #3182ce; font-weight: 500; font-size: 16px;">View All Simple Templates →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modern Templates Section -->
+    <section id="modern" style="padding: 80px 0; background-color: white;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-size: 36px; font-weight: 700; color: #2d3748; margin-bottom: 15px;">Modern Templates</h2>
+                <p style="font-size: 18px; color: #4a5568; max-width: 700px; margin: 0 auto;">Contemporary designs with a perfect balance of style and professionalism.</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Modern Template 1 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #f0f9ff; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+                            <div style="display: flex; margin-bottom: 20px;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 700; font-size: 18px; color: #0284c7;">EMMA RODRIGUEZ</div>
+                                    <div style="font-size: 12px; color: #64748b; margin-top: 3px; text-transform: uppercase; letter-spacing: 1px;">UX/UI Designer</div>
+                                </div>
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #0284c7;"></div>
+                            </div>
+
+                            <div style="display: flex; margin-bottom: 15px; font-size: 9px; color: #64748b;">
+                                <div style="margin-right: 15px; display: flex; align-items: center;">
+                                    <div style="width: 4px; height: 4px; background-color: #0284c7; border-radius: 50%; margin-right: 5px;"></div>
+                                    <div>emma@example.com</div>
+                                </div>
+                                <div style="margin-right: 15px; display: flex; align-items: center;">
+                                    <div style="width: 4px; height: 4px; background-color: #0284c7; border-radius: 50%; margin-right: 5px;"></div>
+                                    <div>(123) 456-7890</div>
+                                </div>
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 4px; height: 4px; background-color: #0284c7; border-radius: 50%; margin-right: 5px;"></div>
+                                    <div>Los Angeles, CA</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 11px; font-weight: 600; color: #0284c7; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Experience</div>
+
+                                <div style="font-size: 9px; margin-bottom: 8px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="font-weight: 600;">Senior UX/UI Designer</div>
+                                        <div>2020 - Present</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px; color: #64748b;">Creative Digital Agency, Los Angeles, CA</div>
+                                    <div style="margin-bottom: 3px;">• Led UX research and design for enterprise web applications</div>
+                                    <div>• Created design systems and component libraries</div>
+                                </div>
+
+                                <div style="font-size: 9px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="font-weight: 600;">UX Designer</div>
+                                        <div>2017 - 2020</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px; color: #64748b;">Tech Innovations Inc., San Diego, CA</div>
+                                    <div>• Designed user interfaces for mobile applications</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between;">
+                                <div style="width: 48%;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #0284c7; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Education</div>
+                                    <div style="font-size: 9px; margin-bottom: 8px;">
+                                        <div style="font-weight: 600;">B.F.A. Graphic Design</div>
+                                        <div style="color: #64748b;">California Institute of the Arts</div>
+                                        <div>2013 - 2017</div>
+                                    </div>
+                                </div>
+                                <div style="width: 48%;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #0284c7; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Skills</div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 5px; font-size: 8px;">
+                                        <div style="background-color: #f0f9ff; padding: 3px 8px; border-radius: 3px; color: #0284c7;">User Research</div>
+                                        <div style="background-color: #f0f9ff; padding: 3px 8px; border-radius: 3px; color: #0284c7;">Wireframing</div>
+                                        <div style="background-color: #f0f9ff; padding: 3px 8px; border-radius: 3px; color: #0284c7;">Prototyping</div>
+                                        <div style="background-color: #f0f9ff; padding: 3px 8px; border-radius: 3px; color: #0284c7;">Figma</div>
+                                        <div style="background-color: #f0f9ff; padding: 3px 8px; border-radius: 3px; color: #0284c7;">Adobe XD</div>
+                                        <div style="background-color: #f0f9ff; padding: 3px 8px; border-radius: 3px; color: #0284c7;">Sketch</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Modern Sleek</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Contemporary design with clean typography and subtle accents.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #0284c7; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+
+                <!-- Modern Template 2 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #fdf2f8; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+                            <div style="display: flex; height: 100%;">
+                                <div style="width: 35%; background-color: #fdf2f8; padding: 20px; display: flex; flex-direction: column;">
+                                    <div style="margin-bottom: 20px; text-align: center;">
+                                        <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #db2777; margin: 0 auto 10px;"></div>
+                                        <div style="font-weight: 700; font-size: 14px; color: #1e293b;">SOPHIA LEE</div>
+                                        <div style="font-size: 10px; color: #64748b; margin-top: 3px;">PRODUCT MANAGER</div>
+                                    </div>
+
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 10px; font-weight: 600; color: #db2777; margin-bottom: 5px;">CONTACT</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">sophia@example.com</div>
+                                        <div style="font-size: 9px; margin-bottom: 3px;">(123) 456-7890</div>
+                                        <div style="font-size: 9px;">Seattle, WA</div>
+                                    </div>
+
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 10px; font-weight: 600; color: #db2777; margin-bottom: 5px;">EDUCATION</div>
+                                        <div style="font-size: 9px; margin-bottom: 8px;">
+                                            <div style="font-weight: 600;">MBA</div>
+                                            <div>University of Washington</div>
+                                            <div>2016 - 2018</div>
+                                        </div>
+                                        <div style="font-size: 9px;">
+                                            <div style="font-weight: 600;">B.S. Computer Science</div>
+                                            <div>Stanford University</div>
+                                            <div>2012 - 2016</div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div style="font-size: 10px; font-weight: 600; color: #db2777; margin-bottom: 5px;">SKILLS</div>
+                                        <div style="font-size: 9px;">
+                                            <div>• Product Strategy</div>
+                                            <div>• User Research</div>
+                                            <div>• Agile/Scrum</div>
+                                            <div>• Data Analysis</div>
+                                            <div>• Roadmapping</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="width: 65%; padding: 20px;">
+                                    <div style="margin-bottom: 15px;">
+                                        <div style="font-size: 12px; font-weight: 600; color: #db2777; margin-bottom: 5px;">PROFESSIONAL SUMMARY</div>
+                                        <div style="font-size: 9px;">Results-driven product manager with 6+ years of experience developing innovative digital products. Skilled in translating business requirements into product features, conducting market research, and leading cross-functional teams.</div>
+                                    </div>
+
+                                    <div>
+                                        <div style="font-size: 12px; font-weight: 600; color: #db2777; margin-bottom: 5px;">EXPERIENCE</div>
+
+                                        <div style="font-size: 9px; margin-bottom: 10px;">
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Senior Product Manager</div>
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                <div>Cloud Technologies Inc.</div>
+                                                <div>2020 - Present</div>
+                                            </div>
+                                            <div style="margin-bottom: 3px;">• Led the development and launch of a SaaS platform that generated $2M in first-year revenue</div>
+                                            <div style="margin-bottom: 3px;">• Managed a product roadmap with quarterly releases and prioritized features based on user feedback and business goals</div>
+                                            <div>• Collaborated with engineering, design, and marketing teams to ensure successful product delivery</div>
+                                        </div>
+
+                                        <div style="font-size: 9px; margin-bottom: 10px;">
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Product Manager</div>
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                <div>Tech Innovations</div>
+                                                <div>2018 - 2020</div>
+                                            </div>
+                                            <div style="margin-bottom: 3px;">• Conducted market research and competitive analysis to identify product opportunities</div>
+                                            <div>• Created user stories and worked with developers to implement new features</div>
+                                        </div>
+
+                                        <div style="font-size: 9px;">
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Associate Product Manager</div>
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                                <div>Digital Solutions LLC</div>
+                                                <div>2016 - 2018</div>
+                                            </div>
+                                            <div>• Assisted in the development of product requirements and specifications</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Modern Split</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Contemporary two-column layout with accent colors.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #db2777; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+
+                <!-- Modern Template 3 -->
+                <div style="background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)';">
+                    <div style="height: 400px; background-color: #ecfdf5; position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: 40px; left: 30px; right: 30px; bottom: 40px; background-color: white; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px;">
+                            <div style="border-left: 3px solid #10b981; padding-left: 15px; margin-bottom: 20px;">
+                                <div style="font-weight: 700; font-size: 18px; color: #1e293b;">MARCUS JOHNSON</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 3px;">SOFTWARE ENGINEER</div>
+                            </div>
+
+                            <div style="display: flex; margin-bottom: 15px; font-size: 9px; color: #64748b;">
+                                <div style="margin-right: 15px;">marcus@example.com</div>
+                                <div style="margin-right: 15px;">(123) 456-7890</div>
+                                <div>Austin, TX</div>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-size: 11px; font-weight: 600; color: #10b981; margin-bottom: 5px; border-bottom: 1px solid #d1fae5; padding-bottom: 3px;">EXPERIENCE</div>
+
+                                <div style="font-size: 9px; margin-bottom: 8px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="font-weight: 600;">Senior Software Engineer</div>
+                                        <div>2019 - Present</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px; color: #64748b;">Tech Innovations, Austin, TX</div>
+                                    <div style="margin-bottom: 3px;">• Developed and maintained microservices architecture for cloud-based applications</div>
+                                    <div>• Led a team of 5 engineers and implemented CI/CD pipelines</div>
+                                </div>
+
+                                <div style="font-size: 9px;">
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <div style="font-weight: 600;">Software Engineer</div>
+                                        <div>2016 - 2019</div>
+                                    </div>
+                                    <div style="margin-bottom: 3px; color: #64748b;">Digital Solutions, Dallas, TX</div>
+                                    <div>• Built RESTful APIs and implemented frontend features using React</div>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between;">
+                                <div style="width: 48%;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #10b981; margin-bottom: 5px; border-bottom: 1px solid #d1fae5; padding-bottom: 3px;">EDUCATION</div>
+                                    <div style="font-size: 9px; margin-bottom: 8px;">
+                                        <div style="font-weight: 600;">M.S. Computer Science</div>
+                                        <div style="color: #64748b;">University of Texas at Austin</div>
+                                        <div>2014 - 2016</div>
+                                    </div>
+                                    <div style="font-size: 9px;">
+                                        <div style="font-weight: 600;">B.S. Computer Engineering</div>
+                                        <div style="color: #64748b;">Texas A&M University</div>
+                                        <div>2010 - 2014</div>
+                                    </div>
+                                </div>
+                                <div style="width: 48%;">
+                                    <div style="font-size: 11px; font-weight: 600; color: #10b981; margin-bottom: 5px; border-bottom: 1px solid #d1fae5; padding-bottom: 3px;">SKILLS</div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 5px; font-size: 8px;">
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">JavaScript</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">React</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">Node.js</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">Python</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">AWS</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">Docker</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">Kubernetes</div>
+                                        <div style="background-color: #ecfdf5; padding: 3px 8px; border-radius: 3px; color: #10b981;">CI/CD</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 10px; color: #2d3748;">Modern Accent</h3>
+                        <p style="font-size: 14px; color: #4a5568; margin: 0 0 15px;">Clean design with subtle color accents and modern typography.</p>
+                        <a href="#" style="display: inline-block; text-decoration: none; background-color: #10b981; color: white; padding: 8px 16px; border-radius: 4px; font-weight: 500; font-size: 14px;">Use This Template</a>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="#" style="text-decoration: none; color: #3182ce; font-weight: 500; font-size: 16px;">View All Modern Templates →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section style="padding: 80px 0; background-color: #ebf4ff;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px; text-align: center;">
+            <h2 style="font-size: 36px; font-weight: 700; color: #2d3748; margin-bottom: 15px;">Create Your Professional Resume Today</h2>
+            <p style="font-size: 18px; color: #4a5568; max-width: 700px; margin: 0 auto 30px;">Choose from our collection of professionally designed templates and create a standout resume in minutes.</p>
+            <a href="#" style="display: inline-block; text-decoration: none; background-color: #3182ce; color: white; padding: 16px 32px; border-radius: 4px; font-weight: 600; font-size: 18px;">Get Started for Free</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background-color: #1a202c; color: white; padding: 60px 0 30px;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; margin-bottom: 40px;">
+                <div style="width: 300px; margin-bottom: 30px;">
+                    <div style="font-size: 24px; font-weight: 700; margin-bottom: 15px;">ResumeBuilder</div>
+                    <p style="color: #a0aec0; font-size: 14px; line-height: 1.6;">Create professional resumes with our easy-to-use builder. Choose from our collection of templates designed to impress employers.</p>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <div style="font-weight: 600; margin-bottom: 15px; color: white;">Templates</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;"><a href="#creative" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Creative</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#simple" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Simple</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#modern" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Modern</a></li>
+                        <li><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">All Templates</a></li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <div style="font-weight: 600; margin-bottom: 15px; color: white;">Resources</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Resume Examples</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Resume Writing Guide</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Cover Letter Templates</a></li>
+                        <li><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Career Advice</a></li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 30px;">
+                    <div style="font-weight: 600; margin-bottom: 15px; color: white;">Company</div>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">About Us</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Contact</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Privacy Policy</a></li>
+                        <li><a href="#" style="color: #a0aec0; text-decoration: none; font-size: 14px;">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid #2d3748; padding-top: 30px; text-align: center; font-size: 14px; color: #a0aec0;">
+                <p>&copy; 2023 ResumeBuilder. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -68,6 +68,7 @@ INSTALLED_APPS = [
 
     #p
     'phonenumber_field',
+    'payments',
 
     'resume',
 
@@ -300,7 +301,6 @@ CSRF_COOKIE_SECURE = False  # Set to True in production
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-# PDF Export settings
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+# Stripe Settings
+STRIPE_PUBLIC_KEY = 'your_stripe_public_key'
+STRIPE_SECRET_KEY = 'your_stripe_secret_key'

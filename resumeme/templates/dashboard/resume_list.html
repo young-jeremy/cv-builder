@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+
 {% load static %}
 
 {% block title %}Resume List{% endblock %}
@@ -9,7 +11,7 @@
     
     <div class="row mb-4">
         <div class="col text-end">
-            <a href="{% url 'dashboard:create_resume' %}" class="btn btn-success">Create New Resume</a>
+            <a href="{% url 'home:create_resume' %}" class="btn btn-success">Create New Resume</a>
         </div>
     </div>
     
@@ -37,7 +39,7 @@
         </div>
         {% empty %}
         <div class="col-12">
-            <p class="text-center">No resumes found. <a href="{% url 'dashboard:create_resume' %}">Create a new resume</a> to get started.</p>
+            <p class="text-center">No resumes found. <a href="{% url 'home:create_resume' %}">Create a new resume</a> to get started.</p>
         </div>
         {% endfor %}
     </div>

@@ -1,10 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import (
-    Resume, PersonalInfo, Experience, Education,
+from .models import ( PersonalInfo, Experience, Education,
     Skill, Project, Language, Certification, TemplateColor
 )
+from templates_app.models import ResumeTemplate
 
 
 class UserRegistrationForm(UserCreationForm):
@@ -24,7 +24,7 @@ class UserRegistrationForm(UserCreationForm):
 
 class ResumeForm(forms.ModelForm):
     class Meta:
-        model = Resume
+        model = ResumeTemplate
         fields = ['title', 'template']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),

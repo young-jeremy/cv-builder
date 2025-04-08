@@ -1,0 +1,182 @@
+<!-- templates/resume_templates/professional/executive.html -->
+{% extends "resume_templates/base.html" %}
+
+{% block resume_styles %}
+<style>
+    :root {
+        --primary-color: {{ primary_color|default:'#1a365d' }};
+        --font-family: {{ font_family|default:'Georgia, serif' }};
+    }
+    
+    .resume-executive {
+        font-family: var(--font-family);
+        color: #333;
+        line-height: 1.5;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px;
+    }
+    
+    .resume-executive .header {
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .resume-executive .name {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin: 0 0 15px 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .resume-executive .contact-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        font-size: 14px;
+    }
+    
+    .resume-executive .contact-item {
+        display: flex;
+        align-items: center;
+    }
+    
+    .resume-executive .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 30px 0 15px 0;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+    }
+    
+    .resume-executive .section-content {
+        margin-bottom: 25px;
+    }
+    
+    .resume-executive .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    
+    .resume-executive .experience-item,
+    .resume-executive .education-item {
+        margin-bottom: 20px;
+    }
+    
+    .resume-executive .job-title,
+    .resume-executive .degree {
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    
+    .resume-executive .employer,
+    .resume-executive .institution {
+        font-weight: 700;
+        font-style: italic;
+    }
+    
+    .resume-executive .date {
+        font-style: italic;
+        color: #666;
+        margin-bottom: 10px;
+    }
+    
+    .resume-executive .description {
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+{% block resume_content %}
+<div class="resume-executive">
+    <header class="header">
+        <h1 class="name">
+            {{ sample_data.personal_info.first_name }} {{ sample_data.personal_info.last_name }}
+        </h1>
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="icon-email"></i>
+                {{ sample_data.personal_info.email }}
+            </div>
+            <div class="contact-item">
+                <i class="icon-phone"></i>
+                {{ sample_data.personal_info.phone }}
+            </div>
+            <div class="contact-item">
+                <i class="icon-location"></i>
+                {{ sample_data.personal_info.address }}, {{ sample_data.personal_info.city }}, {{ sample_data.personal_info.state }} {{ sample_data.personal_info.zip_code }}
+            </div>
+            {% if sample_data.personal_info.linkedin %}
+            <div class="contact-item">
+                <i class="icon-linkedin"></i>
+                {{ sample_data.personal_info.linkedin }}
+            </div>
+            {% endif %}
+            {% if sample_data.personal_info.website %}
+            <div class="contact-item">
+                <i class="icon-website"></i>
+                {{ sample_data.personal_info.website }}
+            </div>
+            {% endif %}
+        </div>
+    </header>
+
+    <section>
+        <h2 class="section-title">Executive Summary</h2>
+        <div class="section-content">
+            <p>{{ sample_data.summary }}</p>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">Professional Experience</h2>
+        <div class="section-content">
+            {% for job in sample_data.experience %}
+            <div class="experience-item">
+                <div class="job-title">{{ job.job_title }}</div>
+                <div class="employer">{{ job.employer }}</div>
+                <div class="date">
+                    {{ job.start_date }} - {% if job.current_job %}Present{% else %}{{ job.end_date }}{% endif %}
+                </div>
+                <div class="description">{{ job.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">Education</h2>
+        <div class="section-content">
+            {% for edu in sample_data.education %}
+            <div class="education-item">
+                <div class="degree">{{ edu.degree }}</div>
+                <div class="institution">{{ edu.institution }}</div>
+                <div class="date">
+                    {{ edu.start_date }} - {% if edu.current_education %}Present{% else %}{{ edu.end_date }}{% endif %}
+                </div>
+                <div class="description">{{ edu.description }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">Core Competencies</h2>
+        <div class="section-content">
+            <div class="skills-grid">
+                {% for skill in sample_data.skills %}
+                <div>{{ skill }}</div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

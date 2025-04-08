@@ -1,0 +1,207 @@
+<!-- templates/resume_templates/professional/modern.html -->
+{% extends "resume_templates/base.html" %}
+
+{% block resume_styles %}
+<style>
+    :root {
+        --primary-color: {{ primary_color|default:'#2563eb' }};
+        --font-family: {{ font_family|default:'Inter, sans-serif' }};
+    }
+
+    .resume-modern {
+        font-family: var(--font-family);
+        color: #333;
+        line-height: 1.5;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0;
+        display: flex;
+    }
+
+    .resume-modern .sidebar {
+        width: 30%;
+        background-color: var(--primary-color);
+        color: white;
+        padding: 40px 20px;
+    }
+
+    .resume-modern .main {
+        width: 70%;
+        padding: 40px 30px;
+    }
+
+    .resume-modern .profile-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.2);
+        margin: 0 auto 20px;
+    }
+
+    .resume-modern .name {
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .resume-modern .title {
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 30px;
+        opacity: 0.8;
+    }
+
+    .resume-modern .sidebar-section {
+        margin-bottom: 30px;
+    }
+
+    .resume-modern .sidebar-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        padding-bottom: 5px;
+    }
+
+    .resume-modern .contact-item {
+        margin-bottom: 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+    }
+
+    .resume-modern .skills-list {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .resume-modern .skill-item {
+        margin-bottom: 8px;
+        font-size: 14px;
+        position: relative;
+        padding-left: 15px;
+    }
+
+    .resume-modern .skill-item:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+    }
+
+    .resume-modern .main-section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 10px;
+    }
+
+    .resume-modern .experience-item {
+        margin-bottom: 25px;
+    }
+
+    .resume-modern .job-title {
+        font-weight: 700;
+        font-size: 18px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .resume-modern .employer {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    .resume-modern .date {
+        color: #666;
+        margin-bottom: 10px;
+        font-size: 14px;
+    }
+
+    .resume-modern .description {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block resume_content %}
+<div class="resume-modern">
+    <div class="sidebar">
+        <div class="profile-img"></div>
+        <h1 class="name">
+            {{ sample_data.personal_info.first_name }} {{ sample_data.personal_info.last_name }}
+        </h1>
+        <p class="title">Professional Title</p>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Contact</h3>
+            <div class="contact-item">
+                <i class="icon-email" style="margin-right: 10px;"></i>
+                {{ sample_data.personal_info.email }}
+            </div>
+            <div class="contact-item">
+                <i class="icon-phone" style="margin-right: 10px;"></i>
+                {{ sample_data.personal_info.phone }}
+            </div>
+            <div class="contact-item">
+                <i class="icon-location" style="margin-right: 10px;"></i>
+                {{ sample_data.personal_info.city }}, {{ sample_data.personal_info.state }}
+            </div>
+            {% if sample_data.personal_info.linkedin %}
+            <div class="contact-item">
+                <i class="icon-linkedin" style="margin-right: 10px;"></i>
+                {{ sample_data.personal_info.linkedin }}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="sidebar-section">
+            <h3 class="sidebar-title">Skills</h3>
+            <ul class="skills-list">
+                {% for skill in sample_data.skills %}
+                <li class="skill-item">{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="main">
+        <section>
+            <h2 class="main-section-title">Profile</h2>
+            <p class="description">{{ sample_data.summary }}</p>
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h2 class="main-section-title">Experience</h2>
+            {% for job in sample_data.experience %}
+            <div class="experience-item">
+                <div class="job-title">{{ job.job_title }}</div>
+                <div class="employer">{{ job.employer }}</div>
+                <div class="date">
+                    {{ job.start_date }} - {% if job.current_job %}Present{% else %}{{ job.end_date }}{% endif %}
+                </div>
+                <div class="description">{{ job.description }}</div>
+            </div>
+            {% endfor %}
+        </section>
+
+        <section style="margin-top: 30px;">
+            <h2 class="main-section-title">Education</h2>
+            {% for edu in sample_data.education %}
+            <div class="experience-item">
+                <div class="job-title">{{ edu.degree }}</div>
+                <div class="employer">{{ edu.institution }}</div>
+                <div class="date">
+                    {{ edu.start_date }} - {% if edu.current_education %}Present{% else %}{{ edu.end_date }}{% endif %}
+                </div>
+                <div class="description">{{ edu.description }}</div>
+            </div>
+            {% endfor %}
+        </section>
+    </div>
+</div>
+{% endblock %}

@@ -2,20 +2,19 @@ from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView
 from django.db.models import Count, Q
 from django.urls import reverse
-from .models import ResumeTemplate, TemplateCategory, TemplateColor, UserTemplateSelection
+from .models import  TemplateCategory, TemplateColor, UserTemplateSelection
 from .forms import TemplateFilterForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import ResumeTemplate, UserTemplateSelection
-from resume.models import  Resume
 from django.http import JsonResponse, Http404
 from django.views.decorators.http import require_POST
 import json
-from home.models import Resume  # Assuming you have a Resume model
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import io
+import requests
 from django.template.loader import get_template
 from xhtml2pdf import pisa  # You'll need to install this: pip install xhtml2pdf
 from django.shortcuts import render, redirect, get_object_or_404
@@ -29,7 +28,11 @@ from django.utils.text import slugify
 from django.contrib import messages
 import json
 from dashboard.models import ResumeUploadForm
-# views.py
+from .models import Resume
+from home.models import ResumeSection
+from resume.forms import ResumeForm
+
+
 class AllTemplatesView(ListView):
     """View for browsing all resume templates"""
     model = ResumeTemplate
@@ -195,7 +198,7 @@ class ModernTemplatesView(ListView):
 class CreativeTemplatesView(ListView):
     """View for browsing creative resume templates"""
     model = ResumeTemplate
-    template_name = 'templates_app/creative_templates/creative_template.html'
+    template_name = 'templates_app/professional_templates/professional_template.html'
     context_object_name = 'templates'
 
     def get_queryset(self):
@@ -243,116 +246,6 @@ class CreativeTemplatesView(ListView):
 
         return context
 
-def template_detail(request, template_slug):
-    template = get_object_or_404(ResumeTemplate, slug=template_slug, is_active=True)
-
-    # Get sample data for preview
-    sample_data = {
-        'personal_info': {
-            'full_name': 'John Doe',
-            'job_title': 'Software Engineer',
-            'email': 'john.doe@example.com',
-            'phone': '(123) 456-7890',
-            'address': 'New York, NY',
-            'summary': 'Experienced software engineer with a passion for developing innovative solutions...'
-        },
-        'experiences': [
-            {
-                'company': 'Tech Solutions Inc.',
-                'position': 'Senior Software Engineer',
-                'location': 'New York, NY',
-                'start_date': '2018-01-01',
-                'end_date': None,
-                'current': True,
-                'description': 'Led development of cloud-based applications...'
-            },
-            {
-                'company': 'Digital Innovations',
-                'position': 'Software Developer',
-                'location': 'Boston, MA',
-                'start_date': '2015-03-01',
-                'end_date': '2017-12-31',
-                'current': False,
-                'description': 'Developed and maintained web applications...'
-            }
-        ],
-        'educations': [
-            {
-                'institution': 'MIT',
-                'degree': 'Master of Science',
-                'field_of_study': 'Computer Science',
-                'location': 'Cambridge, MA',
-                'start_date': '2013-09-01',
-                'end_date': '2015-05-31',
-                'current': False,
-                'description': ''
-            }
-        ],
-        'skills': [
-            {'name': 'JavaScript', 'level': 5},
-            {'name': 'Python', 'level': 4},
-            {'name': 'React', 'level': 4},
-            {'name': 'Node.js', 'level': 3},
-            {'name': 'SQL', 'level': 4}
-        ],
-        'languages': [
-            {'name': 'English', 'proficiency': 'native'},
-            {'name': 'Spanish', 'proficiency': 'professional'}
-        ],
-        'projects': [
-            {
-                'title': 'E-commerce Platform',
-                'description': 'Developed a full-stack e-commerce platform...',
-                'url': 'https://github.com/johndoe/ecommerce',
-                'start_date': '2019-06-01',
-                'end_date': '2019-12-31'
-            }
-        ],
-        'certifications': [
-            {
-                'name': 'AWS Certified Solutions Architect',
-                'issuing_organization': 'Amazon Web Services',
-                'issue_date': '2020-01-15',
-                'expiration_date': '2023-01-15',
-                'credential_id': 'AWS-123456',
-                'credential_url': 'https://aws.amazon.com/certification/verify'
-            }
-        ]
-    }
-    try:
-        template = get_object_or_404(ResumeTemplate, slug=template_slug)
-        return render(request, 'templates_app/template_detail.html', {
-            'template': template,
-        })
-    except Http404:
-        # Get all available templates to suggest alternatives
-        available_templates = ResumeTemplate.objects.all()[:5]  # Get first 5 templates
-        return render(request, 'templates_app/template_not_found.html', {
-            'requested_slug': template_slug,
-            'available_templates': available_templates,
-        })
-
-    # Get related templates (same category)
-    related_templates = ResumeTemplate.objects.filter(
-        category=template.category,
-        is_active=True
-    ).exclude(id=template.id).order_by('?')[:3]
-
-    # Get color schemes for customization preview
-    color_schemes = [
-        {'name': 'Default', 'primary': '#3b82f6', 'secondary': '#6c757d', 'accent': '#10b981'},
-        {'name': 'Professional', 'primary': '#1e40af', 'secondary': '#475569', 'accent': '#0369a1'},
-        {'name': 'Creative', 'primary': '#7c3aed', 'secondary': '#6b7280', 'accent': '#ec4899'},
-        {'name': 'Modern', 'primary': '#0f766e', 'secondary': '#4b5563', 'accent': '#f59e0b'},
-        {'name': 'Classic', 'primary': '#b91c1c', 'secondary': '#374151', 'accent': '#ca8a04'}
-    ]
-
-    return render(request, 'templates_app/latest_template_detail.html', {
-        'template': template,
-        'sample_data': sample_data,
-        'related_templates': related_templates,
-        'color_schemes': color_schemes
-    })
 
 def compare_templates(request):
     template_ids = request.GET.getlist('templates')
@@ -441,106 +334,6 @@ def template_api(request):
     })
 
 
-def template_detail(request, template_slug):
-    template = get_object_or_404(ResumeTemplate, slug=template_slug, is_active=True)
-
-    # Get sample data for preview
-    sample_data = {
-        'personal_info': {
-            'full_name': 'John Doe',
-            'job_title': 'Software Engineer',
-            'email': 'john.doe@example.com',
-            'phone': '(123) 456-7890',
-            'address': 'New York, NY',
-            'summary': 'Experienced software engineer with a passion for developing innovative solutions...'
-        },
-        'experiences': [
-            {
-                'company': 'Tech Solutions Inc.',
-                'position': 'Senior Software Engineer',
-                'location': 'New York, NY',
-                'start_date': '2018-01-01',
-                'end_date': None,
-                'current': True,
-                'description': 'Led development of cloud-based applications...'
-            },
-            {
-                'company': 'Digital Innovations',
-                'position': 'Software Developer',
-                'location': 'Boston, MA',
-                'start_date': '2015-03-01',
-                'end_date': '2017-12-31',
-                'current': False,
-                'description': 'Developed and maintained web applications...'
-            }
-        ],
-        'educations': [
-            {
-                'institution': 'MIT',
-                'degree': 'Master of Science',
-                'field_of_study': 'Computer Science',
-                'location': 'Cambridge, MA',
-                'start_date': '2013-09-01',
-                'end_date': '2015-05-31',
-                'current': False,
-                'description': ''
-            }
-        ],
-        'skills': [
-            {'name': 'JavaScript', 'level': 5},
-            {'name': 'Python', 'level': 4},
-            {'name': 'React', 'level': 4},
-            {'name': 'Node.js', 'level': 3},
-            {'name': 'SQL', 'level': 4}
-        ],
-        'languages': [
-            {'name': 'English', 'proficiency': 'native'},
-            {'name': 'Spanish', 'proficiency': 'professional'}
-        ],
-        'projects': [
-            {
-                'title': 'E-commerce Platform',
-                'description': 'Developed a full-stack e-commerce platform...',
-                'url': 'https://github.com/johndoe/ecommerce',
-                'start_date': '2019-06-01',
-                'end_date': '2019-12-31'
-            }
-        ],
-        'certifications': [
-            {
-                'name': 'AWS Certified Solutions Architect',
-                'issuing_organization': 'Amazon Web Services',
-                'issue_date': '2020-01-15',
-                'expiration_date': '2023-01-15',
-                'credential_id': 'AWS-123456',
-                'credential_url': 'https://aws.amazon.com/certification/verify'
-            }
-        ]
-    }
-
-    # Get related templates (same category)
-    related_templates = ResumeTemplate.objects.filter(
-        category=template.category,
-        is_active=True
-    ).exclude(id=template.id).order_by('?')[:3]
-
-    # Get color schemes for customization preview
-    color_schemes = [
-        {'name': 'Default', 'primary': '#3b82f6', 'secondary': '#6c757d', 'accent': '#10b981'},
-        {'name': 'Professional', 'primary': '#1e40af', 'secondary': '#475569', 'accent': '#0369a1'},
-        {'name': 'Creative', 'primary': '#7c3aed', 'secondary': '#6b7280', 'accent': '#ec4899'},
-        {'name': 'Modern', 'primary': '#0f766e', 'secondary': '#4b5563', 'accent': '#f59e0b'},
-        {'name': 'Classic', 'primary': '#b91c1c', 'secondary': '#374151', 'accent': '#ca8a04'}
-    ]
-
-    return render(request, 'templates_app/template_detail.html', {
-        'template': template,
-        'sample_data': sample_data,
-        'related_templates': related_templates,
-        'color_schemes': color_schemes
-    })
-
-# views.py
 def template_gallery(request):
     categories = TemplateCategory.objects.all()
     selected_category = request.GET.get('category')
@@ -587,7 +380,7 @@ def home(request):
 
     today = timezone.now().date()
     # For demo purposes, generate a random number or use actual count
-    resumes_today = Resume.objects.filter(created_at__date=today).count()
+    resumes_today = ResumeTemplate.objects.filter(created_at__date=today).count()
     if resumes_today < 100:  # If it's a new site or few users
         resumes_today = random.randint(1000, 50000)  # Show an impressive number
 
@@ -602,7 +395,7 @@ def home(request):
 @login_required
 def my_resumes(request):
     """View for displaying user's resumes"""
-    resumes = Resume.objects.filter(user=request.user).order_by('-updated_at')
+    resumes = ResumeTemplate.objects.filter(user=request.user).order_by('-updated_at')
 
     return render(request, 'dashboard/my_resumes.html', {
         'resumes': resumes
@@ -630,7 +423,7 @@ class ResumeTemplateListView(ListView):
 
 
 def resume_download(request, resume_id):
-    resume = get_object_or_404(Resume, id=resume_id)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id)
 
     # Set the context for the template
     context = {
@@ -764,7 +557,7 @@ Font Size: {resume.get_font_size_display()}
 
 
 def resume_design(request, resume_id):
-    resume = get_object_or_404(Resume, id=resume_id)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id)
     # Add any other context data you need
     context = {
         'resume': resume,
@@ -865,7 +658,7 @@ def update_section(request, section_id):
 @require_POST
 def update_section_order(request, resume_id):
     """Update the order of resume sections"""
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id, user=request.user)
 
     section_order = json.loads(request.POST.get('section_order', '[]'))
 
@@ -882,7 +675,7 @@ def update_section_order(request, resume_id):
 @require_POST
 def update_color_scheme(request, resume_id):
     """Update resume color scheme"""
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id, user=request.user)
 
     color_id = request.POST.get('color_id')
     color_scheme = get_object_or_404(TemplateColor, id=color_id, template=resume.template)
@@ -901,7 +694,7 @@ def update_color_scheme(request, resume_id):
 @require_POST
 def save_resume(request, resume_id):
     """Save resume"""
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id, user=request.user)
 
     # Update last_updated timestamp
     resume.save()
@@ -912,7 +705,7 @@ def save_resume(request, resume_id):
 @login_required
 def preview_resume(request, resume_id):
     """Preview resume"""
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id, user=request.user)
 
     # Get all sections for this resume
     sections = resume.sections.all().order_by('order')
@@ -1084,13 +877,13 @@ def resume_editor(request):
     # Get or create a resume for this user and template
     try:
         # Make sure to query using the template instance, not a string
-        resume = Resume.objects.get(
+        resume = ResumeTemplate.objects.get(
             user=request.user,
             template=template  # This should be a ResumeTemplate instance
         )
-    except Resume.DoesNotExist:
+    except ResumeTemplate.DoesNotExist:
         # Create a new resume with the template
-        resume = Resume.objects.create(
+        resume = ResumeTemplate.objects.create(
             user=request.user,
             template=template,
             title=f"My {template.name} Resume",
@@ -1354,6 +1147,16 @@ def subscription_plans(request):
     })
 
 
+def get_unsplash_image(query="resume template", count=1):
+    url = f"https://api.unsplash.com/photos/random?query={query}&count={count}"
+    headers = {
+        "Authorization": f"Client-ID YOUR_UNSPLASH_API_KEY"
+    }
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    return [item['urls']['regular'] for item in data]
+
+
 class ProfessionalTemplatesView(ListView):
     """View for browsing professional resume templates"""
     model = ResumeTemplate
@@ -1398,7 +1201,31 @@ class ProfessionalTemplatesView(ListView):
         context['selected_color'] = self.request.GET.get('color', '')
         context['selected_sort'] = self.request.GET.get('sort', 'popular')
 
+        # Generate placeholder images for templates without preview images
+        self.add_placeholder_images(context)
+
         return context
+
+    def add_placeholder_images(self, context):
+        """Add placeholder images for templates without preview images"""
+        templates = context['templates']
+
+        # Color mapping for placeholders
+        color_map = {
+            'blue': '3182ce',
+            'black': '000000',
+            'gray': '718096',
+            'green': '38a169',
+            'burgundy': '9f1239',
+            'navy': '1e3a8a',
+        }
+
+        # Add placeholder URL to each template that doesn't have a preview image
+        for template in templates:
+            if not template.preview_image or not template.preview_image.url:
+                bg_color = color_map.get(template.color, '3182ce')
+                text = f"{template.name}+{template.style.title()}"
+                template.placeholder_image = f"https://placehold.co/400x600/{bg_color}/FFFFFF?text={text}"
 
 
 @login_required
@@ -1414,7 +1241,7 @@ def create_resume(request, template_slug=None):
             template = ResumeTemplate.objects.first()
 
     # Create a new resume with the selected template
-    resume = Resume.objects.create(
+    resume = ResumeTemplate.objects.create(
         user=request.user,
         template=template,
         title=f"Untitled Resume - {template.name}",
@@ -1480,10 +1307,10 @@ def resume_edit(request, uuid):
 @login_required
 def resume_preview(request, uuid):
     """Preview a resume"""
-    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, slug=uuid, user=request.user)
     sections = resume.sections.all().order_by('order')
 
-    return render(request, 'dashboard/resume_preview.html', {
+    return render(request, 'templates_app/resume_preview.html', {
         'resume': resume,
         'sections': sections,
     })
@@ -1499,7 +1326,7 @@ def upload_resume(request):
             # For now, we'll just create a blank resume
             template = ResumeTemplate.objects.filter(category='simple').first()
 
-            resume = Resume.objects.create(
+            resume = ResumeTemplate.objects.create(
                 user=request.user,
                 template=template,
                 title="Uploaded Resume",
@@ -1597,7 +1424,7 @@ def save_resume(request, uuid):
 @login_required
 def delete_resume(request, resume_id):
     """Delete a resume"""
-    resume = get_object_or_404(Resume, id=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, id=resume_id, user=request.user)
 
     if request.method == 'POST':
         resume_title = resume.title
@@ -1611,7 +1438,7 @@ def delete_resume(request, resume_id):
 @login_required
 def download_resume(request, uuid, format):
     """Download resume in various formats"""
-    resume = get_object_or_404(Resume, uuid=uuid, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=uuid, user=request.user)
     sections = resume.sections.all().order_by('order')
 
     if format == 'pdf':
@@ -1778,3 +1605,359 @@ class NewResumeTemplateListView(ListView):
         context['categories'] = dict(ResumeTemplate.CATEGORY_CHOICES)
         context['selected_category'] = self.request.GET.get('category', '')
         return context
+
+
+# Add these imports if not already present
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse
+from django.contrib import messages
+from django.http import JsonResponse
+import json
+
+
+# Add these new view functions
+
+@login_required
+def payment_redirect(request, template_slug):
+    """
+    Redirect to payment page for premium templates
+    """
+    template = get_object_or_404(ResumeTemplate, slug=template_slug)
+
+    # Check if user already has access to this template
+    if request.user.profile.has_premium_access or request.user.profile.purchased_templates.filter(
+            id=template.id).exists():
+        # User already has access, redirect to resume form
+        return redirect('templates_app:resume_form_details', template_slug=template_slug)
+
+    # If it's a free template, skip payment
+    if not template.is_premium:
+        return redirect('templates_app:resume_form_details', template_slug=template_slug)
+
+    # Otherwise, show payment page
+    return render(request, 'templates_app/payment_redirect.html', {
+        'template': template
+    })
+
+
+@login_required
+def process_payment(request, template_slug):
+    """
+    Process payment for premium templates
+    """
+    if request.method != 'POST':
+        return redirect('templates_app:payment_redirect', template_slug=template_slug)
+
+    template = get_object_or_404(ResumeTemplate, slug=template_slug)
+    payment_option = request.POST.get('payment_option', 'subscription')
+
+    # In a real app, you would integrate with a payment processor here
+    # For this example, we'll simulate a successful payment
+
+    # Update user's profile based on payment option
+    profile = request.user.profile
+    if payment_option == 'subscription':
+        profile.has_premium_access = True
+        profile.save()
+        messages.success(request, "Your subscription has been activated successfully!")
+    else:  # one-time purchase
+        profile.purchased_templates.add(template)
+        profile.save()
+        messages.success(request, f"You've successfully purchased the {template.name} template!")
+
+    # Redirect to resume form
+    return redirect('templates_app:resume_form_details', template_slug=template_slug)
+
+
+@login_required
+def resume_form_details(request, template_slug):
+    """
+    Show form to enter resume details
+    """
+    template = get_object_or_404(ResumeTemplate, slug=template_slug)
+
+    # Check if user has access to this template
+    profile = request.user.profile
+    has_access = (not template.is_premium) or profile.has_premium_access or profile.purchased_templates.filter(
+        id=template.id).exists()
+
+    if not has_access:
+        messages.error(request, "You need to purchase this template first.")
+        return redirect('templates_app:payment_redirect', template_slug=template_slug)
+
+    return render(request, 'templates_app/resume_form_details.html', {
+        'template': template
+    })
+
+
+@login_required
+def save_resume_details(request, template_slug):
+    """
+    Save resume details from form
+    """
+    if request.method != 'POST':
+        return redirect('templates_app:resume_form_details', template_slug=template_slug)
+
+    # Get the existing ResumeTemplate by slug
+    resume_template = get_object_or_404(ResumeTemplate, slug=template_slug)
+
+    # Process form data
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    email = request.POST.get('email')
+    phone = request.POST.get('phone')
+    address = request.POST.get('address', '')
+    city = request.POST.get('city', '')
+    state = request.POST.get('state', '')
+    zip_code = request.POST.get('zip_code', '')
+    linkedin = request.POST.get('linkedin', '')
+    website = request.POST.get('website', '')
+    summary = request.POST.get('summary', '')
+    skills = request.POST.get('skills', '')
+
+    # Parse skills into a list
+    skills_list = [skill.strip() for skill in skills.split(',') if skill.strip()]
+
+    # Create resume content
+    resume_content = {
+        'personal_info': {
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email,
+            'phone': phone,
+            'address': address,
+            'city': city,
+            'state': state,
+            'zip_code': zip_code,
+            'linkedin': linkedin,
+            'website': website
+        },
+        'summary': summary,
+        'skills': skills_list
+    }
+
+    # Process experience items
+    experience_items = []
+    experience_data = {}
+
+    # Extract experience data from POST
+    for key, value in request.POST.items():
+        if key.startswith('experience['):
+            # Parse the key to get the index and field name
+            # Format: experience[0][job_title]
+            parts = key.replace('experience[', '').replace(']', '').split('[')
+            if len(parts) == 2:
+                index = parts[0]
+                field = parts[1]
+
+                if index not in experience_data:
+                    experience_data[index] = {}
+
+                experience_data[index][field] = value
+
+    # Convert to list and add to resume content
+    for index in sorted(experience_data.keys()):
+        item = experience_data[index]
+        experience_items.append({
+            'job_title': item.get('job_title', ''),
+            'employer': item.get('employer', ''),
+            'start_date': item.get('start_date', ''),
+            'end_date': item.get('end_date', ''),
+            'current_job': 'current_job' in item,
+            'description': item.get('description', '')
+        })
+
+    resume_content['experience'] = experience_items
+
+    # Process education items (similar to experience)
+    education_items = []
+    education_data = {}
+
+    for key, value in request.POST.items():
+        if key.startswith('education['):
+            parts = key.replace('education[', '').replace(']', '').split('[')
+            if len(parts) == 2:
+                index = parts[0]
+                field = parts[1]
+
+                if index not in education_data:
+                    education_data[index] = {}
+
+                education_data[index][field] = value
+
+    for index in sorted(education_data.keys()):
+        item = education_data[index]
+        education_items.append({
+            'degree': item.get('degree', ''),
+            'institution': item.get('institution', ''),
+            'start_date': item.get('start_date', ''),
+            'end_date': item.get('end_date', ''),
+            'current_education': 'current_education' in item,
+            'description': item.get('description', '')
+        })
+
+    resume_content['education'] = education_items
+
+    # Create a new Resume (not ResumeTemplate)
+    resume = Resume.objects.create(
+        user=request.user,
+        template=resume_template,  # Use the existing template
+        title=f"{first_name} {last_name}'s Resume",
+        content=resume_content,
+        email=email,
+        phone=phone,
+        location=f"{city}, {state} {zip_code}".strip(', '),
+        summary=summary
+    )
+
+    messages.success(request, "Your resume has been created successfully!")
+    return redirect('templates_app:resume_preview', uuid=resume.uuid)
+
+
+def template_detail(request, template_slug):
+    """
+    View for displaying resume template details with preview and customization options.
+
+    Args:
+        request: The HTTP request
+        template_slug: The slug of the template to display
+
+    Returns:
+        Rendered template with template details, sample data, and customization options
+    """
+    try:
+        # Get the requested template
+        template = get_object_or_404(ResumeTemplate, slug=template_slug, is_active=True)
+
+        # Get sample data for preview
+        sample_data = {
+            'personal_info': {
+                'full_name': 'John Doe',
+                'job_title': 'Software Engineer',
+                'email': 'john.doe@example.com',
+                'phone': '(123) 456-7890',
+                'address': 'New York, NY',
+                'summary': 'Experienced software engineer with a passion for developing innovative solutions...'
+            },
+            'experiences': [
+                {
+                    'company': 'Tech Solutions Inc.',
+                    'position': 'Senior Software Engineer',
+                    'location': 'New York, NY',
+                    'start_date': '2018-01-01',
+                    'end_date': None,
+                    'current': True,
+                    'description': 'Led development of cloud-based applications...'
+                },
+                {
+                    'company': 'Digital Innovations',
+                    'position': 'Software Developer',
+                    'location': 'Boston, MA',
+                    'start_date': '2015-03-01',
+                    'end_date': '2017-12-31',
+                    'current': False,
+                    'description': 'Developed and maintained web applications...'
+                }
+            ],
+            'educations': [
+                {
+                    'institution': 'MIT',
+                    'degree': 'Master of Science',
+                    'field_of_study': 'Computer Science',
+                    'location': 'Cambridge, MA',
+                    'start_date': '2013-09-01',
+                    'end_date': '2015-05-31',
+                    'current': False,
+                    'description': ''
+                }
+            ],
+            'skills': [
+                {'name': 'JavaScript', 'level': 5},
+                {'name': 'Python', 'level': 4},
+                {'name': 'React', 'level': 4},
+                {'name': 'Node.js', 'level': 3},
+                {'name': 'SQL', 'level': 4}
+            ],
+            'languages': [
+                {'name': 'English', 'proficiency': 'native'},
+                {'name': 'Spanish', 'proficiency': 'professional'}
+            ],
+            'projects': [
+                {
+                    'title': 'E-commerce Platform',
+                    'description': 'Developed a full-stack e-commerce platform...',
+                    'url': 'https://github.com/johndoe/ecommerce',
+                    'start_date': '2019-06-01',
+                    'end_date': '2019-12-31'
+                }
+            ],
+            'certifications': [
+                {
+                    'name': 'AWS Certified Solutions Architect',
+                    'issuing_organization': 'Amazon Web Services',
+                    'issue_date': '2020-01-15',
+                    'expiration_date': '2023-01-15',
+                    'credential_id': 'AWS-123456',
+                    'credential_url': 'https://aws.amazon.com/certification/verify'
+                }
+            ]
+        }
+
+        # Get related templates (same category)
+        related_templates = ResumeTemplate.objects.filter(
+            category=template.category,
+            is_active=True
+        ).exclude(id=template.id).order_by('?')[:3]
+
+        # Get color schemes for customization preview
+        color_schemes = [
+            {'name': 'Default', 'primary': '#3b82f6', 'secondary': '#6c757d', 'accent': '#10b981'},
+            {'name': 'Professional', 'primary': '#1e40af', 'secondary': '#475569', 'accent': '#0369a1'},
+            {'name': 'Creative', 'primary': '#7c3aed', 'secondary': '#6b7280', 'accent': '#ec4899'},
+            {'name': 'Modern', 'primary': '#0f766e', 'secondary': '#4b5563', 'accent': '#f59e0b'},
+            {'name': 'Classic', 'primary': '#b91c1c', 'secondary': '#374151', 'accent': '#ca8a04'}
+        ]
+
+        # Get user's selected color scheme from query parameters or use default
+        selected_scheme = request.GET.get('color_scheme', 'Default')
+        selected_colors = next((scheme for scheme in color_schemes if scheme['name'] == selected_scheme),
+                               color_schemes[0])
+
+        # Check if user has any resumes to apply this template to
+        user_resumes = []
+        if request.user.is_authenticated:
+            user_resumes = ResumeTemplate.objects.filter(user=request.user).order_by('-updated_at')[:5]
+
+        return render(request, 'templates_app/template_detail.html', {
+            'template': template,
+            'sample_data': sample_data,
+            'related_templates': related_templates,
+            'color_schemes': color_schemes,
+            'selected_colors': selected_colors,
+            'user_resumes': user_resumes,
+            'page_title': f"{template.name} Resume Template",
+            'meta_description': f"Create a professional resume with our {template.name} template. {template.description}"
+        })
+
+    except Http404:
+        # Get all available templates to suggest alternatives
+        available_templates = ResumeTemplate.objects.filter(is_active=True).order_by('-popularity')[:5]
+
+        # Get templates by category for better suggestions
+        category_templates = {}
+        categories = ResumeTemplate.objects.filter(is_active=True).values_list('category', flat=True).distinct()
+
+        for category in categories:
+            category_templates[category] = ResumeTemplate.objects.filter(
+                category=category,
+                is_active=True
+            ).order_by('-popularity')[:3]
+
+        return render(request, 'templates_app/template_not_found.html', {
+            'requested_slug': template_slug,
+            'available_templates': available_templates,
+            'category_templates': category_templates,
+            'page_title': "Template Not Found",
+            'meta_description': "We couldn't find the template you were looking for. Check out our other professional resume templates."
+        })

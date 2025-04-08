@@ -24,64 +24,6 @@ class ResumeUploadForm(forms.Form):
         help_text='Supported formats: PDF, DOCX, TXT',
         widget=forms.FileInput(attrs={'accept': '.pdf,.docx,.txt'})
     )
-"""
-class ResumeSectionForm(forms.ModelForm):
-    class Meta:
-        model = ResumeSection
-        fields = ['title', 'content']
-        widgets = {
-            'content': forms.HiddenInput(),
-        }"""
-
-
-class ResumeTemplate(models.Model):
-    name = models.CharField(max_length=100)
-    slug = models.SlugField(unique=True)
-    description = models.TextField()
-    preview_image = models.ImageField(upload_to='template_previews/')
-    html_structure = models.TextField(help_text="HTML structure with placeholders for resume data")
-    css = models.TextField(help_text="CSS styles for the template")
-
-    # Template categorization
-    CATEGORY_CHOICES = [
-        ('professional', 'Professional'),
-        ('creative', 'Creative'),
-        ('simple', 'Simple'),
-        ('modern', 'Modern'),
-        ('executive', 'Executive'),
-    ]
-    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
-
-    # Template features
-    has_photo = models.BooleanField(default=True)
-    is_premium = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-
-    # Template customization options
-    allows_color_customization = models.BooleanField(default=True)
-    allows_font_customization = models.BooleanField(default=True)
-    allows_section_reordering = models.BooleanField(default=True)
-
-    # Default colors
-    primary_color = ColorField(default='#2D3E50')
-    secondary_color = ColorField(default='#3498DB')
-    text_color = ColorField(default='#333333')
-
-    # Metadata
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    # Stats
-    usage_count = models.PositiveIntegerField(default=0)
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
-
 
 
 class UserDashboardSettings(models.Model):

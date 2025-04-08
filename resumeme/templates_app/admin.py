@@ -15,30 +15,6 @@ class TemplateSectionInline(admin.TabularInline):
     model = TemplateSection
     extra = 1
 
-@admin.register(ResumeTemplate)
-class ResumeTemplateAdmin(admin.ModelAdmin):
-    list_display = ('name', 'is_ats_friendly', 'is_featured', 'is_premium', 'popularity')
-    list_filter = ('categories', 'is_ats_friendly', 'is_featured', 'is_premium', 'difficulty_level')
-    prepopulated_fields = {'slug': ('name',)}
-    search_fields = ('name', 'description')
-    inlines = [TemplateColorInline, TemplateSectionInline]
-    filter_horizontal = ('categories',)
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'slug', 'description', 'preview_image', 'thumbnail', 'categories')
-        }),
-        ('Features', {
-            'fields': ('has_photo', 'is_ats_friendly', 'is_featured', 'is_premium', 'difficulty_level')
-        }),
-        ('Template Structure', {
-            'fields': ('html_structure', 'css_template'),
-            'classes': ('collapse',),
-        }),
-        ('Statistics', {
-            'fields': ('popularity',),
-        }),
-    )
-
 @admin.register(TemplateColor)
 class TemplateColorAdmin(admin.ModelAdmin):
     list_display = ('template', 'name', 'primary_color', 'is_default')

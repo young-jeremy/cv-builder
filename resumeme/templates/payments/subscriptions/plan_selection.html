@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Payment | CD Builder{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/subscription.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create a Stripe client
+        var stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+        var elements = stripe.elements();
+        
+        // Custom styling can be passed to options when creating an Element
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+        
+        // Create an instance of the card Element
+        var card = elements.create('card', {style: style});
+        
+        // Add an instance of the card Element into the `card-element` div
+        card.mount('#card-element');
+        
+        // Handle real-time validation errors from the card Element
+        card.addEventListener('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+        
+        // Handle form submission
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            // Disable the submit button to prevent repeated clicks
+            document.getElementById('submit-button').disabled = true;
+            
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    // Inform the user if there was an error
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                    document.getElementById('submit-button').disabled = false;
+                } else {
+                    // Send the token to your server
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+        
+        // Submit the form with the token ID
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+            
+            // Submit the form
+            form.submit();
+        }
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<div class="breadcrumbs-container">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home:index' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'subscription:plan_selection' %}">Plans</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Payment</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Payment Section -->
+<section class="payment-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="payment-card">
+                    <h2 class="section-title">Payment Details</h2>
+                    
+                    <form id="payment-form" method="post" action="{% url 'subscription:payment' %}">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-3">
+                            <label for="name_on_card">Name on Card</label>
+                            {{ form.name_on_card }}
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="card-element">Credit or Debit Card</label>
+                            <div id="card-element" class="form-control">
+                                <!-- A Stripe Element will be inserted here. -->
+                            </div>
+                            <!-- Used to display form errors. -->
+                            <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                        </div>
+                        
+                        <button id="submit-button" class="btn btn-primary btn-lg w-100">
+                            Pay ${{ plan.price }} {% if plan.billing_cycle != 'one_time' %}/ {{ plan.billing_cycle }}{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="order-summary-card">
+                    <h3 class="summary-title">Order Summary</h3>
+                    
+                    <div class="plan-details">
+                        <div class="plan-name">{{ plan.name }} Plan</div>
+                        <div class="plan-cycle">
+                            {% if plan.billing_cycle == 'monthly' %}
+                            Monthly Billing
+                            {% elif plan.billing_cycle == 'yearly' %}
+                            Annual Billing
+                            {% else %}
+                            One-time Purchase
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="price-breakdown">
+                        <div class="price-item">
+                            <span class="item-name">Subtotal</span>
+                            <span class="item-value">${{ plan.price }}</span>
+                        </div>
+                        <div class="price-item">
+                            <span class="item-name">Tax</span>
+                            <span class="item-value">$0.00</span>
+                        </div>
+                        <div class="price-total">
+                            <span class="total-label">Total</span>
+                            <span class="total-value">${{ plan.price }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-features">
+                        <h4>What's included:</h4>
+                        <ul>
+                            {% for feature in plan.get_features_list %}
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
+                                    <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                                </svg>
+                                {{ feature }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    <div class="secure-payment">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                        </svg>
+                        <span>Secure payment processing by Stripe</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

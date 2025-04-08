@@ -14,9 +14,10 @@ import uuid
 from weasyprint import HTML, CSS
 from docx import Document
 from io import BytesIO
+from templates_app.models import ResumeTemplate
 
 from .models import (
-    TemplateCategory, ResumeTemplate, Resume, PersonalInfo,
+    TemplateCategory, ResumeTemplate, PersonalInfo,
     Experience, Education, Skill, Project, Language, Certification, TemplateColor
 )
 from .forms import (
@@ -29,7 +30,7 @@ from .forms import (
 @login_required
 @require_POST
 def add_project(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = ProjectForm(request.POST)
 
     if form.is_valid():
@@ -51,7 +52,7 @@ def add_project(request, resume_id):
 @login_required
 @require_POST
 def update_project(request, resume_id, project_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     project = get_object_or_404(Project, id=project_id, resume=resume)
 
     form = ProjectForm(request.POST, instance=project)
@@ -68,7 +69,7 @@ def update_project(request, resume_id, project_id):
 @login_required
 @require_POST
 def delete_project(request, resume_id, project_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     project = get_object_or_404(Project, id=project_id, resume=resume)
 
     project.delete()
@@ -80,7 +81,7 @@ def delete_project(request, resume_id, project_id):
 @login_required
 @require_POST
 def add_language(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = LanguageForm(request.POST)
 
     if form.is_valid():
@@ -102,7 +103,7 @@ def add_language(request, resume_id):
 @login_required
 @require_POST
 def update_language(request, resume_id, language_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     language = get_object_or_404(Language, id=language_id, resume=resume)
 
     form = LanguageForm(request.POST, instance=language)
@@ -119,7 +120,7 @@ def update_language(request, resume_id, language_id):
 @login_required
 @require_POST
 def delete_language(request, resume_id, language_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     language = get_object_or_404(Language, id=language_id, resume=resume)
 
     language.delete()
@@ -131,7 +132,7 @@ def delete_language(request, resume_id, language_id):
 @login_required
 @require_POST
 def add_certification(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = CertificationForm(request.POST)
 
     if form.is_valid():
@@ -153,7 +154,7 @@ def add_certification(request, resume_id):
 @login_required
 @require_POST
 def update_certification(request, resume_id, certification_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     certification = get_object_or_404(Certification, id=certification_id, resume=resume)
 
     form = CertificationForm(request.POST, instance=certification)
@@ -170,7 +171,7 @@ def update_certification(request, resume_id, certification_id):
 @login_required
 @require_POST
 def delete_certification(request, resume_id, certification_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     certification = get_object_or_404(Certification, id=certification_id, resume=resume)
 
     certification.delete()
@@ -181,7 +182,7 @@ def delete_certification(request, resume_id, certification_id):
 
 def home(request):
     template_categories = TemplateCategory.objects.all()
-    resume_count = Resume.objects.count()
+    resume_count = ResumeTemplate.objects.count()
     return render(request, 'resume_builder/home.html', {
         'template_categories': template_categories,
         'resume_count': resume_count
@@ -203,7 +204,7 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    resumes = Resume.objects.filter(user=request.user).order_by('-updated_at')
+    resumes = ResumeTemplate.objects.filter(user=request.user).order_by('-updated_at')
     return render(request, 'resume_builder/dashboard.html', {'resumes': resumes})
 
 
@@ -263,7 +264,7 @@ def create_resume(request, template_slug=None):
 
 @login_required
 def edit_resume(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
 
     # Get or create personal info
     try:
@@ -315,7 +316,7 @@ def edit_resume(request, resume_id):
 @login_required
 @require_POST
 def update_personal_info(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
 
     try:
         personal_info = resume.personal_info
@@ -336,7 +337,7 @@ def update_personal_info(request, resume_id):
 @login_required
 @require_POST
 def add_experience(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = ExperienceForm(request.POST)
 
     if form.is_valid():
@@ -358,7 +359,7 @@ def add_experience(request, resume_id):
 @login_required
 @require_POST
 def update_experience(request, resume_id, experience_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     experience = get_object_or_404(Experience, id=experience_id, resume=resume)
 
     form = ExperienceForm(request.POST, instance=experience)
@@ -375,7 +376,7 @@ def update_experience(request, resume_id, experience_id):
 @login_required
 @require_POST
 def delete_experience(request, resume_id, experience_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     experience = get_object_or_404(Experience, id=experience_id, resume=resume)
 
     experience.delete()
@@ -387,7 +388,7 @@ def delete_experience(request, resume_id, experience_id):
 @login_required
 @require_POST
 def add_education(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = EducationForm(request.POST)
 
     if form.is_valid():
@@ -403,13 +404,13 @@ def add_education(request, resume_id):
     else:
         messages.error(request, 'Error adding education.')
 
-    return redirect('edit_resume', resume_id=resume.uuid)
+    return redirect('templates_app:edit_resume', resume_id=resume.uuid)
 
 
 @login_required
 @require_POST
 def update_education(request, resume_id, education_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     education = get_object_or_404(Education, id=education_id, resume=resume)
 
     form = EducationForm(request.POST, instance=education)
@@ -426,7 +427,7 @@ def update_education(request, resume_id, education_id):
 @login_required
 @require_POST
 def delete_education(request, resume_id, education_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     education = get_object_or_404(Education, id=education_id, resume=resume)
 
     education.delete()
@@ -438,7 +439,7 @@ def delete_education(request, resume_id, education_id):
 @login_required
 @require_POST
 def add_skill(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = SkillForm(request.POST)
 
     if form.is_valid():
@@ -460,7 +461,7 @@ def add_skill(request, resume_id):
 @login_required
 @require_POST
 def update_skill(request, resume_id, skill_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     skill = get_object_or_404(Skill, id=skill_id, resume=resume)
 
     form = SkillForm(request.POST, instance=skill)
@@ -471,19 +472,19 @@ def update_skill(request, resume_id, skill_id):
     else:
         messages.error(request, 'Error updating skill.')
 
-    return redirect('edit_resume', resume_id=resume.uuid)
+    return redirect('templates_app:edit_resume', resume_id=resume.uuid)
 
 
 @login_required
 @require_POST
 def delete_skill(request, resume_id, skill_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     skill = get_object_or_404(Skill, id=skill_id, resume=resume)
 
     skill.delete()
     messages.success(request, 'Skill deleted successfully!')
 
-    return redirect('edit_resume', resume_id=resume.uuid)
+    return redirect('templates_app:edit_resume', resume_id=resume.uuid)
 
 
 # Similar CRUD views for Project, Language, and Certification
@@ -492,7 +493,7 @@ def delete_skill(request, resume_id, skill_id):
 @login_required
 @require_POST
 def add_color(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     form = TemplateColorForm(request.POST)
 
     if form.is_valid():
@@ -509,7 +510,7 @@ def add_color(request, resume_id):
 @login_required
 @require_POST
 def update_color(request, resume_id, color_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     color = get_object_or_404(TemplateColor, id=color_id, resume=resume)
 
     form = TemplateColorForm(request.POST, instance=color)
@@ -520,13 +521,13 @@ def update_color(request, resume_id, color_id):
     else:
         messages.error(request, 'Error updating color.')
 
-    return redirect('edit_resume', resume_id=resume.uuid)
+    return redirect('templates_app:edit_resume', resume_id=resume.uuid)
 
 
 @login_required
 @require_POST
 def delete_color(request, resume_id, color_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
     color = get_object_or_404(TemplateColor, id=color_id, resume=resume)
 
     color.delete()
@@ -537,7 +538,7 @@ def delete_color(request, resume_id, color_id):
 
 @login_required
 def preview_resume(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
 
     return render(request, 'resume_builder/preview_resume.html', {
         'resume': resume
@@ -546,7 +547,7 @@ def preview_resume(request, resume_id):
 
 @login_required
 def export_resume(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
 
     if request.method == 'POST':
         form = ResumeExportForm(request.POST)
@@ -726,7 +727,7 @@ def export_resume(request, resume_id):
 
 @login_required
 def reorder_items(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
 
     if request.method == 'POST':
         data = json.loads(request.body)
@@ -771,7 +772,7 @@ def reorder_items(request, resume_id):
 
 @login_required
 def delete_resume(request, resume_id):
-    resume = get_object_or_404(Resume, uuid=resume_id, user=request.user)
+    resume = get_object_or_404(ResumeTemplate, uuid=resume_id, user=request.user)
 
     if request.method == 'POST':
         resume.delete()

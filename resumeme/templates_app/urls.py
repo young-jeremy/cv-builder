@@ -26,6 +26,7 @@ urlpatterns = [
     path('resumes/<int:resume_id>/design/', views.resume_design, name='resume_design'),
     path('resumes/<int:resume_id>/download/', views.resume_download, name='resume_download'),
 
+
     path('my-resumes/', views.my_resumes, name='my_resumes'),
     path('templates/', views.ResumeTemplateListView.as_view(), name='resume_templates'),
     path('templates/professional/', views.ProfessionalTemplatesView.as_view(), name='professional_templates'),
@@ -51,6 +52,26 @@ urlpatterns = [
     path('templates/', views.AllTemplatesView.as_view(), name='all_templates'),
 
     path('new_resume_templates/', views.NewResumeTemplateListView.as_view(), name='new_resume_templates'),
+
+    path('my-resumes/', views.my_resumes, name='my_resumes'),
+    path('templates/', views.ResumeTemplateListView.as_view(), name='resume_templates'),
+    path('templates/professional/', views.ProfessionalTemplatesView.as_view(), name='professional_templates'),
+    path('templates/<slug:slug>/preview/', views.template_preview, name='template_preview'),
+    path('templates/<slug:template_slug>/create/', views.create_resume, name='create_resume_with_template'),
+    path('create/', views.create_resume, name='create_resume'),
+    path('upload/', views.upload_resume, name='upload_resume'),
+    path('resume/<uuid:uuid>/edit/', views.resume_edit, name='resume_edit'),
+    path('resume/<uuid:uuid>/preview/', views.resume_preview, name='resume_preview'),
+    path('resume/<uuid:uuid>/download/<str:format>/', views.download_resume, name='download_resume'),
+    path('resume/<int:resume_id>/delete/', views.delete_resume, name='delete_resume'),
+    path('resume/<uuid:resume_uuid>/add-section/', views.add_section, name='add_section'),
+    path('resume/<uuid:uuid>/save/', views.save_resume, name='save_resume'),
+
+    # New URL patterns for payment and resume details
+    path('templates/<slug:template_slug>/payment/', views.payment_redirect, name='payment_redirect'),
+    path('templates/<slug:template_slug>/process-payment/', views.process_payment, name='process_payment'),
+    path('templates/<slug:template_slug>/details/', views.resume_form_details, name='resume_form_details'),
+    path('templates/<slug:template_slug>/save-details/', views.save_resume_details, name='save_resume_details'),
 
 ]
 
